@@ -1,4 +1,6 @@
 package edu.wofford.wocoin.main;
 
-public class feature01 {
+public class Feature01Main {
+
+
 }
