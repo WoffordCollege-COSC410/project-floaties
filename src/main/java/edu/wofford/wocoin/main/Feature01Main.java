@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package edu.wofford.wocoin.main;
 
 import edu.wofford.wocoin.Utilities;
@@ -8,3 +9,11 @@ public class Feature01Main {
 
     }
 }
+=======
+// instantiate database object
+
+// scan for menu 1
+
+
+
+>>>>>>> origin/master
