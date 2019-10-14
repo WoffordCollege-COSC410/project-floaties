@@ -1,4 +1,4 @@
-// import package
+package edu.wofford.wocoin;// import package
 // import sqlite library
 
 public class Databases{
