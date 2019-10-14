@@ -1,10 +1,15 @@
 package edu.wofford.wocoin;// import package
 // import sqlite library
 
-public class Databases{
+public class Database {
     private String adminPwd = "adminpwd";
-    public class Databases(String path, String ){
-        try{
+
+    public Database() {
+        //constructor
+    }
+
+    public Database(String path){
+            try{
             if(sqlite3_open() == 0){
 
             }
@@ -12,6 +17,10 @@ public class Databases{
         catch (FileNotFoundException e){
 
         }
+    }
+
+    public boolean checkIsAdmin(String password) {
+        return password.equals(adminPwd);
     }
 }
 

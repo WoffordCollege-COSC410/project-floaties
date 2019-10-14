@@ -4,6 +4,8 @@ import org.junit.Test;
 import java.io.*;
 import java.nio.file.*;
 
+import static org.testng.Assert.assertEquals;
+
 public class DatabaseTests {
 
     @Test
@@ -13,6 +15,15 @@ public class DatabaseTests {
 
     @Test
     public void isAdmin() {
+        String pwd = "adminPwd";
+        Database d = new Database();
+        assertEquals(true, d.checkIsAdmin(pwd));
+    }
 
+    @Test
+    public void isNotAdmin() {
+        String pwd = "lakjdfi";
+        Database d = new Database();
+        assertEquals(false, d.checkIsAdmin(pwd));
     }
 }
