@@ -22,7 +22,7 @@ public class DatabaseTests {
 
     @Test
     public void isNotAdmin() {
-        String pwd = "lakjdfi";
+        String pwd = "notThePwd";
         Database d = new Database();
         assertEquals(false, d.checkIsAdmin(pwd));
     }
