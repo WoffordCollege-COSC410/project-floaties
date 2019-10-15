@@ -32,15 +32,7 @@ public class DatabaseTests{
     @Test
     public void testCreateNewDatabase(){
 
-        String url = "jdbc:sqlite:" + "testDB";
-        try(Connection conn = DriverManager.getConnection(url);
-            Statement stmt = conn.createStatement()) {
-            String testQuery = "SELECT * FROM users;";
-            ResultSet rs = stmt.executeQuery(testQuery);
-            assertTrue( !rs.next() );
-        }catch(SQLException e){
-            e.printStackTrace();
-        }
+
 
     }
     @Test
