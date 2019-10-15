@@ -26,6 +26,8 @@ import org.web3j.protocol.core.DefaultBlockParameterName;
 
 public class DatabaseTests{
     Database test = new Database("testDB");
+    Utilities fullDB = new Utilities;
+    fullDB.createTestDatabase("fullDB");
 
     @Test
     public void testCreateNewDatabase(){
@@ -41,18 +43,38 @@ public class DatabaseTests{
         }
 
     }
-    public void testAddToUsers(){
-
+    @Test
+    public void testFullDatabase(){
+        String url = "jdbc:sqlite:" + "fullDB";
+        try (Connection conn= DriverManager.getConnection(url);
+            Statement stmt = conn.createStatement()){
+            String testQuery = "SELECT * FROM users;";
+            ResultSet rs = stmt.executeQuery(testQuery);
+            assertTrue( rs.next());
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
     }
 
-    public void testDoesDBExist(String path){
-
+    @Test
+    public void testDoesDBExist(){
+        assertTrue( test.doesExist("testDB"));
     }
 
 
     @Test
     public void testGetAdminPwd(){
         assertEquals("adminpwd", test.getAdminPwd());
+    }
+
+    @Test
+    public void testIsAdminPassWdCorrect(){
+        assertTrue(test.checkIsAdmin("adminpwd")  );
+    }
+    @Test
+    public void testAddToUsers(){
+        assertTrue(4==4);
     }
 
 //    @Test
