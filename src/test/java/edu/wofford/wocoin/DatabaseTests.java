@@ -15,8 +15,8 @@ public class DatabaseTests {
 
     @Test
     public void isAdmin() {
-        String pwd = "adminPwd";
         Database d = new Database();
+        String pwd = "adminPwd";
         assertEquals(true, d.checkIsAdmin(pwd));
     }
 
