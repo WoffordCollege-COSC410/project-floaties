@@ -1,37 +1,45 @@
 package edu.wofford.wocoin;
 
-<<<<<<< HEAD
+import static org.junit.Assert.*;
 import org.junit.Test;
+import org.junit.Before;
 import java.io.*;
 import java.nio.file.*;
+import java.sql.*;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 public class DatabaseTests {
 
     @Test
-    public void databaseInstantiated() {
-
-    }
-
-    @Test
     public void isAdmin() {
-        Database d = new Database();
-        String pwd = "adminPwd";
+        Database d = new Database("testDB");
+        String pwd = "adminpwd";
         assertEquals(true, d.checkIsAdmin(pwd));
     }
 
     @Test
     public void isNotAdmin() {
         String pwd = "notThePwd";
-        Database d = new Database();
+        Database d = new Database("testDB");
         assertEquals(false, d.checkIsAdmin(pwd));
     }
 
     @Test
     public void testCreateNewDatabase() {
+        File tempFile = new File("testDB");
 
+        if(tempFile.exists()) {
+            tempFile.delete();
+        }
+
+        Database d = new Database("testDB");
         String url = "jdbc:sqlite:" + "testDB";
+
+        //loop through database and check each table
+
+
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()) {
             String testQuery = "SELECT * FROM users;";
@@ -58,6 +66,28 @@ public class DatabaseTests {
 
     @Test
     public void testDoesDBExist() {
-        assertTrue(test.doesExist("testDB"));
+        Database d = new Database("testDB");
+        assertTrue(d.doesExist("testDB"));
     }
+
+    @Test
+    public void tesAddUser() {
+        Database d = new Database("testDb");
+        boolean user = d.addUser("kporter", "password1");
+        assertTrue(user);
+
+        String url = "jdbc:sqlite:" + "testDB";
+        try (Connection conn = DriverManager.getConnection(url);
+             Statement stmt = conn.createStatement()) {
+            String testQuery = "select id from users where id = 'kporter';";
+            ResultSet rs = stmt.executeQuery(testQuery);
+            rs.last();
+            assertEquals(1, rs.getRow());
+            assertEquals("kporter", rs.getString("id"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 }

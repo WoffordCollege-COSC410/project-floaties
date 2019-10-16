@@ -10,10 +10,12 @@ import org.web3j.protocol.http.HttpService;
 import org.web3j.protocol.core.methods.response.EthGetBalance;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 
+
 public class Database {
     private String adminPwd = "adminpwd";
     private String url;
     private Connection con;
+
 
     public Database(String path) {
 
@@ -56,7 +58,7 @@ public class Database {
 
 
     public boolean checkIsAdmin(String password){
-        if(password == getAdminPwd()){
+        if(password.equals(getAdminPwd())){
             return true;
         }
         else{
@@ -66,10 +68,10 @@ public class Database {
 
     }
 
+    public boolean addUser(String username, String password) {
+        return true;
+    }
 
-
-
->>>>>>> b344301eb6f06672b589aefa3600f5373bfa0cc2
 }
 
 
