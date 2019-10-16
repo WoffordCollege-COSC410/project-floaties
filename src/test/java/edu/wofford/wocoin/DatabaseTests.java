@@ -12,6 +12,8 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.Before;
 import org.junit.Test;
+import java.io.*;
+
 
 import java.math.BigInteger;
 import java.util.concurrent.ExecutionException;
@@ -25,14 +27,74 @@ import org.web3j.protocol.core.methods.response.EthGetBalance;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 
 public class DatabaseTests{
-    Database test = new Database("testDB");
-    Utilities fullDB = new Utilities;
-    fullDB.createTestDatabase("fullDB");
+
+    //Utilities fullDB = new Utilities;
+    //fullDB.createTestDatabase("fullDB");
 
     @Test
     public void testCreateNewDatabase(){
 
 
+            File file = new File("project-floaties/testDB");
+            if (file.exists()){
+                file.delete();
+            }
+            Database db = new Database("testDB");
+            String url = "jdbc:sqlite:" + "testDB";
+
+
+                try (Connection conn= DriverManager.getConnection(url);
+                Statement stmt = conn.createStatement()){
+                    String testQuery = "SELECT * FROM users;";
+                    ResultSet rs = stmt.executeQuery(testQuery);
+                    assertTrue( !rs.next());
+                }
+                catch(SQLException e){
+                    e.printStackTrace();
+                }
+
+                try (Connection conn= DriverManager.getConnection(url);
+                    Statement stmt = conn.createStatement()){
+                    String testQuery = "SELECT * FROM wallets;";
+                    ResultSet rs = stmt.executeQuery(testQuery);
+                    assertTrue( !rs.next());
+                }
+                catch(SQLException e){
+                    e.printStackTrace();
+                }
+
+                try (Connection conn= DriverManager.getConnection(url);
+                     Statement stmt = conn.createStatement()){
+                    String testQuery = "SELECT * FROM products;";
+                    ResultSet rs = stmt.executeQuery(testQuery);
+                    assertTrue( !rs.next());
+                }
+                catch(SQLException e){
+                    e.printStackTrace();
+                }
+
+                try (Connection conn= DriverManager.getConnection(url);
+                        Statement stmt = conn.createStatement()){
+                    String testQuery = "SELECT * FROM messages;";
+                    ResultSet rs = stmt.executeQuery(testQuery);
+                    assertTrue( !rs.next());
+                 }
+                catch(SQLException e){
+                    e.printStackTrace();
+                }
+
+                //this is checking number of tables
+                try (Connection conn= DriverManager.getConnection(url);
+                Statement stmt = conn.createStatement()){
+                    String testQuery = "SELECT count(*) FROM sqlite_master WHERE type = 'table' AND name != 'android_metadata' AND name != 'sqlite_sequence';";
+                    ResultSet rs = stmt.executeQuery(testQuery);
+
+
+                    assertEquals(rs.getInt(1), 4);
+                }
+            catch(SQLException e){
+                e.printStackTrace();
+            }
 
     }
     @Test
@@ -42,7 +104,7 @@ public class DatabaseTests{
             Statement stmt = conn.createStatement()){
             String testQuery = "SELECT * FROM users;";
             ResultSet rs = stmt.executeQuery(testQuery);
-            assertTrue( rs.next());
+            assertTrue( !rs.next());
         }
         catch(SQLException e){
             e.printStackTrace();
@@ -51,17 +113,20 @@ public class DatabaseTests{
 
     @Test
     public void testDoesDBExist(){
-        assertTrue( test.doesExist("testDB"));
+        Database test = new Database("testDB");
+        assertTrue( test.doesExist());
     }
 
 
     @Test
     public void testGetAdminPwd(){
+        Database test = new Database("testDB");
         assertEquals("adminpwd", test.getAdminPwd());
     }
 
     @Test
     public void testIsAdminPassWdCorrect(){
+        Database test = new Database("testDB");
         assertTrue(test.checkIsAdmin("adminpwd")  );
     }
     @Test

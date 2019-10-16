@@ -17,7 +17,7 @@ public class Database {
 
     public Database(String path) {
 
-        if(doesExist(path)){
+        if(doesExist()){
             this.adminPwd="adminpwd";
         }
         else{
@@ -29,7 +29,7 @@ public class Database {
 
     }
 
-    public boolean doesExist(String path) {
+    public boolean doesExist() {
          con = null;
         ResultSet rs = null;
 
@@ -50,7 +50,7 @@ public class Database {
 
 
 
-    public String getAdminPwd(){
+    public  String getAdminPwd(){
         return adminPwd;
     }
 
