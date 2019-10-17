@@ -15,18 +15,22 @@ public class Database {
     private String url;
     private Connection con;
 
+
     public Database(String path) {
 
         if(doesExist()){
             this.adminPwd="adminpwd";
             //come back and delete the file and make a new db like in our test???
+            url =  "jdbc:sqlite:" + path;
+
 
         }
         else{
             Utilities.createNewDatabase(path);
+            url =  "jdbc:sqlite:" + path;
         }
-        url =  "jdbc:sqlite:" + path;
-        con = null;
+
+
         
 
     }
@@ -88,6 +92,9 @@ public class Database {
 
     }
 
+    public boolean addUser(String username, String password) {
+        return true;
+    }
 
 
 
