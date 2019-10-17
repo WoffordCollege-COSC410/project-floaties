@@ -28,21 +28,16 @@ import org.web3j.protocol.core.DefaultBlockParameterName;
 
 public class DatabaseTests{
 
-    //Utilities fullDB = new Utilities;
-    //fullDB.createTestDatabase("fullDB");
-
     @Test
     public void testCreateNewDatabase(){
-
-
-            File file = new File("project-floaties/testDB");
+            String path= "testDB.db" ;
+            String Robert = "C://Users//RB//Desktop//COSC410//groupProject//";
+            File file = new File(Robert + "project-floaties//" + path);
             if (file.exists()){
                 file.delete();
             }
-            Database db = new Database("testDB");
-            String url = "jdbc:sqlite:" + "testDB";
-
-
+            Database db = new Database(path);
+            String url = "jdbc:sqlite:" + path;
                 try (Connection conn= DriverManager.getConnection(url);
                 Statement stmt = conn.createStatement()){
                     String testQuery = "SELECT * FROM users;";
@@ -52,7 +47,6 @@ public class DatabaseTests{
                 catch(SQLException e){
                     e.printStackTrace();
                 }
-
                 try (Connection conn= DriverManager.getConnection(url);
                     Statement stmt = conn.createStatement()){
                     String testQuery = "SELECT * FROM wallets;";
@@ -62,7 +56,6 @@ public class DatabaseTests{
                 catch(SQLException e){
                     e.printStackTrace();
                 }
-
                 try (Connection conn= DriverManager.getConnection(url);
                      Statement stmt = conn.createStatement()){
                     String testQuery = "SELECT * FROM products;";
@@ -72,7 +65,6 @@ public class DatabaseTests{
                 catch(SQLException e){
                     e.printStackTrace();
                 }
-
                 try (Connection conn= DriverManager.getConnection(url);
                         Statement stmt = conn.createStatement()){
                     String testQuery = "SELECT * FROM messages;";
@@ -82,51 +74,94 @@ public class DatabaseTests{
                 catch(SQLException e){
                     e.printStackTrace();
                 }
-
                 //this is checking number of tables
                 try (Connection conn= DriverManager.getConnection(url);
                 Statement stmt = conn.createStatement()){
                     String testQuery = "SELECT count(*) FROM sqlite_master WHERE type = 'table' AND name != 'android_metadata' AND name != 'sqlite_sequence';";
                     ResultSet rs = stmt.executeQuery(testQuery);
-
-
                     assertEquals(rs.getInt(1), 4);
                 }
             catch(SQLException e){
                 e.printStackTrace();
             }
 
+            file.delete();
+
     }
     @Test
     public void testFullDatabase(){
-        String url = "jdbc:sqlite:" + "fullDB";
+        String path = "testDBFULL.db";
+
+        String Robert = "C://Users//RB//Desktop//COSC410//groupProject//";
+        File file = new File(Robert + "project-floaties//" + path);
+        if (file.exists()){
+            file.delete();
+        }
+        Database db = new Database(path,1);
+
+        String url = "jdbc:sqlite:" + path;
         try (Connection conn= DriverManager.getConnection(url);
             Statement stmt = conn.createStatement()){
-            String testQuery = "SELECT * FROM users;";
+            String testQuery = "SELECT count (*) FROM users;";
             ResultSet rs = stmt.executeQuery(testQuery);
-            assertTrue( !rs.next());
+            assertEquals(rs.getInt(1),4);
         }
         catch(SQLException e){
             e.printStackTrace();
         }
+        try (Connection conn= DriverManager.getConnection(url);
+             Statement stmt = conn.createStatement()){
+            String testQuery = "SELECT count (*) FROM wallets;";
+            ResultSet rs = stmt.executeQuery(testQuery);
+            assertEquals(rs.getInt(1),4);
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
+        try (Connection conn= DriverManager.getConnection(url);
+             Statement stmt = conn.createStatement()){
+            String testQuery = "SELECT count (*) FROM products;";
+            ResultSet rs = stmt.executeQuery(testQuery);
+            assertEquals(rs.getInt(1),7);
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
+        try (Connection conn= DriverManager.getConnection(url);
+             Statement stmt = conn.createStatement()){
+            String testQuery = "SELECT count(*) FROM messages;";
+            ResultSet rs = stmt.executeQuery(testQuery);
+            assertEquals(rs.getInt(1),2);
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
+        //this is checking number of tables
+        try (Connection conn= DriverManager.getConnection(url);
+             Statement stmt = conn.createStatement()){
+            String testQuery = "SELECT count(*) FROM sqlite_master WHERE type = 'table' AND name != 'android_metadata' AND name != 'sqlite_sequence';";
+            ResultSet rs = stmt.executeQuery(testQuery);
+            assertEquals(rs.getInt(1), 4);
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
+
+        file.delete();
+
     }
 
-    @Test
-    public void testDoesDBExist(){
-        Database test = new Database("testDB");
-        assertTrue( test.doesExist());
-    }
 
 
     @Test
     public void testGetAdminPwd(){
-        Database test = new Database("testDB");
+        Database test = new Database("test45DB");
         assertEquals("adminpwd", test.getAdminPwd());
     }
 
     @Test
     public void testIsAdminPassWdCorrect(){
-        Database test = new Database("testDB");
+        Database test = new Database("test45DB");
         assertTrue(test.checkIsAdmin("adminpwd")  );
     }
     @Test

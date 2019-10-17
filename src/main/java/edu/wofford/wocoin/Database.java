@@ -19,6 +19,8 @@ public class Database {
 
         if(doesExist()){
             this.adminPwd="adminpwd";
+            //come back and delete the file and make a new db like in our test???
+
         }
         else{
             Utilities.createNewDatabase(path);
@@ -29,7 +31,27 @@ public class Database {
 
     }
 
-    public boolean doesExist() {
+    public Database(String path, int full){
+
+
+
+        if(full == 1) {
+            if (doesExist()) {
+                this.adminPwd = "adminpwd";
+            } else {
+                Utilities.createTestDatabase(path);
+            }
+
+            url = "jdbc:sqlite:" + path;
+            con = null;
+        }
+        else {
+            this.adminPwd = "adminpwd";
+        }
+    }
+
+
+    private boolean doesExist() {
          con = null;
         ResultSet rs = null;
 
