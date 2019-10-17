@@ -75,7 +75,6 @@ public class Database {
     }
 
 
-
     public  String getAdminPwd(){
         return adminPwd;
     }
@@ -93,9 +92,44 @@ public class Database {
     }
 
     public boolean addUser(String username, String password) {
-        return true;
+        String saltedPasswd = "";
+        int salt = generateSalt();
+        saltedPasswd = getSaltedPasswd(password, salt);
+        String hash = getHash(saltedPasswd);
+
+        //sql statement addUser
+        try (Connection conn= DriverManager.getConnection(url);
+             Statement stmt = conn.createStatement()){
+
+            String testQuery = String.format("INSERT INTO users (id, salt, hash) VALUES (%s, %d,%s)", username,salt,hash);
+            ResultSet rs = stmt.executeQuery(testQuery);
+            return true;
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+            return false;
+        }
     }
 
+    private int generateSalt(){
+        int saltValue = Utilities.generateSalt();
+        return saltValue;
+    }
+
+
+    private String getSaltedPasswd(String passWd, int saltValue){
+
+        String SaltValueString = Integer.toString(saltValue);
+        String builder = passWd + SaltValueString;
+        return builder;
+
+    }
+    private String getHash(String saltedPasswd){
+        String hash = "";
+        hash = Utilities.applySha256(saltedPasswd);
+
+        return hash;
+    }
 
 
 }

@@ -167,9 +167,42 @@ public class DatabaseTests{
         assertTrue(test.checkIsAdmin("adminpwd")  );
     }
     @Test
-    public void testAddToUsers(){
-        assertTrue(4==4);
+    public void testAddUser(){
+        String path = "testDB.db";
+        String Robert = "C://Users//RB//Desktop//COSC410//groupProject//";
+        File file = new File(Robert + "project-floaties//" + path);
+        if (file.exists()){
+            file.delete();
+        }
+
+
+        Database db = new Database(path);
+        db.addUser("kporter", "1234");
+
+        String url = "jdbc:sqlite:" + path;
+        try (Connection conn = DriverManager.getConnection(url);
+             Statement stmt = conn.createStatement()) {
+            String testQuery = "select id from users where id = 'kporter';";
+            ResultSet rs = stmt.executeQuery(testQuery);
+
+
+            //rs.next();
+            //rs.next();
+
+
+            rs.last();
+
+            //assertEquals(works, true);
+            //assertEquals(2, rs.getRow());
+            String usernameInDB = rs.getString(1);
+            String username = "kportersddddd";
+            assertEquals(username,usernameInDB );
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
+
 
 //    @Test
 //    public void isAdmin(){
