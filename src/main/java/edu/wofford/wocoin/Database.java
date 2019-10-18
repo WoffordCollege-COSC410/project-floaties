@@ -36,7 +36,7 @@ public class Database {
             detectsExisting = true;
         }
 
-        url =  "jdbc:sqlite:" + fileName;
+        url =  "jdbc:sqlite:" + fullPath;
         this.adminPwd="adminpwd";
     }
 
@@ -100,6 +100,7 @@ public class Database {
             }
             catch(SQLException e){
                 e.printStackTrace();
+                System.out.println("EXCEPTION.");
                 return false;
             }
         }

@@ -20,7 +20,6 @@ import java.security.*;
 import java.security.spec.*;
 import java.util.Base64;
 import java.sql.*;
-
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.protocol.core.methods.response.EthGetBalance;

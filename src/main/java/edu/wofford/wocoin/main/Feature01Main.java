@@ -57,6 +57,7 @@ public class Feature01Main {
                             }
 
                             keepGoing = false;
+                            break;
                         }
                     }
 
