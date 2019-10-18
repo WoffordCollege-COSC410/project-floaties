@@ -1,4 +1,9 @@
 package edu.wofford.wocoin;
+import static org.junit.Assert.*;
+import org.junit.Test;
+import org.junit.Before;
+import org.junit.Test;
+import java.io.*;
 import java.math.BigInteger;
 import java.util.concurrent.ExecutionException;
 import java.security.*;
@@ -14,64 +19,25 @@ public class Database {
     private String adminPwd = "adminpwd";
     private String url;
     private Connection con;
+    protected boolean detectsExisting;
 
 
-    public Database(String path) {
+    public Database(String fileName) {
+        String workingDir = System.getProperty("user.dir");
+        String fullPath = workingDir + "\\" + fileName;
+        File file = new File(fullPath);
 
-        if(doesExist()){
-            this.adminPwd="adminpwd";
-            //come back and delete the file and make a new db like in our test???
-            url =  "jdbc:sqlite:" + path;
-
-
+        if(! file.exists()){
+            System.out.println("File does not exist! About to create new blank db");
+            Utilities.createNewDatabase(fileName);
+            boolean detectsExisting = false;
+        }else{
+            System.out.println("File exists");
+            detectsExisting = true;
         }
-        else{
-            Utilities.createNewDatabase(path);
-            url =  "jdbc:sqlite:" + path;
-        }
 
-
-        
-
-    }
-
-    public Database(String path, int full){
-
-
-
-        if(full == 1) {
-            if (doesExist()) {
-                this.adminPwd = "adminpwd";
-            } else {
-                Utilities.createTestDatabase(path);
-            }
-
-            url = "jdbc:sqlite:" + path;
-            con = null;
-        }
-        else {
-            this.adminPwd = "adminpwd";
-        }
-    }
-
-
-    private boolean doesExist() {
-         con = null;
-        ResultSet rs = null;
-
-
-        try {
-            con = DriverManager.getConnection(url);
-            if (con != null) {
-                rs = con.getMetaData().getCatalogs();
-                return true;
-            } else {
-                return false;
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return false;
-        }
+        url =  "jdbc:sqlite:" + fileName;
+        this.adminPwd="adminpwd";
     }
 
 
