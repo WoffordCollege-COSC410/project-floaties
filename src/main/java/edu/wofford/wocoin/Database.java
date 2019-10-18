@@ -1,4 +1,9 @@
 package edu.wofford.wocoin;
+import static org.junit.Assert.*;
+import org.junit.Test;
+import org.junit.Before;
+import org.junit.Test;
+import java.io.*;
 import java.math.BigInteger;
 import java.util.concurrent.ExecutionException;
 import java.security.*;
@@ -10,55 +15,39 @@ import org.web3j.protocol.http.HttpService;
 import org.web3j.protocol.core.methods.response.EthGetBalance;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 
-
 public class Database {
     private String adminPwd = "adminpwd";
     private String url;
     private Connection con;
+    protected boolean detectsExisting;
 
 
-    public Database(String path) {
+    public Database(String fileName) {
+        String workingDir = System.getProperty("user.dir");
+        String fullPath = workingDir + "\\" + fileName;
+        File file = new File(fullPath);
 
-        if(doesExist(path)){
-            this.adminPwd="adminpwd";
+        if(! file.exists()){
+            System.out.println("File does not exist! About to create new blank db");
+            Utilities.createNewDatabase(fileName);
+            boolean detectsExisting = false;
+        }else{
+            System.out.println("File exists");
+            detectsExisting = true;
         }
-        else{
-            Utilities.createNewDatabase(path);
-        }
-        url =  "jdbc:sqlite:" + path;
-        con = null;
-        
 
-    }
-
-    public boolean doesExist(String path) {
-         con = null;
-        ResultSet rs = null;
-
-
-        try {
-            con = DriverManager.getConnection(url);
-            if (con != null) {
-                rs = con.getMetaData().getCatalogs();
-                return true;
-            } else {
-                return false;
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return false;
-        }
+        url =  "jdbc:sqlite:" + fileName;
+        this.adminPwd="adminpwd";
     }
 
 
-
-    public String getAdminPwd(){
+    public  String getAdminPwd(){
         return adminPwd;
     }
 
 
     public boolean checkIsAdmin(String password){
-        if(password.equals(getAdminPwd())){
+        if(password == getAdminPwd()){
             return true;
         }
         else{
@@ -69,19 +58,44 @@ public class Database {
     }
 
     public boolean addUser(String username, String password) {
-        return true;
+        String saltedPasswd = "";
+        int salt = generateSalt();
+        saltedPasswd = getSaltedPasswd(password, salt);
+        String hash = getHash(saltedPasswd);
+
+        //sql statement addUser
+        try (Connection conn= DriverManager.getConnection(url);
+             Statement stmt = conn.createStatement()){
+
+            String testQuery = String.format("INSERT INTO users (id, salt, hash) VALUES (%s, %d,%s)", username,salt,hash);
+            ResultSet rs = stmt.executeQuery(testQuery);
+            return true;
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+            return false;
+        }
     }
 
+    private int generateSalt(){
+        int saltValue = Utilities.generateSalt();
+        return saltValue;
+    }
+
+
+    private String getSaltedPasswd(String passWd, int saltValue){
+
+        String SaltValueString = Integer.toString(saltValue);
+        String builder = passWd + SaltValueString;
+        return builder;
+
+    }
+    private String getHash(String saltedPasswd){
+        String hash = "";
+        hash = Utilities.applySha256(saltedPasswd);
+
+        return hash;
+    }
+
+
 }
-
-
-// constructor and is admin
-
-// boolean check if user is in database
-
-//  boolean add user
-
-// remove user
-
-
-
