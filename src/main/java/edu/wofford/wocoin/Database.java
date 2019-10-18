@@ -47,7 +47,7 @@ public class Database {
 
 
     public boolean checkIsAdmin(String password){
-        if(password == getAdminPwd()){
+        if(password.equals(getAdminPwd())){
             return true;
         }
         else{
@@ -73,6 +73,7 @@ public class Database {
         }
         catch(SQLException e){
             e.printStackTrace();
+
             return false;
         }
     }

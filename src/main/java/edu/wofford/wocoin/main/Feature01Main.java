@@ -15,7 +15,7 @@ public class Feature01Main {
 
     public static void main(String[] args) {
 
-        Database d = new Database("pathToDB");
+        Database d = new Database("pathToDB.db");
         Scanner scan = new Scanner(System.in);
         boolean keepGoing = true;
 
@@ -49,15 +49,19 @@ public class Feature01Main {
                             String username = scan.nextLine();
                             System.out.println("Password: ");
                             String userPass = scan.nextLine();
-                            //d.addUser(username, userPass);
+                            d.addUser(username, userPass);
 
                             if (d.addUser(username, userPass)) {
                                 System.out.println(username + " was added.");
+                                keepGoing = false;
+                                break;
                             } else {
                                 System.out.println(username + " already exists.");
+                                keepGoing = false;
+                                break;
                             }
 
-                            keepGoing = false;
+
                         }
                     }
 
