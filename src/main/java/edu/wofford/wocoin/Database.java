@@ -29,7 +29,7 @@ public class Database {
 
         if(! file.exists()){
             System.out.println("File does not exist! About to create new blank db");
-            Utilities.createNewDatabase(fileName);
+            Utilities.createNewDatabase(fullPath);
             boolean detectsExisting = false;
         }else{
             System.out.println("File exists");
@@ -47,7 +47,7 @@ public class Database {
 
 
     public boolean checkIsAdmin(String password){
-        if(password == getAdminPwd()){
+        if(password.equals(getAdminPwd())){
             return true;
         }
         else{
@@ -57,25 +57,58 @@ public class Database {
 
     }
 
-    public boolean addUser(String username, String password) {
-        String saltedPasswd = "";
-        int salt = generateSalt();
-        saltedPasswd = getSaltedPasswd(password, salt);
-        String hash = getHash(saltedPasswd);
-
-        //sql statement addUser
-        try (Connection conn= DriverManager.getConnection(url);
+    private boolean userExists(String username) {
+        try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()){
 
-            String testQuery = String.format("INSERT INTO users (id, salt, hash) VALUES (%s, %d,%s)", username,salt,hash);
+
+            String testQuery = String.format("SELECT id from users where id = %s", username);
+
             ResultSet rs = stmt.executeQuery(testQuery);
-            return true;
+
+            if (rs.wasNull() == false) {
+                return false;
+            } else {
+                return true;
+            }
         }
         catch(SQLException e){
             e.printStackTrace();
-            return false;
+            return true;
         }
     }
+
+
+
+    public boolean addUser(String username, String password) {
+        if(!userExists(username)){
+            String saltedPasswd = "";
+            int salt = generateSalt();
+            saltedPasswd = getSaltedPasswd(password, salt);
+            String hash = getHash(saltedPasswd);
+            //url is empty
+            //sql statement addUser
+
+
+
+            try (Connection conn= DriverManager.getConnection(url);
+                 Statement stmt = conn.createStatement()){
+
+                String testQuery = String.format("INSERT INTO users (id, salt, hash) VALUES (%s, %d,%s);", username,salt,hash);
+                stmt.executeUpdate(testQuery);
+                return true;
+            }
+            catch(SQLException e){
+                e.printStackTrace();
+                return false;
+            }
+        }
+        else{
+            return false;
+        }
+
+    }
+
 
     private int generateSalt(){
         int saltValue = Utilities.generateSalt();

@@ -13,6 +13,8 @@ public class Main {
             String[] realArgs = Arrays.copyOfRange(args, 1, args.length);
             if (args[0].equals("0")) {
                 Feature00Main.main(realArgs);
+            } else if(args[0].equals("1")){
+                Feature01Main.main(realArgs);
             } else {
                 System.out.println("Feature " + args[0] + " is not valid.");
             }
