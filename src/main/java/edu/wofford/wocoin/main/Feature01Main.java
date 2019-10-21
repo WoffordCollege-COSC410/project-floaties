@@ -6,11 +6,6 @@ import edu.wofford.wocoin.Database;
 import edu.wofford.wocoin.Utilities;
 
 public class Feature01Main {
-    /*public static String ONE = "1";
-    public static String TWO = "2";
-
-    public enum Menu {ONE, TWO}
-*/
 
 
     public static void main(String[] args) {

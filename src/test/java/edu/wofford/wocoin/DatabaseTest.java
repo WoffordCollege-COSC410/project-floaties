@@ -2,46 +2,48 @@ package edu.wofford.wocoin;
 
 /**
  * Tests for class Databases.
- * <p>
+ *
  * All tests in the folder "test" are executed
  * when the "Test" action is invoked.
+ *
  */
 
 import static org.junit.Assert.*;
-
 import org.junit.Test;
 import org.junit.Before;
 import org.junit.Test;
-
 import java.io.*;
+
+
 import java.math.BigInteger;
 import java.util.concurrent.ExecutionException;
 import java.security.*;
 import java.security.spec.*;
 import java.util.Base64;
 import java.sql.*;
-
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.protocol.core.methods.response.EthGetBalance;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 
 public class DatabaseTest {
-
+    /*
+     tests ss
+     */
     @Test
     public void testCreateNewDatabase() {
+
         String fileName = "testDB.db";
-        System.out.println("path = " + fileName);
-        System.out.println(System.getProperty("user.dir") + "\\" + fileName);
         String workingDir = System.getProperty("user.dir");
+
         String fullPath = workingDir + "\\" + fileName;
+
+
         File file = new File(fullPath);
         if (file.exists()) {
             file.delete();
         }
-
         Database db = new Database(fileName);
-        assertTrue(file.exists());
         String url = "jdbc:sqlite:" + fileName;
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()) {
@@ -90,87 +92,151 @@ public class DatabaseTest {
     }
 
     @Test
-    public void testDetectsFullDatabase() {
+    public void testDuplicateDatabase() {
+
         String fileName = "testDB.db";
+        String workingDir = System.getProperty("user.dir");
+
+        String fullPath = workingDir + "\\" + fileName;
+
+
+        File file = new File(fullPath);
+        if (file.exists()) {
+            file.delete();
+        }
+        Database db = new Database(fileName);
+        String url = "jdbc:sqlite:" + fileName;
+
+
+        try {
+            Connection con = DriverManager.getConnection(url);
+            if (con != null) {
+
+                assertTrue(con != null);
+                //first db is made
+            } else {
+                assertTrue(con != null); //make sure it goes in if != is wrong it is supposed to be ==
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+
+        }
+
+        Database db2 = new Database(fileName);
+        try {
+            Connection con = DriverManager.getConnection(url);
+            if (con != null) {
+
+                assertTrue(con != null);
+                //db 2 is made
+
+            } else {
+                assertTrue(con != null);//bad conditional forcing it into if
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+
+        }
+        file.delete();
+
+        // assertEquals(db, null);
+        //ssertEquals(db2,  )
+    }
+
+    @Test
+    public void testDetectsFullDatabase() {
+        String fileName = "testDBFULL.db";
+
 
         String workingDir = System.getProperty("user.dir");
         String fullPath = workingDir + "\\" + fileName;
         File file = new File(fullPath);
         assertTrue(!file.exists());
         Utilities.createTestDatabase(fullPath);
-
         assertTrue(file.exists());
-        System.out.println("Test DB created and confirmed");
+
 
         Database db = new Database(fileName);
         assertTrue(db.detectsExisting);
 
         file.delete();
 
+
     }
 
 
     @Test
     public void testGetAdminPwd() {
-        String path = "testDB.db";
-        String Robert = "C://Users//RB//Desktop//COSC410//groupProject//";
-        String Sergio = "C://Users//summu//Desktop//Wofford//Senior Year//Software Engineering//Project//";
-        File file = new File(Sergio + "project-floaties//" + path);
-        if (file.exists()) {
-            file.delete();
-        }
-        Database test = new Database("test45DB");
+        Database test = new Database("test45DB.db");
         assertEquals("adminpwd", test.getAdminPwd());
-        file.delete();
     }
+
     @Test
     public void testIsAdminPassWdCorrect() {
-        String path = "test45DB.db";
-        String Robert = "C://Users//RB//Desktop//COSC410//groupProject//";
-        String Sergio = "C://Users//summu//Desktop//Wofford//Senior Year//Software Engineering//Project//";
-        File file = new File(Sergio + "project-floaties//" + path);
+        Database test = new Database("test45DB.db");
+        assertTrue(test.checkIsAdmin("adminpwd"));
+    }
+
+    @Test
+    public void testAddUser() {
+        //DriverManager.loadInitialDrivers();
+        String fileName = "testDB.db";
+        String workingDir = System.getProperty("user.dir");
+
+        String fullPath = workingDir + "\\" + fileName;
+        File file = new File(fullPath);
         if (file.exists()) {
             file.delete();
         }
-        Database test = new Database("test45DB.db");
-        assertTrue(test.checkIsAdmin("adminpwd"));
-        file.delete();
+
+        Database db = new Database(fileName);
+        String url = "jdbc:sqlite:" + fileName;
+
+        //try (Connection conn = DriverManager.getConnection(url);
+        //    Statement stmt = conn.createStatement()) {
+        // String testQuery = "SELECT * FROM users;";
+        //ResultSet rs = stmt.executeQuery(testQuery);
+        //assertTrue(!rs.next());
+        //} catch (SQLException e) {
+        //  e.printStackTrace();
+        //}
+
+        //make sure db
+
+        boolean first;
+        first = db.addUser("kporter", "password");
+        boolean second;
+        second = db.addUser("kporter", "password");
+
+        assertTrue(first);
+        assertTrue(second);
+
+
+        //String url = "jdbc:sqlite:" + fileName;
+        //try (Connection conn= DriverManager.getConnection(url);
+        // Statement stmt = conn.createStatement()){
+        //String testQuery = "SELECT * FROM users;";
+        // ResultSet rs = stmt.executeQuery(testQuery);
+        // assertTrue( !rs.next());
+        //  }
+        //catch(SQLException e) {
+        //e.printStackTrace();
+
+        // }
+
+        //  file.delete();
+
     }
+
     @Test
-    public void testAddUser() {
-        String path = "testDB.db";
-        String Sergio = "C://Users//summu//Desktop//Wofford//Senior Year//Software Engineering//Project//";
-        String Robert = "C://Users//RB//Desktop//COSC410//groupProject//";
-        File file = new File(Sergio + "project-floaties//" + path);
-        if (file.exists()){
-            file.delete();
-        }
-        System.out.println("path = " + path);
-        System.out.println("file = " + file);
-        System.out.println(System.getProperty("user.dir"));
-        assertTrue(false);
-        Database db = new Database(path);
-        db.addUser("kporter", "1234");
-        String url = "jdbc:sqlite:" + path;
-        try (Connection conn = DriverManager.getConnection(url);
-             Statement stmt = conn.createStatement()) {
-            String testQuery = "select id from users where id = 'kporter';";
-            ResultSet rs = stmt.executeQuery(testQuery);
-            //rs.next();
-            //rs.next();
-            rs.last();
-            //assertEquals(works, true);
-            //assertEquals(2, rs.getRow());
-            String usernameInDB = rs.getString(1);
-            String username = "kportersddddd";
-            assertEquals(username, usernameInDB);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public void testAddDuplicateUser() {
+
     }
 }
+
 
 
 //    @Test
 //    public void isAdmin(){
 //
+//    }
