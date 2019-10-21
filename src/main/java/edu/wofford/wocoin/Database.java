@@ -25,14 +25,7 @@ public class Database {
         String workingDir = System.getProperty("user.dir");
         String fullPath = workingDir + "\\" + fileName;
 
-        File file = new File(fullPath);
-        if(! file.exists()){
-
-            Utilities.createNewDatabase(fullPath);
-            detectsExisting = false;
-        }else{
-
-            detectsExisting = true;
+        if(!doesExist(fullPath)){
             Utilities.createNewDatabase(fullPath);
         }
 
@@ -41,53 +34,21 @@ public class Database {
 
     }
 
-    /**
-     * This is overloaded constructor to have for testing purposes, test was accidentally removed by a git pull
-     * @param path this is the relative pathname of the DB
-     * @param full this int param is used to signal to create a newTestDB that has data already inside it
-     */
-    public Database(String path, int full){
-
-
-
-        if(full == 1) {
-            if (doesExist(path)) {
-                this.adminPwd = "adminpwd";
-            } else {
-                Utilities.createTestDatabase(path);
-            }
-
-            url = "jdbc:sqlite:" + path;
-            con = null;
-        }
-        else {
-            this.adminPwd = "adminpwd";
-        }
-    }
 
     /**
      *ignore below function we could never get it to work
      * @param path relative pathname of DB
-     * @return boolean
+     * @return boolean if file exists
      */
-    private boolean doesExist(String path) {
-        //con = null;
-        ResultSet rs;
-        url =  "jdbc:sqlite:" + path;
+    public boolean doesExist(String path) {
 
-
-        try {
-            con = DriverManager.getConnection(url);
-            if (con != null) {
-                rs = con.getMetaData().getCatalogs();
-                return true;
-            } else {
-                return false;
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return false;
+        File file = new File(path);
+        if(!file.exists()) {
+            detectsExisting = false;
+        } else {
+            detectsExisting = true;
         }
+        return detectsExisting;
     }
 
     /**
@@ -119,7 +80,7 @@ public class Database {
      * @return boolean if the user exists
      */
     public boolean userExists() {
-        return detectsExisting;
+        return true;
     }
     /*private boolean userExists(String username) {
         String user ="";
@@ -156,7 +117,7 @@ public class Database {
      */
 
     public boolean addUser(String username, String password) {
-        if(!userExists(username)){
+        if(!userExists()){
             String saltedPasswd = "";
             int salt = generateSalt();
             saltedPasswd = getSaltedPasswd(password, salt);
