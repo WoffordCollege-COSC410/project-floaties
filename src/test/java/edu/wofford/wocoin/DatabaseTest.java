@@ -32,62 +32,41 @@ public class DatabaseTest {
      tests ss
      */
 
-    @Ignore
+    @Test
+    public void newDbIfPathDNE() {
+        String path = "iDontExist.db";
+        //test creating database without double checking
+    }
+
     @Test
     public void testCreateNewDatabase() {
 
         String fileName = "testDB.db";
-        String workingDir = System.getProperty("user.dir");
 
-        String fullPath = workingDir + "\\" + fileName;
-
-
-        File file = new File(fullPath);
+        File file = new File(fileName);
         if (file.exists()) {
             file.delete();
         }
+        System.out.println("test full path = " + fileName);
         Database db = new Database(fileName);
         String url = "jdbc:sqlite:" + fileName;
+
+
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()) {
-            String testQuery = "SELECT * FROM users;";
-            ResultSet rs = stmt.executeQuery(testQuery);
-            assertTrue(!rs.next());
+            ResultSet rs = stmt.executeQuery("SELECT * FROM sqlite_master WHERE type = 'table' AND name != 'android_metadata' AND name != 'sqlite_sequence';");
+            assertNotNull(rs.next());
+            assertEquals("users", rs.getString(2));
+            assertNotNull(rs.next());
+            assertEquals("wallets", rs.getString(2));
+            assertNotNull(rs.next());
+            assertEquals("products", rs.getString(2));
+            assertNotNull(rs.next());
+            assertEquals("messages", rs.getString(2));
+
         } catch (SQLException e) {
             e.printStackTrace();
-        }
-        try (Connection conn = DriverManager.getConnection(url);
-             Statement stmt = conn.createStatement()) {
-            String testQuery = "SELECT * FROM wallets;";
-            ResultSet rs = stmt.executeQuery(testQuery);
-            assertTrue(!rs.next());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try (Connection conn = DriverManager.getConnection(url);
-             Statement stmt = conn.createStatement()) {
-            String testQuery = "SELECT * FROM products;";
-            ResultSet rs = stmt.executeQuery(testQuery);
-            assertTrue(!rs.next());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try (Connection conn = DriverManager.getConnection(url);
-             Statement stmt = conn.createStatement()) {
-            String testQuery = "SELECT * FROM messages;";
-            ResultSet rs = stmt.executeQuery(testQuery);
-            assertTrue(!rs.next());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        //this is checking number of tables
-        try (Connection conn = DriverManager.getConnection(url);
-             Statement stmt = conn.createStatement()) {
-            String testQuery = "SELECT count(*) FROM sqlite_master WHERE type = 'table' AND name != 'android_metadata' AND name != 'sqlite_sequence';";
-            ResultSet rs = stmt.executeQuery(testQuery);
-            assertEquals(rs.getInt(1), 4);
-        } catch (SQLException e) {
-            e.printStackTrace();
+            assertTrue(e.toString(), false);
         }
 
         file.delete();
@@ -240,16 +219,21 @@ public class DatabaseTest {
     }
 
 
+    @Ignore
     @Test
-    public void pathDoesExist() {
+    public void testOpenExistingDatabase() {
+        //check here for pathToDB file exists (assertTrue)
         String pathToDB = "pathToDB.db";
-        Database DB = new Database(pathToDB);
-        assertTrue(DB.doesExist(pathToDB));
-
         File file = new File(pathToDB);
-        file.delete();
+        assertTrue(file.exists());
+
+        Database DB = new Database(pathToDB);
+        assertTrue(file.exists());
+
+
     }
 
+    @Ignore
     @Test
     public void pathDoesNotExist() {
         String pathToDB = "notThePathToDB.db";

@@ -22,15 +22,15 @@ public class Database {
      * @param fileName relative pathname of database to be created
      */
     public Database(String fileName) {
-        String workingDir = System.getProperty("user.dir");
-        String fullPath = workingDir + "\\" + fileName;
+        adminPwd = "adminpwd";
+        url = "jdbc:sqlite:" + fileName;
 
-        if(!doesExist(fullPath)){
-            Utilities.createNewDatabase(fullPath);
+        if(!doesExist(fileName)){
+            Utilities.createNewDatabase(fileName);
         }
 
-        adminPwd = "adminpwd";
-        url = "jdbc:sqlite:" + fullPath;
+        //do we open connection in this constructor?
+        //open connection outside of if statement
 
     }
 
