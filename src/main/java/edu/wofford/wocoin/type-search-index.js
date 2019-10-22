@@ -1,1 +1,0 @@
-typeSearchIndex = [{"p":"edu.wofford.wocoin","l":"Database"}]
