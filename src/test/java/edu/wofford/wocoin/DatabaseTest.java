@@ -10,6 +10,7 @@ package edu.wofford.wocoin;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
+import org.junit.Ignore;
 import org.junit.Before;
 import org.junit.Test;
 import java.io.*;
@@ -30,6 +31,8 @@ public class DatabaseTest {
     /*
      tests ss
      */
+
+    @Ignore
     @Test
     public void testCreateNewDatabase() {
 
@@ -91,6 +94,7 @@ public class DatabaseTest {
 
     }
 
+    @Ignore
     @Test
     public void testDuplicateDatabase() {
 
@@ -143,6 +147,7 @@ public class DatabaseTest {
         //ssertEquals(db2,  )
     }
 
+    @Ignore
     @Test
     public void testDetectsFullDatabase() {
         String fileName = "testDBFULL.db";
@@ -164,7 +169,6 @@ public class DatabaseTest {
 
     }
 
-
     @Test
     public void testGetAdminPwd() {
         Database test = new Database("test45DB.db");
@@ -177,6 +181,7 @@ public class DatabaseTest {
         assertTrue(test.checkIsAdmin("adminpwd"));
     }
 
+    @Ignore
     @Test
     public void testAddUser() {
         //DriverManager.loadInitialDrivers();
@@ -228,15 +233,30 @@ public class DatabaseTest {
 
     }
 
+    @Ignore
     @Test
     public void testAddDuplicateUser() {
 
     }
+
+
+    @Test
+    public void pathDoesExist() {
+        String pathToDB = "pathToDB.db";
+        Database DB = new Database(pathToDB);
+        assertTrue(DB.doesExist(pathToDB));
+
+        File file = new File(pathToDB);
+        file.delete();
+    }
+
+    @Test
+    public void pathDoesNotExist() {
+        String pathToDB = "notThePathToDB.db";
+        Database DB = new Database(pathToDB);
+        assertFalse(DB.doesExist(pathToDB));
+
+        File file = new File(pathToDB);
+        file.delete();
+    }
 }
-
-
-
-//    @Test
-//    public void isAdmin(){
-//
-//    }
