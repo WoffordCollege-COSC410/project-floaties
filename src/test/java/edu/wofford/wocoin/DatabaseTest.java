@@ -1,4 +1,5 @@
 package edu.wofford.wocoin;
+import edu.wofford.wocoin.main.*;
 
 /**
  * Tests for class Databases.
@@ -71,6 +72,80 @@ public class DatabaseTest {
 
         file.delete();
 
+    }
+
+    @Test
+    public void testOpenExistingdb(){
+        //move db into test resources
+        String fileName = "test45DB.db";
+        File file = new File(fileName);
+        assertTrue(file.exists());
+
+
+        String [] myArray = new String[1];
+        myArray[0] = fileName;
+        Feature00Main.main(myArray);
+
+        //Utilities.createTestDatabase(filename);
+        assertTrue(file.exists());
+        String url = "jdbc:sqlite:" + fileName;
+
+        try (Connection conn = DriverManager.getConnection(url);
+             Statement stmt = conn.createStatement()) {
+            ResultSet rs = stmt.executeQuery("SELECT * FROM sqlite_master WHERE type = 'table' AND name != 'android_metadata' AND name != 'sqlite_sequence';");
+            assertNotNull(rs.next());
+            assertEquals("users", rs.getString(2));
+            assertNotNull(rs.next());
+            assertEquals("wallets", rs.getString(2));
+            assertNotNull(rs.next());
+            assertEquals("products", rs.getString(2));
+            assertNotNull(rs.next());
+            assertEquals("messages", rs.getString(2));
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            assertTrue(e.toString(), false);
+        }
+
+        try (Connection conn= DriverManager.getConnection(url);
+             Statement stmt = conn.createStatement()){
+            String testQuery = "SELECT count(*) FROM messages;";
+            ResultSet rs = stmt.executeQuery(testQuery);
+
+            assertEquals(rs.getInt(1),2);
+
+            String queryUsers = "SELECT count(*) FROM users";
+            ResultSet ru = stmt.executeQuery(queryUsers);
+
+            assertEquals(ru.getInt(1), 4);
+
+            String queryWallets = "SELECT count (*) from wallets";
+            ResultSet rw = stmt.executeQuery(queryWallets);
+
+            assertEquals(rw.getInt(1),4);
+
+            String queryProducts = "SELECT count (*) from products";
+            ResultSet rp = stmt.executeQuery(queryProducts);
+
+            assertEquals(rp.getInt(1),7);
+
+
+
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
+
+
+
+
+
+        //verify file exists
+        //Instatntiate db with that file as a param
+        // asserts from create new db instead of looking at tablenames
+
+
+        //make sure we dont over write a new db 
     }
 
     @Ignore
