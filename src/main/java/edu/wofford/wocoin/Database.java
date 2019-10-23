@@ -29,8 +29,7 @@ public class Database {
             Utilities.createNewDatabase(fileName);
         }
 
-        //do we open connection in this constructor?
-        //open connection outside of if statement
+
 
     }
 
@@ -79,9 +78,11 @@ public class Database {
      *helper method to add user currently not working
      * @return boolean if the user exists
      */
+    //stub
     public boolean userExists() {
-        return true;
+        return false;
     }
+
     /*private boolean userExists(String username) {
         String user ="";
         try (Connection conn = DriverManager.getConnection(url);
@@ -111,27 +112,31 @@ public class Database {
     /**
      *currently not working depends on the above UserExists method that is not correctly working
      * we know this because of the code coverage report that does not go inside the main if of the function
-     * @param username - this will be the value stored in the id column of the Database
+     * @param id - this will be the value stored in the id column of the Database
      * @param password - this value will be salted and hashed and stored in the salt and hash columns of the DB
      * @return boolean - if user exists or not
      */
 
-    public boolean addUser(String username, String password) {
+    public boolean addUser(String id, String password) {
         if(!userExists()){
-            String saltedPasswd = "";
+            String saltedPasswd;
             int salt = generateSalt();
             saltedPasswd = getSaltedPasswd(password, salt);
             String hash = getHash(saltedPasswd);
             //url is empty
             //sql statement addUser
 
+            String testQuery = "INSERT INTO users (id, salt, hash) VALUES (?, ?, ?);";
 
 
             try (Connection conn= DriverManager.getConnection(url);
-                 Statement stmt = conn.createStatement()){
+                 PreparedStatement stmt = conn.prepareStatement(testQuery)){
 
-                String testQuery = String.format("INSERT INTO users (id, salt, hash) VALUES (%s, %d,%s);", username,salt,hash);
-                stmt.executeUpdate(testQuery);
+                stmt.setString(1, id);
+                stmt.setInt(2, salt);
+                stmt.setString(3, hash);
+                stmt.executeUpdate();
+
                 return true;
             }
             catch(SQLException e){
