@@ -16,6 +16,7 @@ public class Database {
     private String url;
     private Connection con;
     public boolean detectsExisting;
+    public int salt = this.generateSalt();
 
     /**
      * This is the constructor for db
@@ -120,11 +121,9 @@ public class Database {
     public boolean addUser(String id, String password) {
         if(!userExists()){
             String saltedPasswd;
-            int salt = generateSalt();
+            //int salt = generateSalt();
             saltedPasswd = getSaltedPasswd(password, salt);
             String hash = getHash(saltedPasswd);
-            //url is empty
-            //sql statement addUser
 
             String testQuery = "INSERT INTO users (id, salt, hash) VALUES (?, ?, ?);";
 
