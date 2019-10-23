@@ -150,59 +150,6 @@ public class DatabaseTest {
 
     @Ignore
     @Test
-    public void testDuplicateDatabase() {
-
-        String fileName = "testDB.db";
-        String workingDir = System.getProperty("user.dir");
-
-        String fullPath = workingDir + "\\" + fileName;
-
-
-        File file = new File(fullPath);
-        if (file.exists()) {
-            file.delete();
-        }
-        Database db = new Database(fileName);
-        String url = "jdbc:sqlite:" + fileName;
-
-
-        try {
-            Connection con = DriverManager.getConnection(url);
-            if (con != null) {
-
-                assertTrue(con != null);
-                //first db is made
-            } else {
-                assertTrue(con != null); //make sure it goes in if != is wrong it is supposed to be ==
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-
-        }
-
-        Database db2 = new Database(fileName);
-        try {
-            Connection con = DriverManager.getConnection(url);
-            if (con != null) {
-
-                assertTrue(con != null);
-                //db 2 is made
-
-            } else {
-                assertTrue(con != null);//bad conditional forcing it into if
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-
-        }
-        file.delete();
-
-        // assertEquals(db, null);
-        //ssertEquals(db2,  )
-    }
-
-    @Ignore
-    @Test
     public void testDetectsFullDatabase() {
         String fileName = "testDBFULL.db";
 
@@ -240,7 +187,6 @@ public class DatabaseTest {
     public void testAddUser() {
         //DriverManager.loadInitialDrivers();
         String fileName = "testDB.db";
-        String workingDir = System.getProperty("user.dir");
 
         File file = new File(fileName);
         if (file.exists()) {
@@ -257,6 +203,7 @@ public class DatabaseTest {
             ResultSet rs = stmt.executeQuery("SELECT * FROM users");
             assertNotNull(rs.next());
             assertEquals("kara", rs.getString(1));
+            assertEquals(db.salt, rs.getInt(2));
 
         } catch (SQLException e) {
           e.printStackTrace();
@@ -270,26 +217,7 @@ public class DatabaseTest {
 
     }
 
-    @Ignore
-    @Test
-    public void testAddDuplicateUser() {
 
-    }
-
-
-    @Ignore
-    @Test
-    public void testOpenExistingDatabase() {
-        //check here for pathToDB file exists (assertTrue)
-        String pathToDB = "pathToDB.db";
-        File file = new File(pathToDB);
-        assertTrue(file.exists());
-
-        Database DB = new Database(pathToDB);
-        assertTrue(file.exists());
-
-
-    }
 
     @Ignore
     @Test
