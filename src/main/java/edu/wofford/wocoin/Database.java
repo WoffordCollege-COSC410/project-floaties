@@ -16,6 +16,7 @@ public class Database {
     private String url;
     private Connection con;
     public boolean detectsExisting;
+    public int salt = this.generateSalt();
 
     /**
      * This is the constructor for db
