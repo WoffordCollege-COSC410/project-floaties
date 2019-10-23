@@ -145,7 +145,7 @@ public class DatabaseTest {
         // asserts from create new db instead of looking at tablenames
 
 
-        //make sure we dont over write a new db 
+        //make sure we dont over write a new db
     }
 
     @Ignore
@@ -208,10 +208,10 @@ public class DatabaseTest {
 
 
         String workingDir = System.getProperty("user.dir");
-        String fullPath = workingDir + "\\" + fileName;
-        File file = new File(fullPath);
+
+        File file = new File(fileName);
         assertTrue(!file.exists());
-        Utilities.createTestDatabase(fullPath);
+        Utilities.createTestDatabase(fileName);
         assertTrue(file.exists());
 
 
@@ -235,15 +235,14 @@ public class DatabaseTest {
         assertTrue(test.checkIsAdmin("adminpwd"));
     }
 
-    @Ignore
+
     @Test
     public void testAddUser() {
         //DriverManager.loadInitialDrivers();
         String fileName = "testDB.db";
         String workingDir = System.getProperty("user.dir");
 
-        String fullPath = workingDir + "\\" + fileName;
-        File file = new File(fullPath);
+        File file = new File(fileName);
         if (file.exists()) {
             file.delete();
         }
@@ -251,39 +250,21 @@ public class DatabaseTest {
         Database db = new Database(fileName);
         String url = "jdbc:sqlite:" + fileName;
 
-        //try (Connection conn = DriverManager.getConnection(url);
-        //    Statement stmt = conn.createStatement()) {
-        // String testQuery = "SELECT * FROM users;";
-        //ResultSet rs = stmt.executeQuery(testQuery);
-        //assertTrue(!rs.next());
-        //} catch (SQLException e) {
-        //  e.printStackTrace();
-        //}
+        assertTrue(db.addUser("kara", "kara"));
+
+        try (Connection conn = DriverManager.getConnection(url);
+            Statement stmt = conn.createStatement()) {
+            ResultSet rs = stmt.executeQuery("SELECT * FROM users");
+            assertNotNull(rs.next());
+            assertEquals("kara", rs.getString(1));
+
+        } catch (SQLException e) {
+          e.printStackTrace();
+        }
 
         //make sure db
+        //file.delete();
 
-        boolean first;
-        first = db.addUser("kporter", "password");
-        boolean second;
-        second = db.addUser("kporter", "password");
-
-        assertTrue(first);
-        assertTrue(second);
-
-
-        //String url = "jdbc:sqlite:" + fileName;
-        //try (Connection conn= DriverManager.getConnection(url);
-        // Statement stmt = conn.createStatement()){
-        //String testQuery = "SELECT * FROM users;";
-        // ResultSet rs = stmt.executeQuery(testQuery);
-        // assertTrue( !rs.next());
-        //  }
-        //catch(SQLException e) {
-        //e.printStackTrace();
-
-        // }
-
-        //  file.delete();
 
     }
 
