@@ -79,17 +79,40 @@ public class Database {
      *helper method to add user currently not working
      * @return boolean if the user exists
      */
-    //stub
-    public boolean userExists() {
-        return false;
-    }
 
-    /*private boolean userExists(String username) {
+    private boolean userExists(String id) {
+
+        //link this to add user
+
+        String testQuery = "SELECT id FROM users WHERE VALUES (?);";  //maybe we need parens look up format
+        try (Connection conn = DriverManager.getConnection(url);
+             Statement stmt = conn.executeStatement(testQuery) ){
+
+                 stmt.setString(1,id);
+                 stmt.executeUpdate();
+
+                 ResultSet rs = stmt.executeQuery(testQuery);
+                 rs.next();
+                 if(rs.getString((2), id)){
+                     return false;
+                 }
+                 else{
+                     return true;
+                 }
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+            return true;
+        }
+    }
+/*
+    private boolean userExists(String username) {
+
+
+
         String user ="";
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()){
-
-
             String testQuery = String.format("SELECT id FROM users WHERE id = %s;", username);
 
             ResultSet rs = stmt.executeQuery(testQuery);
@@ -108,8 +131,8 @@ public class Database {
             e.printStackTrace();
             return true;
         }
-    }*/
-
+    }
+*/
     /**
      *currently not working depends on the above UserExists method that is not correctly working
      * we know this because of the code coverage report that does not go inside the main if of the function
@@ -119,7 +142,7 @@ public class Database {
      */
 
     public boolean addUser(String id, String password) {
-        if(!userExists()){
+        if(!userExists(id)){
             String saltedPasswd;
             //int salt = generateSalt();
             saltedPasswd = getSaltedPasswd(password, salt);
