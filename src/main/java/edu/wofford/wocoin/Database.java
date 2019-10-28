@@ -12,7 +12,7 @@ import org.web3j.protocol.core.methods.response.EthGetBalance;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 
 public class Database {
-    private String adminPwd = "adminpwd";
+    private String adminPwd;
     private String url;
     private Connection con;
 
@@ -27,6 +27,7 @@ public class Database {
         File file = new File(fileName);
         if(!file.exists()){
             Utilities.createNewDatabase(fileName);
+            //Utilities.createTestDatabase(fileName);
         }
 
 
@@ -66,55 +67,27 @@ public class Database {
 
         //link this to add user
 
-        String testQuery = "SELECT id FROM users WHERE VALUES (?);";  //maybe we need parens look up format
+        String testQuery = "SELECT id FROM users WHERE id = ?;";
         try (Connection conn = DriverManager.getConnection(url);
-             Statement stmt = conn.executeStatement(testQuery) ){
+             PreparedStatement stmt = conn.prepareStatement(testQuery)){
 
                  stmt.setString(1,id);
-                 stmt.executeUpdate();
 
-                 ResultSet rs = stmt.executeQuery(testQuery);
+                 ResultSet rs = stmt.executeQuery();
                  rs.next();
-                 if(rs.getString((2), id)){
-                     return false;
-                 }
-                 else{
+                 if(rs.getString(1).equals(id)){
                      return true;
                  }
+                 else{
+                     return false;
+                 }
         }
         catch(SQLException e){
             e.printStackTrace();
             return true;
         }
     }
-/*
-    private boolean userExists(String username) {
 
-
-
-        String user ="";
-        try (Connection conn = DriverManager.getConnection(url);
-             Statement stmt = conn.createStatement()){
-            String testQuery = String.format("SELECT id FROM users WHERE id = %s;", username);
-
-            ResultSet rs = stmt.executeQuery(testQuery);
-            while(rs.next()){
-                user = rs.getString(1);
-            }
-
-
-            if (!(user.equals(null))) {  //.wasNull
-                return false;
-            } else {
-                return true;
-            }
-        }
-        catch(SQLException e){
-            e.printStackTrace();
-            return true;
-        }
-    }
-*/
     /**
      *currently not working depends on the above UserExists method that is not correctly working
      * we know this because of the code coverage report that does not go inside the main if of the function
