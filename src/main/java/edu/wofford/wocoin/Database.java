@@ -27,6 +27,7 @@ public class Database {
         File file = new File(fileName);
         if(!file.exists()){
             Utilities.createNewDatabase(fileName);
+            //Utilities.createTestDatabase(fileName);
         }
 
 
@@ -62,59 +63,36 @@ public class Database {
      * @return boolean if the user exists
      */
 
-    private boolean userExists(String id) {
+//    private boolean userExists(String id) {
+//
+//        //link this to add user
+//
+//        String testQuery = "SELECT id FROM users WHERE id = ?;";  //maybe we need parens look up format
+//        try (Connection conn = DriverManager.getConnection(url);
+//             PreparedStatement stmt = conn.prepareStatement(testQuery)){
+//
+//                 stmt.setString(1,id);
+//                 stmt.executeUpdate();
+//
+//                 ResultSet rs = stmt.executeQuery();
+//                 rs.next();
+//                 if(rs.getString(1).equals(id)){
+//                     return false;
+//                 }
+//                 else{
+//                     return true;
+//                 }
+//        }
+//        catch(SQLException e){
+//            e.printStackTrace();
+//            return true;
+//        }
+//    }
 
-        //link this to add user
-
-        String testQuery = "SELECT id FROM users WHERE VALUES (?);";  //maybe we need parens look up format
-        try (Connection conn = DriverManager.getConnection(url);
-             PreparedStatement stmt = conn.prepareStatement(testQuery) ){
-
-                 stmt.setString(1,id);
-                 stmt.executeUpdate();
-
-                 ResultSet rs = stmt.executeQuery(testQuery);
-                 rs.next();
-                 if(rs.getString(2, id)){
-                     return false;
-                 }
-                 else{
-                     return true;
-                 }
-        }
-        catch(SQLException e){
-            e.printStackTrace();
-            return true;
-        }
-    }
-/*
     private boolean userExists(String username) {
-
-
-
-        String user ="";
-        try (Connection conn = DriverManager.getConnection(url);
-             Statement stmt = conn.createStatement()){
-            String testQuery = String.format("SELECT id FROM users WHERE id = %s;", username);
-
-            ResultSet rs = stmt.executeQuery(testQuery);
-            while(rs.next()){
-                user = rs.getString(1);
-            }
-
-
-            if (!(user.equals(null))) {  //.wasNull
-                return false;
-            } else {
-                return true;
-            }
-        }
-        catch(SQLException e){
-            e.printStackTrace();
-            return true;
-        }
+        return false;
     }
-*/
+
     /**
      *currently not working depends on the above UserExists method that is not correctly working
      * we know this because of the code coverage report that does not go inside the main if of the function

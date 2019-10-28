@@ -197,27 +197,6 @@ public class DatabaseTest {
         //make sure we dont over write a new db
     }
 
-    @Ignore
-    @Test
-    public void testDetectsFullDatabase() {
-        String fileName = "testDBFULL.db";
-
-
-        String workingDir = System.getProperty("user.dir");
-
-        File file = new File(fileName);
-        assertTrue(!file.exists());
-        Utilities.createTestDatabase(fileName);
-        assertTrue(file.exists());
-
-
-        Database db = new Database(fileName);
-        assertTrue(db.detectsExisting);
-
-        file.delete();
-
-
-    }
 
     @Test
     public void testGetAdminPwd() {
@@ -253,7 +232,7 @@ public class DatabaseTest {
         Database db = new Database(fileName);
         String url = "jdbc:sqlite:" + fileName;
 
-        assertTrue(db.addUser("kara", "kara"));
+        assertTrue(db.addUser("kara", "porter"));
 
         try (Connection conn = DriverManager.getConnection(url);
             Statement stmt = conn.createStatement()) {
@@ -275,11 +254,11 @@ public class DatabaseTest {
 
     }
 
-    public void addUserDBthatExists(){
+    @Test
+    public void addUserToExistingDB(){
         String fileName = "src/test/resources/testAddToAFullDB.db";
 
         File file = new File(fileName);
-
 
         Database db = new Database(fileName);
         String url = "jdbc:sqlite:" + fileName;
@@ -291,7 +270,12 @@ public class DatabaseTest {
             ResultSet rs = stmt.executeQuery("SELECT * FROM users");
             assertNotNull(rs.next());
             assertEquals("kara", rs.getString(1));
-            assertEquals(db.salt, rs.getInt(2));
+
+            String saltedPwd = "porter" + rs.getInt(2);
+            String hash = Utilities.applySha256(saltedPwd);
+            assertEquals(hash, rs.getString(3));
+
+           // assertEquals(saltedPwd, rs.getString(2));
 
         } catch (SQLException e) {
             e.printStackTrace();
