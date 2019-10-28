@@ -15,8 +15,6 @@ public class Database {
     private String adminPwd = "adminpwd";
     private String url;
     private Connection con;
-    public boolean detectsExisting;
-    public int salt = this.generateSalt();
 
     /**
      * This is the constructor for db
@@ -26,29 +24,13 @@ public class Database {
         adminPwd = "adminpwd";
         url = "jdbc:sqlite:" + fileName;
 
-        if(!doesExist(fileName)){
+        File file = new File(fileName);
+        if(!file.exists()){
             Utilities.createNewDatabase(fileName);
         }
 
 
 
-    }
-
-
-    /**
-     *ignore below function we could never get it to work
-     * @param path relative pathname of DB
-     * @return boolean if file exists
-     */
-    public boolean doesExist(String path) {
-
-        File file = new File(path);
-        if(!file.exists()) {
-            detectsExisting = false;
-        } else {
-            detectsExisting = true;
-        }
-        return detectsExisting;
     }
 
     /**
@@ -144,7 +126,7 @@ public class Database {
     public boolean addUser(String id, String password) {
         if(!userExists(id)){
             String saltedPasswd;
-            //int salt = generateSalt();
+            int salt = generateSalt();
             saltedPasswd = getSaltedPasswd(password, salt);
             String hash = getHash(saltedPasswd);
 
@@ -202,10 +184,7 @@ public class Database {
      * @return a string that will be stored in the hash field of the DB
      */
     private String getHash(String saltedPasswd){
-        String hash = "";
-        hash = Utilities.applySha256(saltedPasswd);
-
-        return hash;
+        return Utilities.applySha256(saltedPasswd);
     }
 
 
