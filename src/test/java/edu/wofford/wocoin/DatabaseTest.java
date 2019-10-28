@@ -145,83 +145,30 @@ public class DatabaseTest {
         // asserts from create new db instead of looking at tablenames
 
 
-        //make sure we dont over write a new db 
+        //make sure we dont over write a new db
     }
 
-    @Ignore
-    @Test
-    public void testDuplicateDatabase() {
-
-        String fileName = "testDB.db";
-        String workingDir = System.getProperty("user.dir");
-
-        String fullPath = workingDir + "\\" + fileName;
-
-
-        File file = new File(fullPath);
-        if (file.exists()) {
-            file.delete();
-        }
-        Database db = new Database(fileName);
-        String url = "jdbc:sqlite:" + fileName;
-
-
-        try {
-            Connection con = DriverManager.getConnection(url);
-            if (con != null) {
-
-                assertTrue(con != null);
-                //first db is made
-            } else {
-                assertTrue(con != null); //make sure it goes in if != is wrong it is supposed to be ==
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-
-        }
-
-        Database db2 = new Database(fileName);
-        try {
-            Connection con = DriverManager.getConnection(url);
-            if (con != null) {
-
-                assertTrue(con != null);
-                //db 2 is made
-
-            } else {
-                assertTrue(con != null);//bad conditional forcing it into if
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-
-        }
-        file.delete();
-
-        // assertEquals(db, null);
-        //ssertEquals(db2,  )
-    }
-
-    @Ignore
-    @Test
-    public void testDetectsFullDatabase() {
-        String fileName = "testDBFULL.db";
-
-
-        String workingDir = System.getProperty("user.dir");
-        String fullPath = workingDir + "\\" + fileName;
-        File file = new File(fullPath);
-        assertTrue(!file.exists());
-        Utilities.createTestDatabase(fullPath);
-        assertTrue(file.exists());
-
-
-        Database db = new Database(fileName);
-        assertTrue(db.detectsExisting);
-
-        file.delete();
-
-
-    }
+//    @Ignore
+//    @Test
+//    public void testDetectsFullDatabase() {
+//        String fileName = "testDBFULL.db";
+//
+//
+//        String workingDir = System.getProperty("user.dir");
+//
+//        File file = new File(fileName);
+//        assertTrue(!file.exists());
+//        Utilities.createTestDatabase(fileName);
+//        assertTrue(file.exists());
+//
+//
+//        Database db = new Database(fileName);
+//        assertTrue(db.detectsExisting);
+//
+//        file.delete();
+//
+//
+//    }
 
     @Test
     public void testGetAdminPwd() {
@@ -235,87 +182,41 @@ public class DatabaseTest {
         assertTrue(test.checkIsAdmin("adminpwd"));
     }
 
-    @Ignore
+
     @Test
     public void testAddUser() {
         //DriverManager.loadInitialDrivers();
         String fileName = "testDB.db";
-        String workingDir = System.getProperty("user.dir");
 
-        String fullPath = workingDir + "\\" + fileName;
-        File file = new File(fullPath);
+        File file = new File(fileName);
         if (file.exists()) {
             file.delete();
         }
 
         Database db = new Database(fileName);
-        String url = "jdbc:sqlite:" + fileName;
 
-        //try (Connection conn = DriverManager.getConnection(url);
-        //    Statement stmt = conn.createStatement()) {
-        // String testQuery = "SELECT * FROM users;";
-        //ResultSet rs = stmt.executeQuery(testQuery);
-        //assertTrue(!rs.next());
-        //} catch (SQLException e) {
-        //  e.printStackTrace();
-        //}
+        assertTrue(db.addUser("kara", "porter"));
+
+        String url = "jdbc:sqlite:" + fileName;
+        try (Connection conn = DriverManager.getConnection(url);
+             Statement stmt = conn.createStatement()) {
+            ResultSet rs = stmt.executeQuery("SELECT * FROM users");
+            assertNotNull(rs.next());
+            assertEquals("kara", rs.getString(1));
+
+            String saltedPwd = "porter" + rs.getInt(2);
+            String hash = Utilities.applySha256(saltedPwd);
+            assertEquals(hash, rs.getString(3));
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         //make sure db
-
-        boolean first;
-        first = db.addUser("kporter", "password");
-        boolean second;
-        second = db.addUser("kporter", "password");
-
-        assertTrue(first);
-        assertTrue(second);
-
-
-        //String url = "jdbc:sqlite:" + fileName;
-        //try (Connection conn= DriverManager.getConnection(url);
-        // Statement stmt = conn.createStatement()){
-        //String testQuery = "SELECT * FROM users;";
-        // ResultSet rs = stmt.executeQuery(testQuery);
-        // assertTrue( !rs.next());
-        //  }
-        //catch(SQLException e) {
-        //e.printStackTrace();
-
-        // }
-
-        //  file.delete();
-
-    }
-
-    @Ignore
-    @Test
-    public void testAddDuplicateUser() {
-
-    }
-
-
-    @Ignore
-    @Test
-    public void testOpenExistingDatabase() {
-        //check here for pathToDB file exists (assertTrue)
-        String pathToDB = "pathToDB.db";
-        File file = new File(pathToDB);
-        assertTrue(file.exists());
-
-        Database DB = new Database(pathToDB);
-        assertTrue(file.exists());
+        //file.delete();
 
 
     }
 
-    @Ignore
-    @Test
-    public void pathDoesNotExist() {
-        String pathToDB = "notThePathToDB.db";
-        Database DB = new Database(pathToDB);
-        assertFalse(DB.doesExist(pathToDB));
 
-        File file = new File(pathToDB);
-        file.delete();
-    }
 }
