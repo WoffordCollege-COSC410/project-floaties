@@ -67,10 +67,8 @@ public class Database {
         //link this to add user
 
         String testQuery = "SELECT id FROM users WHERE VALUES (?);";  //maybe we need parens look up format
-            try (Connection conn = DriverManager.getConnection(url);
-                 Statement stmt = conn.createStatement()) {
-
-
+        try (Connection conn = DriverManager.getConnection(url);
+             Statement stmt = conn.executeStatement(testQuery) ){
 
                  stmt.setString(1,id);
                  stmt.executeUpdate();
