@@ -12,7 +12,7 @@ import org.web3j.protocol.core.methods.response.EthGetBalance;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 
 public class Database {
-    private String adminPwd = "adminpwd";
+    private String adminPwd;
     private String url;
     private Connection con;
 
@@ -68,14 +68,14 @@ public class Database {
 
         String testQuery = "SELECT id FROM users WHERE VALUES (?);";  //maybe we need parens look up format
         try (Connection conn = DriverManager.getConnection(url);
-             Statement stmt = conn.executeStatement(testQuery) ){
+             PreparedStatement stmt = conn.prepareStatement(testQuery) ){
 
                  stmt.setString(1,id);
                  stmt.executeUpdate();
 
                  ResultSet rs = stmt.executeQuery(testQuery);
                  rs.next();
-                 if(rs.getString((2), id)){
+                 if(rs.getString(2, id)){
                      return false;
                  }
                  else{
