@@ -63,35 +63,34 @@ public class Database {
      * @return boolean if the user exists
      */
 
-//    private boolean userExists(String id) {
-//
-//        //link this to add user
-//
-//        String testQuery = "SELECT id FROM users WHERE id = ?;";  //maybe we need parens look up format
-//        try (Connection conn = DriverManager.getConnection(url);
-//             PreparedStatement stmt = conn.prepareStatement(testQuery)){
-//
-//                 stmt.setString(1,id);
-//                 stmt.executeUpdate();
-//
-//                 ResultSet rs = stmt.executeQuery();
-//                 rs.next();
-//                 if(rs.getString(1).equals(id)){
-//                     return false;
-//                 }
-//                 else{
-//                     return true;
-//                 }
-//        }
-//        catch(SQLException e){
-//            e.printStackTrace();
-//            return true;
-//        }
-//    }
+    private boolean userExists(String id) {
 
-    private boolean userExists(String username) {
-        return false;
+        //link this to add user
+
+        String testQuery = "SELECT id FROM users WHERE id = ?;";
+        try (Connection conn = DriverManager.getConnection(url);
+             PreparedStatement stmt = conn.prepareStatement(testQuery)){
+
+                 stmt.setString(1,id);
+
+                 ResultSet rs = stmt.executeQuery();
+                 rs.next();
+                 if(rs.getString(1).equals(id)){
+                     return true;
+                 }
+                 else{
+                     return false;
+                 }
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+            return true;
+        }
     }
+
+//    private boolean userExists(String username) {
+//        return false;
+//    }
 
     /**
      *currently not working depends on the above UserExists method that is not correctly working
