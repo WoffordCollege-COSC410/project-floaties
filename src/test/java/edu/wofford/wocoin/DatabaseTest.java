@@ -11,22 +11,9 @@ import edu.wofford.wocoin.main.*;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
-import org.junit.Ignore;
-import org.junit.Before;
-import org.junit.Test;
 import java.io.*;
-
-
-import java.math.BigInteger;
-import java.util.concurrent.ExecutionException;
-import java.security.*;
-import java.security.spec.*;
-import java.util.Base64;
 import java.sql.*;
-import org.web3j.protocol.Web3j;
-import org.web3j.protocol.http.HttpService;
-import org.web3j.protocol.core.methods.response.EthGetBalance;
-import org.web3j.protocol.core.DefaultBlockParameterName;
+
 
 public class DatabaseTest {
     /*
