@@ -1,15 +1,7 @@
 package edu.wofford.wocoin;
-import java.math.BigInteger;
-import java.util.concurrent.ExecutionException;
-import java.security.*;
-import java.security.spec.*;
-import java.util.Base64;
+
 import java.io.*;
 import java.sql.*;
-import org.web3j.protocol.Web3j;
-import org.web3j.protocol.http.HttpService;
-import org.web3j.protocol.core.methods.response.EthGetBalance;
-import org.web3j.protocol.core.DefaultBlockParameterName;
 
 public class Database {
     private String adminPwd;
@@ -67,22 +59,28 @@ public class Database {
 
         //link this to add user
 
-        String testQuery = "SELECT id FROM users WHERE id = ?;";
+       // String testQuery = "SELECT id FROM users WHERE id = ?;";
         try (Connection conn = DriverManager.getConnection(url);
-             PreparedStatement stmt = conn.prepareStatement(testQuery)){
+             PreparedStatement stmt = conn.prepareStatement("SELECT id FROM users WHERE id = ?;")){
 
+                System.out.println("made the connection");
                  stmt.setString(1,id);
-
-                 ResultSet rs = stmt.executeQuery();
-                 rs.next();
-                 if(rs.getString(1).equals(id)){
+                System.out.println("after setString");
+                 ResultSet rs = stmt.executeQuery(/*"SELECT id FROM users WHERE id = ?;"*/); //does this take a string or no
+                 System.out.println("after executeQuery is stored");
+                 rs.next(); //is this not working bc were adding to an existing database thats not empty but rs.last doesnt work
+                 System.out.println("cursor moved");
+                 if(rs.getNString(1).equals(id)){
+                     System.out.println("string = id");
                      return true;
                  }
                  else{
+                     System.out.println("string != id");
                      return false;
                  }
         }
         catch(SQLException e){
+            System.out.println("throws exception");
             e.printStackTrace();
             return true;
         }
@@ -102,6 +100,7 @@ public class Database {
 
     public boolean addUser(String id, String password) {
         if(!userExists(id)){
+            System.out.println("i'm in the if statement");
             String saltedPasswd;
             int salt = generateSalt();
             saltedPasswd = getSaltedPasswd(password, salt);
@@ -126,6 +125,7 @@ public class Database {
             }
         }
         else{
+            System.out.println("I didn't get into the if statement");
             return false;
         }
 
