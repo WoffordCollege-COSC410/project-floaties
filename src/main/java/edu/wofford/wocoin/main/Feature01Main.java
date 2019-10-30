@@ -10,7 +10,7 @@ public class Feature01Main {
 
     public static void main(String[] args) {
 
-        Database d = new Database("pathToDB.db");
+        Database d = new Database(args[0]);
         Scanner scan = new Scanner(System.in);
         boolean keepGoing = true;
 
