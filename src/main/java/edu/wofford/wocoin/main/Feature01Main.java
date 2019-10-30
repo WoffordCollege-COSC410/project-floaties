@@ -10,7 +10,7 @@ public class Feature01Main {
 
     public static void main(String[] args) {
 
-        Database d = new Database("pathToDB.db");
+        Database d = new Database(args[0]);
         Scanner scan = new Scanner(System.in);
         boolean keepGoing = true;
 
@@ -45,9 +45,9 @@ public class Feature01Main {
                             String username = scan.nextLine();
                             System.out.println("Password: ");
                             String userPass = scan.nextLine();
-                            d.addUser(username, userPass);
+                            boolean success = d.addUser(username, userPass);
 
-                            if (d.addUser(username, userPass)) {
+                            if (success) {
                                 System.out.println(username + " was added.");
                                 keepGoing = false;
                                 break;
@@ -72,6 +72,7 @@ public class Feature01Main {
                         }*/
                     } else {
                         System.out.println("Incorrect administrator password.");
+                        System.exit(0);
                     }
 
 

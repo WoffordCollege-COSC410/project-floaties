@@ -2,6 +2,7 @@ package edu.wofford.wocoin;
 
 import java.io.*;
 import java.sql.*;
+import java.util.logging.FileHandler;
 
 public class Database {
     private String adminPwd;
@@ -19,10 +20,7 @@ public class Database {
         File file = new File(fileName);
         if(!file.exists()){
             Utilities.createNewDatabase(fileName);
-
         }
-
-
 
     }
 
@@ -58,36 +56,27 @@ public class Database {
     private boolean userExists(String id) {
 
         System.out.println("user exist begins");
-        //link this to add user
-       //link this to add user
 
        // String testQuery = "SELECT id FROM users WHERE id = ?;";
         try (Connection conn = DriverManager.getConnection(url);
              PreparedStatement stmt = conn.prepareStatement("SELECT id FROM users WHERE id = ?;")){
 
-                System.out.println("made the connection");
                  stmt.setString(1,id);
-                System.out.println("after setString");
                  ResultSet rs = stmt.executeQuery(/*"SELECT id FROM users WHERE id = ?;"*/); //does this take a string or no
-                 System.out.println("after executeQuery is stored");
 
                  if (rs.next()) {
                      if(rs.getString(1).equals(id)){
-                         System.out.println("string = id");
                          return true;
                      }
                      else{
-                         System.out.println("string != id");
                          return false;
                      }
                  } else {
-                     System.out.println("i have an empty result set");
                     return false;
 
                  }
         }
         catch(SQLException e){
-            System.out.println("throws exception");
             e.printStackTrace();
             return true;
         }
@@ -103,28 +92,20 @@ public class Database {
 
     public boolean addUser(String id, String password) {
         if(!userExists(id)){
-            System.out.println("i'm in the if statement");
             String saltedPasswd;
             int salt = generateSalt();
             saltedPasswd = getSaltedPasswd(password, salt);
             String hash = getHash(saltedPasswd);
 
             String testQuery = "INSERT INTO users (id, salt, hash) VALUES (?, ?, ?);";
-            System.out.println("I ran the test query");
 
             try (Connection conn= DriverManager.getConnection(url);
                  PreparedStatement stmt = conn.prepareStatement(testQuery)){
 
-                System.out.println("I connected and inserted into the db");
-
-
                 stmt.setString(1, id);
-
                 stmt.setInt(2, salt);
-
                 stmt.setString(3, hash);
                 stmt.executeUpdate();
-                System.out.println("here");
 
                 return true;
             }
@@ -134,10 +115,28 @@ public class Database {
             }
         }
         else{
-            System.out.println("I didn't get into the if statement");
             return false;
         }
 
+    }
+
+    public boolean removeUser(String id){
+        try (Connection conn = DriverManager.getConnection(url);
+             PreparedStatement stmt = conn.prepareStatement("DELETE FROM users WHERE id = ?;")){
+            stmt.setString(1,id);
+            stmt.executeUpdate();
+            return true;
+        } catch(SQLException e) {
+            e.printStackTrace();
+            return false; }
+//        }finally {
+//
+//            if (conn != null) {
+//                try {
+//                    conn.close();
+//                } catch (SQLException e) {
+//                }
+//            }
     }
 
     /**

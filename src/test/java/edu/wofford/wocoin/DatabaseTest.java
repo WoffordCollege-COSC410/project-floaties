@@ -19,13 +19,13 @@ public class DatabaseTest {
     /*
      tests ss
      */
-    @Ignore
+    //@Ignore
     @Test
     public void newDbIfPathDNE() {
         String path = "iDontExist.db";
         //test creating database without double checking
     }
-    @Ignore
+    //@Ignore
     @Test
     public void testCreateNewDatabase() {
 
@@ -52,6 +52,12 @@ public class DatabaseTest {
             assertNotNull(rs.next());
             assertEquals("messages", rs.getString(2));
 
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
             assertTrue(e.toString(), false);
@@ -62,7 +68,7 @@ public class DatabaseTest {
 
     }
 
-    @Ignore
+    //@Ignore
     @Test
     public void testOpenExistingdb() {
         //move db into test resources
@@ -120,6 +126,11 @@ public class DatabaseTest {
 
             assertEquals(rp.getInt(1), 7);
 
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -134,7 +145,7 @@ public class DatabaseTest {
         //make sure we dont over write a new db
     }
 
-    @Ignore
+    //@Ignore
     @Test
     public void testGetAdminPwd() {
         String fileName = "test1DB.db";
@@ -143,7 +154,7 @@ public class DatabaseTest {
         assertEquals("adminpwd", test.getAdminPwd());
         file.delete();
     }
-    @Ignore
+    //@Ignore
     @Test
     public void testIsAdminPassWdCorrect() {
         String fileName = "test2DB.db";
@@ -181,8 +192,11 @@ public class DatabaseTest {
             String hash = Utilities.applySha256(saltedPwd);
             assertEquals(hash, rs.getString(3));
 
-//            rs.next();
-//            rs.deleteRow();
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -193,7 +207,7 @@ public class DatabaseTest {
 
 
     }
-    @Ignore
+    //@Ignore
     @Test
     public void addUserToExistingDB() {
         String fileName = "src/test/resources/testAddToAFullDB.db";
@@ -204,7 +218,6 @@ public class DatabaseTest {
         String url = "jdbc:sqlite:" + fileName;
         String id = "robert33345678";
         assertTrue(db.addUser("robert33345678", "porter"));
-
 
         try (Connection conn = DriverManager.getConnection(url);
              PreparedStatement stmt = conn.prepareStatement("SELECT id FROM users WHERE id = ?;")) {
@@ -221,12 +234,47 @@ public class DatabaseTest {
                 assertEquals(0, 1); //obviously false
             }
 
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
 
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    //@Ignore
+    @Test
+    public void testRemoveUser() {
+        String fileName = "src/test/resources/testAddToAFullDB.db";
+
+        File file = new File(fileName);
+
+        Database db = new Database(fileName);
+        String url = "jdbc:sqlite:" + fileName;
+        String id = "robert33345678";
+
+        try (Connection conn = DriverManager.getConnection(url);
+             PreparedStatement stmt = conn.prepareStatement("SELECT id FROM users WHERE id = ?;")) {
+
+            stmt.setString(1, id);
+
+            ResultSet rs = stmt.executeQuery();
+
+            assertEquals(rs.getString(1), "robert33345678");
+
+            assertTrue(db.removeUser("robert33345678"));
         }
 
         catch (SQLException e) {
             e.printStackTrace();
-        }
+        }//close connections and resultset?
+
 
     }
 }
