@@ -19,7 +19,7 @@ public class Database {
         File file = new File(fileName);
         if(!file.exists()){
             Utilities.createNewDatabase(fileName);
-            //Utilities.createTestDatabase(fileName);
+
         }
 
 
@@ -56,7 +56,7 @@ public class Database {
      */
 
     private boolean userExists(String id) {
-
+        System.out.println("user exist begins");
         //link this to add user
 
        // String testQuery = "SELECT id FROM users WHERE id = ?;";
@@ -79,7 +79,9 @@ public class Database {
                          return false;
                      }
                  } else {
+                     System.out.println("i have an empty result set");
                     return false;
+
                  }
         }
         catch(SQLException e){
@@ -106,15 +108,21 @@ public class Database {
             String hash = getHash(saltedPasswd);
 
             String testQuery = "INSERT INTO users (id, salt, hash) VALUES (?, ?, ?);";
-
+            System.out.println("I ran the test query");
 
             try (Connection conn= DriverManager.getConnection(url);
                  PreparedStatement stmt = conn.prepareStatement(testQuery)){
 
+                System.out.println("I connected and inserted into the db");
+
+
                 stmt.setString(1, id);
+
                 stmt.setInt(2, salt);
+
                 stmt.setString(3, hash);
                 stmt.executeUpdate();
+                System.out.println("here");
 
                 return true;
             }

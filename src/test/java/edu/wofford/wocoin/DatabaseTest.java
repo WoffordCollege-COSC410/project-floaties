@@ -8,7 +8,7 @@ import edu.wofford.wocoin.main.*;
  * when the "Test" action is invoked.
  *
  */
-
+import org.junit.*;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import java.io.*;
@@ -19,13 +19,13 @@ public class DatabaseTest {
     /*
      tests ss
      */
-
+    @Ignore
     @Test
     public void newDbIfPathDNE() {
         String path = "iDontExist.db";
         //test creating database without double checking
     }
-
+    @Ignore
     @Test
     public void testCreateNewDatabase() {
 
@@ -62,7 +62,7 @@ public class DatabaseTest {
 
     }
 
-
+    @Ignore
     @Test
     public void testOpenExistingdb() {
         //move db into test resources
@@ -98,12 +98,12 @@ public class DatabaseTest {
             assertTrue(e.toString(), false);
         }
 
-        try (Connection conn= DriverManager.getConnection(url);
-             Statement stmt = conn.createStatement()){
+        try (Connection conn = DriverManager.getConnection(url);
+             Statement stmt = conn.createStatement()) {
             String testQuery = "SELECT count(*) FROM messages;";
             ResultSet rs = stmt.executeQuery(testQuery);
 
-            assertEquals(rs.getInt(1),2);
+            assertEquals(rs.getInt(1), 2);
 
             String queryUsers = "SELECT count(*) FROM users";
             ResultSet ru = stmt.executeQuery(queryUsers);
@@ -113,22 +113,17 @@ public class DatabaseTest {
             String queryWallets = "SELECT count (*) from wallets";
             ResultSet rw = stmt.executeQuery(queryWallets);
 
-            assertEquals(rw.getInt(1),4);
+            assertEquals(rw.getInt(1), 4);
 
             String queryProducts = "SELECT count (*) from products";
             ResultSet rp = stmt.executeQuery(queryProducts);
 
-            assertEquals(rp.getInt(1),7);
+            assertEquals(rp.getInt(1), 7);
 
 
-
-        }
-        catch(SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-
-
-
 
 
         //verify file exists
@@ -139,7 +134,7 @@ public class DatabaseTest {
         //make sure we dont over write a new db
     }
 
-
+    @Ignore
     @Test
     public void testGetAdminPwd() {
         String fileName = "test1DB.db";
@@ -148,7 +143,7 @@ public class DatabaseTest {
         assertEquals("adminpwd", test.getAdminPwd());
         file.delete();
     }
-
+    @Ignore
     @Test
     public void testIsAdminPassWdCorrect() {
         String fileName = "test2DB.db";
@@ -177,7 +172,7 @@ public class DatabaseTest {
         assertTrue(db.addUser("kara", "porter"));
 
         try (Connection conn = DriverManager.getConnection(url);
-            Statement stmt = conn.createStatement()) {
+             Statement stmt = conn.createStatement()) {
             ResultSet rs = stmt.executeQuery("SELECT * FROM users");
             assertNotNull(rs.next());
             assertEquals("kara", rs.getString(1));
@@ -187,7 +182,7 @@ public class DatabaseTest {
             assertEquals(hash, rs.getString(3));
 
         } catch (SQLException e) {
-          e.printStackTrace();
+            e.printStackTrace();
         }
 
         //make sure db
@@ -195,23 +190,56 @@ public class DatabaseTest {
 
 
     }
-
+    @Ignore
     @Test
-    public void addUserToExistingDB(){
+    public void addUserToExistingDB() {
         String fileName = "src/test/resources/testAddToAFullDB.db";
 
         File file = new File(fileName);
 
         Database db = new Database(fileName);
         String url = "jdbc:sqlite:" + fileName;
+        String id = "robert33345678";
+        assertTrue(db.addUser("robert33345678", "porter"));
 
-        assertTrue(db.addUser("robert333", "porter"));
+
+        try (Connection conn = DriverManager.getConnection(url);
+             PreparedStatement stmt = conn.prepareStatement("SELECT id FROM users WHERE id = ?;")) {
+
+
+            stmt.setString(1, id);
+
+            ResultSet rs = stmt.executeQuery(/*"SELECT id FROM users WHERE id = ?;"*/); //does this take a string or no
+
+
+            if (rs.next()) {
+                assertEquals(rs.getString(1),id);
+            } else {
+                assertEquals(0, 1); //obviously false
+            }
+
+
+        }
+
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+}
+
+
+
+
+
+        /*
+
 
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()) {
-            ResultSet rs = stmt.executeQuery("SELECT * FROM users");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM users;");
             assertNotNull(rs.next());
-            assertEquals("robert333", rs.getString(1));
+            assertEquals("robert33345", rs.getString(1));
 
             String saltedPwd = "porter" + rs.getInt(2);
             String hash = Utilities.applySha256(saltedPwd);
@@ -224,7 +252,6 @@ public class DatabaseTest {
         }
     }
 
+         */
 
 
-
-}
