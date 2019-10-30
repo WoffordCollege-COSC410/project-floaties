@@ -58,15 +58,17 @@ public class Database {
     private boolean userExists(String id) {
         System.out.println("user exist begins");
         //link this to add user
-
+        System.out.println(url);
        // String testQuery = "SELECT id FROM users WHERE id = ?;";
         try (Connection conn = DriverManager.getConnection(url);
              PreparedStatement stmt = conn.prepareStatement("SELECT id FROM users WHERE id = ?;")){
 
-                System.out.println("made the connection");
                  stmt.setString(1,id);
-                System.out.println("after setString");
-                 ResultSet rs = stmt.executeQuery(/*"SELECT id FROM users WHERE id = ?;"*/); //does this take a string or no
+                 Statement garrettStmt = conn.createStatement();
+                 ResultSet rs = garrettStmt.executeQuery("select id from users where id = 'garrett';");
+                 while (rs.next()) {
+                     System.out.println(rs.getString(1));
+                 }
                  System.out.println("after executeQuery is stored");
 
                  if (rs.next()) {
@@ -100,8 +102,9 @@ public class Database {
      */
 
     public boolean addUser(String id, String password) {
+        System.out.println("im in addUser");
         if(!userExists(id)){
-            System.out.println("i'm in the if statement");
+            System.out.println("i'm in the if statement of add user");
             String saltedPasswd;
             int salt = generateSalt();
             saltedPasswd = getSaltedPasswd(password, salt);
@@ -122,6 +125,7 @@ public class Database {
 
                 stmt.setString(3, hash);
                 stmt.executeUpdate();
+                conn.commit();
                 System.out.println("here");
 
                 return true;

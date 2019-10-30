@@ -45,9 +45,9 @@ public class Feature01Main {
                             String username = scan.nextLine();
                             System.out.println("Password: ");
                             String userPass = scan.nextLine();
-                            d.addUser(username, userPass);
+                            boolean success = d.addUser(username, userPass);
 
-                            if (d.addUser(username, userPass)) {
+                            if (success) {
                                 System.out.println(username + " was added.");
                                 keepGoing = false;
                                 break;
