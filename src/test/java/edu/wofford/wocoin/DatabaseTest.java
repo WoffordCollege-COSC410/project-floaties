@@ -21,6 +21,28 @@ public class DatabaseTest {
      */
     //@Ignore
     @Test
+    public void isAnAdminWrongTest(){
+        String fileName = "src/test/resources/test45DB.db";
+        File file = new File(fileName);
+        assertTrue(file.exists());
+        Database db = new Database(fileName);
+       assertTrue(!db.checkIsAdmin("wrong"));
+    }
+    @Ignore
+    @Test
+    public void isAnAdminRightTest(){
+        String fileName = "src/test/resources/test45DB.db";
+        File file = new File(fileName);
+        assertTrue(file.exists());
+        Database db = new Database(fileName);
+        assertTrue(db.checkIsAdmin("adminpwd"));
+    }
+
+
+
+
+    @Ignore
+    @Test
     public void newDbIfPathDNE() {
         String path = "iDontExist.db";
         //test creating database without double checking
@@ -181,6 +203,8 @@ public class DatabaseTest {
         String url = "jdbc:sqlite:" + fileName;
 
         assertTrue(db.addUser("kara", "porter"));
+
+
 
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()) {

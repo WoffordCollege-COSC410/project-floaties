@@ -2,7 +2,6 @@ package edu.wofford.wocoin;
 
 import java.io.*;
 import java.sql.*;
-import java.util.logging.FileHandler;
 
 public class Database {
     private String adminPwd;
@@ -20,6 +19,7 @@ public class Database {
         File file = new File(fileName);
         if(!file.exists()){
             Utilities.createNewDatabase(fileName);
+
         }
 
     }
@@ -55,14 +55,13 @@ public class Database {
 
     private boolean userExists(String id) {
 
-        System.out.println("user exist begins");
 
        // String testQuery = "SELECT id FROM users WHERE id = ?;";
         try (Connection conn = DriverManager.getConnection(url);
              PreparedStatement stmt = conn.prepareStatement("SELECT id FROM users WHERE id = ?;")){
 
                  stmt.setString(1,id);
-                 ResultSet rs = stmt.executeQuery(/*"SELECT id FROM users WHERE id = ?;"*/); //does this take a string or no
+                 ResultSet rs = stmt.executeQuery();
 
                  if (rs.next()) {
                      if(rs.getString(1).equals(id)){
