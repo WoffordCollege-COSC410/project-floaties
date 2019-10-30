@@ -205,13 +205,13 @@ public class DatabaseTest {
         Database db = new Database(fileName);
         String url = "jdbc:sqlite:" + fileName;
 
-        assertTrue(db.addUser("kara", "porter"));
+        assertTrue(db.addUser("robert333", "porter"));
 
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()) {
             ResultSet rs = stmt.executeQuery("SELECT * FROM users");
             assertNotNull(rs.next());
-            assertEquals("kara", rs.getString(1));
+            assertEquals("robert333", rs.getString(1));
 
             String saltedPwd = "porter" + rs.getInt(2);
             String hash = Utilities.applySha256(saltedPwd);

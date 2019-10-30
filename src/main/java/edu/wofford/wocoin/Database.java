@@ -68,15 +68,18 @@ public class Database {
                 System.out.println("after setString");
                  ResultSet rs = stmt.executeQuery(/*"SELECT id FROM users WHERE id = ?;"*/); //does this take a string or no
                  System.out.println("after executeQuery is stored");
-                 rs.next(); //is this not working bc were adding to an existing database thats not empty but rs.last doesnt work
-                 System.out.println("cursor moved");
-                 if(rs.getNString(1).equals(id)){
-                     System.out.println("string = id");
-                     return true;
-                 }
-                 else{
-                     System.out.println("string != id");
-                     return false;
+
+                 if (rs.next()) {
+                     if(rs.getString(1).equals(id)){
+                         System.out.println("string = id");
+                         return true;
+                     }
+                     else{
+                         System.out.println("string != id");
+                         return false;
+                     }
+                 } else {
+                    return false;
                  }
         }
         catch(SQLException e){
