@@ -56,8 +56,10 @@ public class Database {
      */
 
     private boolean userExists(String id) {
+
         System.out.println("user exist begins");
         //link this to add user
+       //link this to add user
 
        // String testQuery = "SELECT id FROM users WHERE id = ?;";
         try (Connection conn = DriverManager.getConnection(url);

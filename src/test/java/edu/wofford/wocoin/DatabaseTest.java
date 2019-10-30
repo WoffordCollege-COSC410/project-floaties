@@ -181,8 +181,8 @@ public class DatabaseTest {
             String hash = Utilities.applySha256(saltedPwd);
             assertEquals(hash, rs.getString(3));
 
-            rs.next();
-            rs.deleteRow();
+//            rs.next();
+//            rs.deleteRow();
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -255,5 +255,8 @@ public class DatabaseTest {
     }
 
          */
+
+
+
 
 
