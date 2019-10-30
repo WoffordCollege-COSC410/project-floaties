@@ -33,13 +33,14 @@ public class Feature01Main {
                     if (d.checkIsAdmin(password)) {
                         System.out.println("1: back" + '\n' +
                                 "2: add user" + '\n' +
+//                                "3: remove user" + '\n' +
                                 "Choose one:  ");
                         String selection2 = scan.nextLine();
 
                         if (selection2.equals("1")) {
                             break;
 
-                        } else {
+                        } else /*if(selection2.equals("2")*/{
                             System.out.println("Username: ");
                             String username = scan.nextLine();
                             System.out.println("Password: ");
@@ -55,9 +56,22 @@ public class Feature01Main {
                                 keepGoing = false;
                                 break;
                             }
+                        } /*else {
+                            System.out.println("Username: ");
+                            String username = scan.nextLine();
 
-
-                        }
+                            if (d.removeUser(username)) {
+                                System.out.println(username + " was removed.");
+                                keepGoing = false;
+                                break;
+                            } else {
+                                System.out.println(username + " does not exist.");
+                                keepGoing = false;
+                                break;
+                            }
+                        }*/
+                    } else {
+                        System.out.println("Incorrect administrator password.");
                     }
 
 
