@@ -67,27 +67,33 @@ public class Database {
 
                  if (rs.next()) {
                      if(rs.getString(1).equals(id)){
+                         /*
                          try {
                              conn.close();
                          } catch (SQLException e) {
                              e.printStackTrace();
                          }
+                         */
                          return true;
                      }
                      else{
+                         /*
                          try {
                              conn.close();
                          } catch (SQLException e) {
                              e.printStackTrace();
                          }
+                          */
                          return false;
                      }
                  } else {
+                     /*
                      try {
                          conn.close();
                      } catch (SQLException e) {
                          e.printStackTrace();
                      }
+                     */
                     return false;
                  }
 
@@ -123,11 +129,6 @@ public class Database {
                 stmt.setString(3, hash);
                 stmt.executeUpdate();
 
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
 
                 return true;
             }
@@ -146,24 +147,22 @@ public class Database {
         if(userExists(id)){
             try (Connection conn = DriverManager.getConnection(url);
                  PreparedStatement stmt = conn.prepareStatement("DELETE FROM users WHERE id = ?;")){
-                System.out.println("made connection");
                 stmt.setString(1,id);
-                System.out.println("set id");
                 stmt.executeUpdate();
-                System.out.println("updated");
 
+                /*
                 try {
                     conn.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
+                */
 
                 return true;
             } catch(SQLException e) {
                 e.printStackTrace();
                 return false; }
         } else {
-            System.out.println("user doesn't exist");
             return false;
         }
 

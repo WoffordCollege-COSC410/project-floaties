@@ -12,48 +12,48 @@ import org.junit.*;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import java.io.*;
+import java.nio.file.*;
 import java.sql.*;
 
 
+
 public class DatabaseTest {
-    /*
-     tests ss
-     */
-    //@Ignore
+
     @Test
-    public void isAnAdminWrongTest(){
-        String fileName = "src/test/resources/test45DB.db";
+    public void isAnAdminWrongTest() throws IOException {
+        String fileName = "src/test/resources/testdb.db";
         File file = new File(fileName);
+        File dest = new File("src/test/resources/testdbcopy.db");
+        Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
         assertTrue(file.exists());
         Database db = new Database(fileName);
        assertTrue(!db.checkIsAdmin("wrong"));
+       dest.delete();
     }
     //@Ignore
     @Test
-    public void isAnAdminRightTest(){
-        String fileName = "src/test/resources/test45DB.db";
+    public void isAnAdminRightTest() throws IOException{
+        String fileName = "src/test/resources/testdb.db";
         File file = new File(fileName);
+        File dest = new File("src/test/resources/testdbcopy.db");
+        Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
         assertTrue(file.exists());
         Database db = new Database(fileName);
         assertTrue(db.checkIsAdmin("adminpwd"));
+        dest.delete();
     }
 
 
 
-
-    @Ignore
-    @Test
-    public void newDbIfPathDNE() {
-        String path = "iDontExist.db";
-        //test creating database without double checking
-    }
     //@Ignore
     @Test
-    public void testCreateNewDatabase() {
+    public void testCreateNewDatabase() throws IOException{
 
-        String fileName = "src/test/resources/testblankDB.db";
-
+        String fileName = "src/test/resources/testdb.db";
         File file = new File(fileName);
+        File dest = new File("src/test/resources/testdbcopy.db");
+        Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
         if (file.exists()) {
             file.delete();
         }
@@ -74,28 +74,25 @@ public class DatabaseTest {
             assertNotNull(rs.next());
             assertEquals("messages", rs.getString(2));
 
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
 
         } catch (SQLException e) {
             e.printStackTrace();
             assertTrue(e.toString(), false);
         }
 
-        //file.delete();
+        dest.delete();
 
 
     }
 
     //@Ignore
     @Test
-    public void testOpenExistingdb() {
+    public void testOpenExistingdb() throws IOException{
         //move db into test resources
-        String fileName = "src/test/resources/test45DB.db";
+        String fileName = "src/test/resources/testdb.db";
         File file = new File(fileName);
+        File dest = new File("src/test/resources/testdbcopy.db");
+        Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
         assertTrue(file.exists());
 
         //make the file in src/test/java/resources first
@@ -103,8 +100,6 @@ public class DatabaseTest {
         Database db = new Database(fileName);
 
         //instantiate db with the file with the whole path
-
-
         //Utilities.createTestDatabase(filename);
         assertTrue(file.exists());
         String url = "jdbc:sqlite:" + fileName;
@@ -148,15 +143,11 @@ public class DatabaseTest {
 
             assertEquals(rp.getInt(1), 7);
 
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        dest.delete();
 
 
         //verify file exists
@@ -169,32 +160,38 @@ public class DatabaseTest {
 
     //@Ignore
     @Test
-    public void testGetAdminPwd() {
-        String fileName = "test1DB.db";
+    public void testGetAdminPwd() throws IOException{
+        String fileName = "src/test/resources/testdb.db";
         File file = new File(fileName);
+        File dest = new File("src/test/resources/testdbcopy.db");
+        Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
         Database test = new Database("testDB.db");
         assertEquals("adminpwd", test.getAdminPwd());
-        file.delete();
+        dest.delete();
     }
     //@Ignore
     @Test
-    public void testIsAdminPassWdCorrect() {
-        String fileName = "test2DB.db";
+    public void testIsAdminPassWdCorrect() throws IOException {
+        String fileName = "src/test/resources/testdb.db";
         File file = new File(fileName);
+        File dest = new File("src/test/resources/testdbcopy.db");
+        Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
         Database test = new Database("testDB.db");
         assertTrue(test.checkIsAdmin("adminpwd"));
-        file.delete();
+        dest.delete();
     }
 
 
     @Test
-    public void testAddUserEmptyDB() {
+    public void testAddUserEmptyDB() throws IOException {
 
         //works 100% of the time
         //DriverManager.loadInitialDrivers();
-        String fileName = "src/test/resources/testAddKaraUserDB.db";
-
+        String fileName = "src/test/resources/testdb.db";
         File file = new File(fileName);
+        File dest = new File("src/test/resources/testdbcopy.db");
+        Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
         if (file.exists()) {
             file.delete();
         }
@@ -216,40 +213,33 @@ public class DatabaseTest {
             String hash = Utilities.applySha256(saltedPwd);
             assertEquals(hash, rs.getString(3));
 
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        //make sure db
-        file.delete();
-
+        dest.delete();
 
     }
     //@Ignore
     @Test
-    public void addUserToExistingDB() {
-        String fileName = "src/test/resources/testAddToAFullDB.db";
+    public void addUserToExistingDB() throws IOException {
+        String fileName = "src/test/resources/testdb.db";
 
         File file = new File(fileName);
+        File dest = new File("src/test/resources/testdbcopy.db");
+        Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
         Database db = new Database(fileName);
         String url = "jdbc:sqlite:" + fileName;
         String id = "robert";
+
         assertTrue(db.addUser("robert", "porter"));
 
         try (Connection conn = DriverManager.getConnection(url);
-             PreparedStatement stmt = conn.prepareStatement("SELECT id FROM users WHERE id = ?;")) {
+             Statement stmt = conn.createStatement()) {
 
-
-            stmt.setString(1, id);
-
-            ResultSet rs = stmt.executeQuery(/*"SELECT id FROM users WHERE id = ?;"*/); //does this take a string or no
+            ResultSet rs = stmt.executeQuery("SELECT id FROM users WHERE id = 'robert';");
 
 
             if (rs.next()) {
@@ -258,81 +248,88 @@ public class DatabaseTest {
                 assertEquals(0, 1); //obviously false
             }
 
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
 
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
+        dest.delete();
 
     }
 
     @Test
-    public void testAddExistingUser() {
-        String fileName = "src/test/resources/test6789DB.db";
+    public void testAddExistingUser() throws IOException {
+        String fileName = "src/test/resources/testdb.db";
+        File file = new File(fileName);
+        File dest = new File("src/test/resources/testdbcopy.db");
+        Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
         Database db = new Database(fileName);
         String url = "jdbc:sqlite:" + fileName;
         String id = "srogers";
 
+        assertFalse(db.addUser("srogers", "porter"));
+
         try (Connection conn = DriverManager.getConnection(url);
-             PreparedStatement stmt = conn.prepareStatement("SELECT id FROM users WHERE id = ?;")) {
-            stmt.setString(1, id);
-            ResultSet rs = stmt.executeQuery();
-            assertFalse(db.addUser("srogers", "porter"));
+             Statement stmt = conn.createStatement()) {
+            ResultSet rs = stmt.executeQuery("SELECT id FROM users WHERE id = 'srogers';");
+            //assertFalse(rs.next());
         } catch(SQLException e) {
             e.printStackTrace();
         }
+
+        dest.delete();
     }
 
     //@Ignore
     @Test
-    public void testRemoveUser() {
-        String fileName = "src/test/resources/test45DB.db";
+    public void testRemoveUser() throws IOException {
+        String fileName = "src/test/resources/testdb.db";
+        File file = new File(fileName);
+        File dest = new File("src/test/resources/testdbcopy.db");
+        Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
         Database db = new Database(fileName);
         String url = "jdbc:sqlite:" + fileName;
         String id = "srogers";
 
+        assertTrue(db.removeUser("srogers"));
+
         try (Connection conn = DriverManager.getConnection(url);
-             PreparedStatement stmt = conn.prepareStatement("SELECT id FROM users WHERE id = ?;")) {
-            stmt.setString(1, id);
-            ResultSet rs = stmt.executeQuery();
-            assertEquals(rs.getString(1), "srogers");
-            assertTrue(db.removeUser("srogers"));
-            rs.deleteRow();
+             Statement stmt = conn.createStatement()) {
+            ResultSet rs = stmt.executeQuery("SELECT id FROM users WHERE id = 'srogers';");
+            assertFalse(rs.next());
         }
         catch (SQLException e) {
             e.printStackTrace();
         }//close connections and resultset?
 
-
+        dest.delete();
     }
 
     @Test
-    public void testRemoveUserThatDoesntExist() {
-        String fileName = "src/test/resources/test6789DB.db";
+    public void testRemoveUserThatDoesntExist() throws IOException {
+        String fileName = "src/test/resources/testdb.db";
+        File file = new File(fileName);
+        File dest = new File("src/test/resources/testdbcopy.db");
+        Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
         Database db = new Database(fileName);
         String url = "jdbc:sqlite:" + fileName;
-        String id = "hjones";
+        String id = "kara";
+
+        assertFalse(db.removeUser("kara"));
 
         try (Connection conn = DriverManager.getConnection(url);
-             PreparedStatement stmt = conn.prepareStatement("SELECT id FROM users WHERE id = ?;")) {
-            stmt.setString(1, id);
-            ResultSet rs = stmt.executeQuery();
-            assertEquals(rs.getString(1), "hjones");
-            assertFalse(db.removeUser("hjones"));
+             Statement stmt = conn.createStatement()) {
+            ResultSet rs = stmt.executeQuery("SELECT id FROM users WHERE id = 'kara';");
+            assertFalse(rs.next());
         }
         catch (SQLException e) {
             e.printStackTrace();
         }
-
+        dest.delete();
         }
     }
 
