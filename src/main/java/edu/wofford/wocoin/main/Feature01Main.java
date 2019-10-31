@@ -12,20 +12,22 @@ public class Feature01Main {
 
         Database d = new Database(args[0]);
         Scanner scan = new Scanner(System.in);
-        boolean keepGoing = true;
+        boolean rootContinue = true;
 
-        // add while loop
-        while (keepGoing) {
+
+        while (rootContinue) {
+            boolean adminContinue = true;
             System.out.println("1: exit" + '\n' +
                     "2: administrator" + '\n' +
                     "Choose one: ");
             String selection1 = scan.nextLine();
 
             //prompt for 1st menu
-            while (selection1.equals("1") || selection1.equals("2")) {
+            while (adminContinue) {
 
                 if (selection1.equals("1")) {
-                    System.exit(0);
+                    adminContinue = false;
+                    rootContinue = false;
                 } else {
                     System.out.println("Enter password: ");
                     String password = scan.nextLine();
@@ -33,14 +35,14 @@ public class Feature01Main {
                     if (d.checkIsAdmin(password)) {
                         System.out.println("1: back" + '\n' +
                                 "2: add user" + '\n' +
-//                                "3: remove user" + '\n' +
+                                "3: remove user" + '\n' +
                                 "Choose one:  ");
                         String selection2 = scan.nextLine();
 
                         if (selection2.equals("1")) {
-                            break;
+                            adminContinue = false;
 
-                        } else /*if(selection2.equals("2")*/{
+                        } else if(selection2.equals("2")){
                             System.out.println("Username: ");
                             String username = scan.nextLine();
                             System.out.println("Password: ");
@@ -49,34 +51,34 @@ public class Feature01Main {
 
                             if (success) {
                                 System.out.println(username + " was added.");
-                                keepGoing = false;
-                                break;
+                                adminContinue = false;
+                                rootContinue = false;
                             } else {
                                 System.out.println(username + " already exists.");
-                                keepGoing = false;
-                                break;
+                                adminContinue = false;
+                                rootContinue = false;
                             }
-                        } /*else {
+                        } else {
                             System.out.println("Username: ");
                             String username = scan.nextLine();
 
                             if (d.removeUser(username)) {
                                 System.out.println(username + " was removed.");
-                                keepGoing = false;
-                                break;
+                                adminContinue = false;
+                                rootContinue = false;
                             } else {
                                 System.out.println(username + " does not exist.");
-                                keepGoing = false;
-                                break;
+                                adminContinue = false;
+                                rootContinue = false;
                             }
-                        }*/
+                        }
                     } else {
                         System.out.println("Incorrect administrator password.");
-                        System.exit(0);
+                        adminContinue = false;
+                        rootContinue = false;
                     }
-
-
                 }
+
 
             }
         }

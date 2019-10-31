@@ -28,7 +28,7 @@ public class DatabaseTest {
         Database db = new Database(fileName);
        assertTrue(!db.checkIsAdmin("wrong"));
     }
-    @Ignore
+    //@Ignore
     @Test
     public void isAnAdminRightTest(){
         String fileName = "src/test/resources/test45DB.db";
@@ -240,8 +240,8 @@ public class DatabaseTest {
 
         Database db = new Database(fileName);
         String url = "jdbc:sqlite:" + fileName;
-        String id = "robert33345678";
-        assertTrue(db.addUser("robert33345678", "porter"));
+        String id = "robert";
+        assertTrue(db.addUser("robert", "porter"));
 
         try (Connection conn = DriverManager.getConnection(url);
              PreparedStatement stmt = conn.prepareStatement("SELECT id FROM users WHERE id = ?;")) {
@@ -272,36 +272,69 @@ public class DatabaseTest {
 
     }
 
-    //@Ignore
     @Test
-    public void testRemoveUser() {
-        String fileName = "src/test/resources/testAddToAFullDB.db";
-
-        File file = new File(fileName);
+    public void testAddExistingUser() {
+        String fileName = "src/test/resources/test6789DB.db";
 
         Database db = new Database(fileName);
         String url = "jdbc:sqlite:" + fileName;
-        String id = "robert33345678";
+        String id = "srogers";
 
         try (Connection conn = DriverManager.getConnection(url);
              PreparedStatement stmt = conn.prepareStatement("SELECT id FROM users WHERE id = ?;")) {
-
             stmt.setString(1, id);
-
             ResultSet rs = stmt.executeQuery();
-
-            assertEquals(rs.getString(1), "robert33345678");
-
-            assertTrue(db.removeUser("robert33345678"));
+            assertFalse(db.addUser("srogers", "porter"));
+        } catch(SQLException e) {
+            e.printStackTrace();
         }
+    }
 
+    //@Ignore
+    @Test
+    public void testRemoveUser() {
+        String fileName = "src/test/resources/test45DB.db";
+
+        Database db = new Database(fileName);
+        String url = "jdbc:sqlite:" + fileName;
+        String id = "srogers";
+
+        try (Connection conn = DriverManager.getConnection(url);
+             PreparedStatement stmt = conn.prepareStatement("SELECT id FROM users WHERE id = ?;")) {
+            stmt.setString(1, id);
+            ResultSet rs = stmt.executeQuery();
+            assertEquals(rs.getString(1), "srogers");
+            assertTrue(db.removeUser("srogers"));
+            rs.deleteRow();
+        }
         catch (SQLException e) {
             e.printStackTrace();
         }//close connections and resultset?
 
 
     }
-}
+
+    @Test
+    public void testRemoveUserThatDoesntExist() {
+        String fileName = "src/test/resources/test6789DB.db";
+
+        Database db = new Database(fileName);
+        String url = "jdbc:sqlite:" + fileName;
+        String id = "hjones";
+
+        try (Connection conn = DriverManager.getConnection(url);
+             PreparedStatement stmt = conn.prepareStatement("SELECT id FROM users WHERE id = ?;")) {
+            stmt.setString(1, id);
+            ResultSet rs = stmt.executeQuery();
+            assertEquals(rs.getString(1), "hjones");
+            assertFalse(db.removeUser("hjones"));
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        }
+    }
 
 
 
