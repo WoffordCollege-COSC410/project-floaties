@@ -102,7 +102,7 @@ public class DatabaseTest {
         //instantiate db with the file with the whole path
         //Utilities.createTestDatabase(filename);
         assertTrue(file.exists());
-        String url = "jdbc:sqlite:" + fileName;
+        String url = "jdbc:sqlite:" + "src/test/resources/testdbcopy.db";
 
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()) {

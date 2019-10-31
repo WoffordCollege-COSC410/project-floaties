@@ -37,7 +37,7 @@ public class Database {
     /**
      * returns TRUE if the caller's input is administrator
      * @param password - user input to check against
-     * @return boolean
+     * @return boolean if the password exists or not
      */
 
     public boolean checkIsAdmin(String password){
