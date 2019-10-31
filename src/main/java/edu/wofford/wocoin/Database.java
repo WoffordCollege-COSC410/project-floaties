@@ -142,7 +142,11 @@ public class Database {
         }
 
     }
-
+    /**
+     * Removes a user identified by their id from the Database
+     * @param id - a value passed in by the user to be removed
+     * @return a boolean value - of if the user was removed or not
+     */
     public boolean removeUser(String id){
         if(userExists(id)){
             try (Connection conn = DriverManager.getConnection(url);
