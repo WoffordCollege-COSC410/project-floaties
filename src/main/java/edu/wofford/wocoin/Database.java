@@ -30,13 +30,13 @@ public class Database {
      * returns the administrators password
      */
 
-    public  String getAdminPwd(){
+    public String getAdminPwd(){
         return adminPwd;
     }
 
     /**
      * returns TRUE if the caller's input is administrator
-     * @param password - user input to check against
+     * @param password user input to check against
      * @return boolean if the password exists or not
      */
 
@@ -55,7 +55,7 @@ public class Database {
      * @return boolean if the user exists
      */
 
-    private boolean userExists(String id) {
+    public boolean userExists(String id) {
 
 
        // String testQuery = "SELECT id FROM users WHERE id = ?;";
@@ -67,33 +67,12 @@ public class Database {
 
                  if (rs.next()) {
                      if(rs.getString(1).equals(id)){
-                         /*
-                         try {
-                             conn.close();
-                         } catch (SQLException e) {
-                             e.printStackTrace();
-                         }
-                         */
                          return true;
                      }
                      else{
-                         /*
-                         try {
-                             conn.close();
-                         } catch (SQLException e) {
-                             e.printStackTrace();
-                         }
-                          */
                          return false;
                      }
                  } else {
-                     /*
-                     try {
-                         conn.close();
-                     } catch (SQLException e) {
-                         e.printStackTrace();
-                     }
-                     */
                     return false;
                  }
 
@@ -107,9 +86,9 @@ public class Database {
     /**
      *currently not working depends on the above UserExists method that is not correctly working
      * we know this because of the code coverage report that does not go inside the main if of the function
-     * @param id - this will be the value stored in the id column of the Database
-     * @param password - this value will be salted and hashed and stored in the salt and hash columns of the DB
-     * @return boolean - if user exists or not
+     * @param id this will be the value stored in the id column of the Database
+     * @param password this value will be salted and hashed and stored in the salt and hash columns of the DB
+     * @return boolean if user exists or not
      */
 
     public boolean addUser(String id, String password) {
@@ -144,8 +123,8 @@ public class Database {
     }
     /**
      * Removes a user identified by their id from the Database
-     * @param id - a value passed in by the user to be removed
-     * @return a boolean value - of if the user was removed or not
+     * @param id a value passed in by the user to be removed
+     * @return a boolean value of if the user was removed or not
      */
     public boolean removeUser(String id){
         if(userExists(id)){
@@ -153,14 +132,6 @@ public class Database {
                  PreparedStatement stmt = conn.prepareStatement("DELETE FROM users WHERE id = ?;")){
                 stmt.setString(1,id);
                 stmt.executeUpdate();
-
-                /*
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-                */
 
                 return true;
             } catch(SQLException e) {
@@ -198,7 +169,7 @@ public class Database {
 
     /**
      * Creates hash of salted password
-     * @param saltedPasswd - this is the value returned from the above function
+     * @param saltedPasswd this is the value returned from the above function
      * @return a string that will be stored in the hash field of the DB
      */
     private String getHash(String saltedPasswd){

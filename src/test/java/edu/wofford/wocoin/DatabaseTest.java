@@ -22,11 +22,12 @@ public class DatabaseTest {
     @Test
     public void isAnAdminWrongTest() throws IOException {
         String fileName = "src/test/resources/testdb.db";
+        String destName = "src/test/resources/testdbcopy.db";
         File file = new File(fileName);
-        File dest = new File("src/test/resources/testdbcopy.db");
+        File dest = new File(destName);
         Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
         assertTrue(file.exists());
-        Database db = new Database(fileName);
+        Database db = new Database(destName);
        assertTrue(!db.checkIsAdmin("wrong"));
        dest.delete();
     }
@@ -34,11 +35,12 @@ public class DatabaseTest {
     @Test
     public void isAnAdminRightTest() throws IOException{
         String fileName = "src/test/resources/testdb.db";
+        String destName = "src/test/resources/testdbcopy.db";
         File file = new File(fileName);
-        File dest = new File("src/test/resources/testdbcopy.db");
+        File dest = new File(destName);
         Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
         assertTrue(file.exists());
-        Database db = new Database(fileName);
+        Database db = new Database(destName);
         assertTrue(db.checkIsAdmin("adminpwd"));
         dest.delete();
     }
@@ -50,15 +52,13 @@ public class DatabaseTest {
     public void testCreateNewDatabase() throws IOException{
 
         String fileName = "src/test/resources/testdb.db";
+        String destName = "src/test/resources/testdbcopy.db";
         File file = new File(fileName);
-        File dest = new File("src/test/resources/testdbcopy.db");
+        File dest = new File(destName);
         Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
-        if (file.exists()) {
-            file.delete();
-        }
-        System.out.println("test full path = " + fileName);
-        Database db = new Database(fileName);
+        System.out.println("test full path = " + destName);
+        Database db = new Database(destName);
         String url = "jdbc:sqlite:" + fileName;
 
 
@@ -90,19 +90,13 @@ public class DatabaseTest {
     public void testOpenExistingdb() throws IOException{
         //move db into test resources
         String fileName = "src/test/resources/testdb.db";
+        String destName = "src/test/resources/testdbcopy.db";
         File file = new File(fileName);
-        File dest = new File("src/test/resources/testdbcopy.db");
+        File dest = new File(destName);
         Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        assertTrue(file.exists());
 
-        //make the file in src/test/java/resources first
-
-        Database db = new Database(fileName);
-
-        //instantiate db with the file with the whole path
-        //Utilities.createTestDatabase(filename);
-        assertTrue(file.exists());
-        String url = "jdbc:sqlite:" + "src/test/resources/testdbcopy.db";
+        Database db = new Database(destName);
+        String url = "jdbc:sqlite:" + destName;
 
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()) {
@@ -162,10 +156,12 @@ public class DatabaseTest {
     @Test
     public void testGetAdminPwd() throws IOException{
         String fileName = "src/test/resources/testdb.db";
+        String destName = "src/test/resources/testdbcopy.db";
         File file = new File(fileName);
-        File dest = new File("src/test/resources/testdbcopy.db");
+        File dest = new File(destName);
         Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        Database test = new Database("testDB.db");
+
+        Database test = new Database(destName);
         assertEquals("adminpwd", test.getAdminPwd());
         dest.delete();
     }
@@ -173,35 +169,28 @@ public class DatabaseTest {
     @Test
     public void testIsAdminPassWdCorrect() throws IOException {
         String fileName = "src/test/resources/testdb.db";
+        String destName = "src/test/resources/testdbcopy.db";
         File file = new File(fileName);
-        File dest = new File("src/test/resources/testdbcopy.db");
+        File dest = new File(destName);
         Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        Database test = new Database("testDB.db");
+
+        Database test = new Database(destName);
         assertTrue(test.checkIsAdmin("adminpwd"));
         dest.delete();
     }
 
 
     @Test
-    public void testAddUserEmptyDB() throws IOException {
+    public void testAddUserEmptyDB(){
 
         //works 100% of the time
-        //DriverManager.loadInitialDrivers();
-        String fileName = "src/test/resources/testdb.db";
+        String fileName = "src/test/resources/emptydb.db";
         File file = new File(fileName);
-        File dest = new File("src/test/resources/testdbcopy.db");
-        Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
-
-        if (file.exists()) {
-            file.delete();
-        }
-
         Database db = new Database(fileName);
+
         String url = "jdbc:sqlite:" + fileName;
 
         assertTrue(db.addUser("kara", "porter"));
-
-
 
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()) {
@@ -218,20 +207,22 @@ public class DatabaseTest {
             e.printStackTrace();
         }
 
-        dest.delete();
+        file.delete();
 
     }
     //@Ignore
     @Test
     public void addUserToExistingDB() throws IOException {
         String fileName = "src/test/resources/testdb.db";
-
+        String destName = "src/test/resources/testdbcopy.db";
         File file = new File(fileName);
-        File dest = new File("src/test/resources/testdbcopy.db");
+        File dest = new File(destName);
         Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
-        Database db = new Database(fileName);
-        String url = "jdbc:sqlite:" + fileName;
+
+
+        Database db = new Database(destName);
+        String url = "jdbc:sqlite:" + destName;
         String id = "robert";
 
         assertTrue(db.addUser("robert", "porter"));
@@ -261,12 +252,13 @@ public class DatabaseTest {
     @Test
     public void testAddExistingUser() throws IOException {
         String fileName = "src/test/resources/testdb.db";
+        String destName = "src/test/resources/testdbcopy.db";
         File file = new File(fileName);
-        File dest = new File("src/test/resources/testdbcopy.db");
+        File dest = new File(destName);
         Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
-        Database db = new Database(fileName);
-        String url = "jdbc:sqlite:" + fileName;
+        Database db = new Database(destName);
+        String url = "jdbc:sqlite:" + destName;
         String id = "srogers";
 
         assertFalse(db.addUser("srogers", "porter"));
@@ -286,12 +278,13 @@ public class DatabaseTest {
     @Test
     public void testRemoveUser() throws IOException {
         String fileName = "src/test/resources/testdb.db";
+        String destName = "src/test/resources/testdbcopy.db";
         File file = new File(fileName);
-        File dest = new File("src/test/resources/testdbcopy.db");
+        File dest = new File(destName);
         Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
-        Database db = new Database(fileName);
-        String url = "jdbc:sqlite:" + fileName;
+        Database db = new Database(destName);
+        String url = "jdbc:sqlite:" + destName;
         String id = "srogers";
 
         assertTrue(db.removeUser("srogers"));
@@ -303,7 +296,7 @@ public class DatabaseTest {
         }
         catch (SQLException e) {
             e.printStackTrace();
-        }//close connections and resultset?
+        }
 
         dest.delete();
     }
@@ -311,12 +304,13 @@ public class DatabaseTest {
     @Test
     public void testRemoveUserThatDoesntExist() throws IOException {
         String fileName = "src/test/resources/testdb.db";
+        String destName = "src/test/resources/testdbcopy.db";
         File file = new File(fileName);
-        File dest = new File("src/test/resources/testdbcopy.db");
+        File dest = new File(destName);
         Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
-        Database db = new Database(fileName);
-        String url = "jdbc:sqlite:" + fileName;
+        Database db = new Database(destName);
+        String url = "jdbc:sqlite:" + destName;
         String id = "kara";
 
         assertFalse(db.removeUser("kara"));
@@ -337,26 +331,6 @@ public class DatabaseTest {
 
 
 
-        /*
-
-
-        try (Connection conn = DriverManager.getConnection(url);
-             Statement stmt = conn.createStatement()) {
-            ResultSet rs = stmt.executeQuery("SELECT * FROM users;");
-            assertNotNull(rs.next());
-            assertEquals("robert33345", rs.getString(1));
-
-            String saltedPwd = "porter" + rs.getInt(2);
-            String hash = Utilities.applySha256(saltedPwd);
-            assertEquals(hash, rs.getString(3));
-
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-         */
 
 
 
