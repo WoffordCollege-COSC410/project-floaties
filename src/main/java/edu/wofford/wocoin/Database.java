@@ -55,7 +55,7 @@ public class Database {
      * @return boolean if the user exists
      */
 
-    private boolean userExists(String id) {
+    protected boolean userExists(String id) {
 
 
        // String testQuery = "SELECT id FROM users WHERE id = ?;";

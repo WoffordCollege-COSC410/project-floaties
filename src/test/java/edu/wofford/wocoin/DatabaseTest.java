@@ -1,5 +1,5 @@
 package edu.wofford.wocoin;
-import edu.wofford.wocoin.main.*;
+//import edu.wofford.wocoin.main.*;
 
 /**
  * Tests for class Databases.
@@ -16,12 +16,12 @@ import java.nio.file.*;
 import java.sql.*;
 
 
-
 public class DatabaseTest {
 
     @Test
     public void isAnAdminWrongTest() throws IOException {
         String fileName = "src/test/resources/testdb.db";
+
         File file = new File(fileName);
         File dest = new File("src/test/resources/testdbcopy.db");
         Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -53,10 +53,10 @@ public class DatabaseTest {
         File file = new File(fileName);
         File dest = new File("src/test/resources/testdbcopy.db");
         Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
-
-        if (file.exists()) {
-            file.delete();
-        }
+        //LINE BELOW WAS CAUSING PROBLEM WE WERE DELETING THE DB
+        //if (file.exists()) {
+           // file.delete();
+       // }
         System.out.println("test full path = " + fileName);
         Database db = new Database(fileName);
         String url = "jdbc:sqlite:" + fileName;
@@ -191,10 +191,10 @@ public class DatabaseTest {
         File file = new File(fileName);
         File dest = new File("src/test/resources/testdbcopy.db");
         Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
-
-        if (file.exists()) {
-            file.delete();
-        }
+        //WAS CAUSING ERROR DELETING ORIGINAL DB FILE 
+        //if (file.exists()) {
+         //   file.delete();
+       // }
 
         Database db = new Database(fileName);
         String url = "jdbc:sqlite:" + fileName;
