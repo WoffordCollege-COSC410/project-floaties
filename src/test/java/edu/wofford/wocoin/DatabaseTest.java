@@ -16,7 +16,6 @@ import java.nio.file.*;
 import java.sql.*;
 
 
-
 public class DatabaseTest {
 
     @Test
@@ -144,12 +143,6 @@ public class DatabaseTest {
         dest.delete();
 
 
-        //verify file exists
-        //Instatntiate db with that file as a param
-        // asserts from create new db instead of looking at tablenames
-
-
-        //make sure we dont over write a new db
     }
 
     //@Ignore

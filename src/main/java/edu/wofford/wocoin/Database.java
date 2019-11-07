@@ -30,13 +30,13 @@ public class Database {
      * returns the administrators password
      */
 
-    public String getAdminPwd(){
+    public  String getAdminPwd(){
         return adminPwd;
     }
 
     /**
      * returns TRUE if the caller's input is administrator
-     * @param password user input to check against
+     * @param password - user input to check against
      * @return boolean if the password exists or not
      */
 
