@@ -177,4 +177,64 @@ public class Database {
     }
 
 
+    public boolean createWallet(String id) {
+        return true;
+    }
+
+    public boolean isActiveWallet(String username){
+        return true;
+    }
+
+    public boolean walletExists(){
+            return true;
+        }
+
+    public boolean passwordCorrect(String username, String password) {
+        return true;
+    }
+
+    private boolean isValidName(String name){
+        return !name.equals("");
+    }
+    private boolean isValidPrice(int price){
+        return price > 0;
+    }
+    private boolean isValidDescription(String description){
+        return !description.equals("");
+    }
+
+
+
+    public boolean addProduct(String seller, int price, String name, String description){
+
+        if(walletExists()){ //change stubs to real methods from parent classes
+            if(isValidName(name) && isValidPrice(price) && isValidDescription(description)){
+
+                String testQuery = "INSERT INTO products (seller, price, name, description) VALUES (?, ?, ?, ?);";
+
+                try (Connection conn= DriverManager.getConnection(url);
+                     PreparedStatement stmt = conn.prepareStatement(testQuery)){
+
+                    stmt.setString(1, seller);
+                    stmt.setInt(2, price);
+                    stmt.setString(3, name);
+                    stmt.setString(4, description);
+                    stmt.executeUpdate();
+                    return true;
+                }
+                catch(SQLException e){
+                    e.printStackTrace();
+                    return false;
+                }
+
+            }else{
+                return false;
+            }
+        } else {
+            return false;
+        }
+
+    }
+
+
 }
