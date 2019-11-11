@@ -318,7 +318,86 @@ public class DatabaseTest {
         }
         dest.delete();
         }
-    }
+
+        @Test
+        public void testProductNameValid() throws IOException{
+            String fileName = "src/test/resources/testdb.db";
+            String destName = "src/test/resources/testdbcopy.db";
+            File file = new File(fileName);
+            File dest = new File(destName);
+            Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+            System.out.println("test full path = " + destName);
+
+            String user = "jsmith";
+            Database p = new Database(destName);
+            assertTrue(! p.addProduct("walletKey", 5, "","description"));
+
+            dest.delete();
+
+        }
+
+        @Test
+        public void testProductDescriptionValid () throws IOException{
+            String fileName = "src/test/resources/testdb.db";
+            String destName = "src/test/resources/testdbcopy.db";
+            File file = new File(fileName);
+            File dest = new File(destName);
+            Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+            System.out.println("test full path = " + destName);
+
+            String user = "jsmith";
+            Database p = new Database(destName);
+            assertTrue(! p.addProduct("walletKey", 5, "jsmith",""));
+
+            dest.delete();
+        }
+
+        @Test
+        public void testProductPriceValid() throws IOException{
+            String fileName = "src/test/resources/testdb.db";
+            String destName = "src/test/resources/testdbcopy.db";
+            File file = new File(fileName);
+            File dest = new File(destName);
+            Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+            System.out.println("test full path = " + destName);
+
+            String user = "jsmith";
+            Database p = new Database(destName);
+            assertTrue(! p.addProduct("walletKey", 0, "name","description"));
+
+            dest.delete();
+        }
+
+        @Test
+        public void testAddProduct() throws IOException {
+            String fileName = "src/test/resources/testdb.db";
+            String destName = "src/test/resources/testdbcopy.db";
+            File file = new File(fileName);
+            File dest = new File(destName);
+            Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+            Database p = new Database(destName);
+            String url = "jdbc:sqlite:" + destName;
+
+            assertTrue(p.addProduct("walletkey", 3, "lamp", "light"));
+
+            try (Connection conn = DriverManager.getConnection(url);
+                 Statement stmt = conn.createStatement()) {
+                ResultSet rs = stmt.executeQuery("SELECT * FROM products WHERE name = 'lamp';");
+                assertEquals("lamp", rs.getString(4));
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            dest.delete();
+
+        }
+
+}
 
 
 

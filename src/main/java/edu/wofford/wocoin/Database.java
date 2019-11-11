@@ -5,8 +5,6 @@ import org.junit.Test;
 import java.io.*;
 import java.sql.*;
 
-
-
 //package edu.wofford.wocoin;
 //import java.sql.*;
 //import java.io.EOFException;
@@ -23,12 +21,7 @@ import javax.crypto.*;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
 import javax.crypto.Cipher;
-
 import org.apache.commons.io.FileUtils;
-
-
-
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Instant;
@@ -229,6 +222,10 @@ public class Database {
     }
 
 
+
+
+
+
     private boolean isAValidUser(String id){
         try (Connection conn = DriverManager.getConnection(url);
              PreparedStatement stmt = conn.prepareStatement("SELECT id FROM users WHERE id = ?;")){
@@ -413,6 +410,49 @@ public class Database {
 
 
     }
+
+    private boolean isValidName(String name){
+        return !name.equals("");
+    }
+    private boolean isValidPrice(int price){
+        return price > 0;
+    }
+    private boolean isValidDescription(String description){
+        return !description.equals("");
+    }
+
+    public boolean addProduct(String seller, int price, String name, String description){
+
+        if(walletExists()){ //change stubs to real methods from parent classes
+            if(isValidName(name) && isValidPrice(price) && isValidDescription(description)){
+
+                String testQuery = "INSERT INTO products (seller, price, name, description) VALUES (?, ?, ?, ?);";
+
+                try (Connection conn= DriverManager.getConnection(url);
+                     PreparedStatement stmt = conn.prepareStatement(testQuery)){
+
+                    stmt.setString(1, seller);
+                    stmt.setInt(2, price);
+                    stmt.setString(3, name);
+                    stmt.setString(4, description);
+                    stmt.executeUpdate();
+                    return true;
+                }
+                catch(SQLException e){
+                    e.printStackTrace();
+                    return false;
+                }
+
+            }else{
+                return false;
+            }
+        } else {
+            return false;
+        }
+
+    }
+
+
 
 
 }
