@@ -20,39 +20,58 @@ public class WalletTest{
 
 
     @Test
-    public void testAddWalletToExistingWalletOverwrite(){
-        Database db = new Database("src/test/resourcs/testdb.db");
-        Wallet w = new Wallet("kara");
-        assertTrue(w.WalletExists());
-        //might exist in other db I dont like how wallet takes a db file as the second input
-        //Wallet wa = new Wallet("kara");
-        //assertTrue(!w.WalletExists());
-        //assertTrue(wa.WalletExists());
+    public void testAddWalletToExistingWalletOverwrite() throws IOException{
+
+        String fileName = "src/test/resources/testdb.db";
+        String destName = "src/test/resources/testdbcopy.db";
+        File file = new File(fileName);
+        File dest = new File(destName);
+        Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        Database db = new Database (destName);
+
+
+        db.CreateWallet("kara");
+
+        assertTrue(db.walletExists("kara"));
+
+
+        dest.delete();
 
     }
 
 
 
     @Test
-    public void testAddWalletToExistingWalletNotOverwrite(){
-        Database db = new Database("src/test/resourcs/testdb.db");
-        Wallet w = new Wallet("kara");
-         //once this
-        assertTrue(w.WalletExists());
-        //might exist in other db I dont like how wallet takes a db file as the second input
-        Wallet wa = new Wallet("kara");
-        assertTrue(w.WalletExists());
-        assertTrue(!wa.WalletExists());
+    public void testAddWalletToExistingWalletNotOverwrite() throws IOException{
+
+
+        String fileName = "src/test/resources/testdb.db";
+        String destName = "src/test/resources/testdbcopy.db";
+        File file = new File(fileName);
+        File dest = new File(destName);
+        Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        Database db = new Database (destName);
+
+
+        db.CreateWallet("kara");
+
+
+        assertTrue(db.walletExists("kara"));
+
+        db.CreateWallet("kara");
+
+        assertTrue(db.walletExists("kara"));
+
 
     }
-
+/*
     @Test
     public void testAddWalletToANonExistentUser(){
         Database db =new Database("src/test/resources/testdb.db");
         Wallet w = new Wallet ("i dont exist");
         assertTrue(!w.WalletExists());
     }
-
+*/
     @Test
     public void testAddWalletPathDNE(){
 

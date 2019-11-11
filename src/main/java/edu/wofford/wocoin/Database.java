@@ -5,10 +5,75 @@ import org.junit.Test;
 import java.io.*;
 import java.sql.*;
 
+
+
+//package edu.wofford.wocoin;
+//import java.sql.*;
+//import java.io.EOFException;
+//import java.io.IOException;
+//import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.AlgorithmParameterSpec;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
+import javax.crypto.*;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.PBEParameterSpec;
+import javax.crypto.Cipher;
+
+import org.apache.commons.io.FileUtils;
+
+
+
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
+import java.lang.Exception.*;
+
+
+
+
+//import oracle.security.crypto.core.*;
+
+
+
+import io.reactivex.Single;
+import io.reactivex.disposables.Disposable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
+import org.web3j.crypto.CipherException;
+//import org.apache.beam.sdk.coders.CoderException;
+
+
+import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.methods.response.EthBlock;
+import org.web3j.protocol.core.methods.response.Transaction;
+import org.web3j.protocol.http.HttpService;
+import org.web3j.utils.Convert;
+import org.web3j.crypto.WalletUtils;
+import org.web3j.crypto.*;
+
+import java.security.NoSuchAlgorithmException;
+import java.security.*;
+import java.lang.Exception.*;
+
+
 public class Database {
     private String adminPwd;
     private String url;
     private Connection con;
+    private Web3j web3;
 
     /**
      * This is the constructor for db
@@ -174,6 +239,174 @@ public class Database {
      */
     private String getHash(String saltedPasswd){
         return Utilities.applySha256(saltedPasswd);
+    }
+
+
+    private boolean isAValidUser(String id){
+        try (Connection conn = DriverManager.getConnection(url);
+             PreparedStatement stmt = conn.prepareStatement("SELECT id FROM users WHERE id = ?;")){
+
+            stmt.setString(1,id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                if(rs.getString(1).equals(id)){
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            } else {
+                return false;
+            }
+
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+            return true;
+        }
+    }
+
+
+
+    private boolean DBQueryWalletID (String id){
+
+
+        try (Connection conn = DriverManager.getConnection(url);
+             PreparedStatement stmt = conn.prepareStatement("SELECT id FROM wallets WHERE id = ?;")){
+
+            stmt.setString(1,id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                if(rs.getString(1).equals(id)){
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            } else {
+                return false;
+            }
+
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+            return true;
+        }
+    }
+
+
+    public boolean walletExists(String id ){
+        File existingWalletFile = new File("tmp//" + id + "//");
+
+        if (existingWalletFile.isDirectory() && DBQueryWalletID(id)) {
+            return true;
+        }
+        else{
+            return false;
+        }
+
+    }
+
+
+    public boolean CreateWallet(String id) {
+
+        if (!isAValidUser(id)) {
+            return false;
+        }
+        else{
+            if (walletExists(id)) {
+                try {
+                    String directoryString = "tmp//" + id + "//";
+                    File directory = new File(directoryString);
+                    FileUtils.cleanDirectory(directory);
+                    directory.delete();
+
+                    String destinationDir = "tmp//" + id + "//";
+                    File destination = new File(destinationDir);
+                    destination.mkdirs();
+
+                    web3 = Web3j.build(new HttpService("https://mainnet.infura.io/v3/338a115fa5324abeadccd992f9c6cbab"));
+
+                    String walletFileName = WalletUtils.generateFullNewWalletFile("password", destination);
+                    //Credentials credentials = WalletUtils.loadCredentials("password", "/ethereum/node0/keystore/UTC--2019-08-07T17-24-10.532680697Z--0fce4741f3f54fbffb97837b4ddaa8f769ba0f91.json");
+                    File f2 = new File(destinationDir + walletFileName);
+
+                    String[] fetchAddress = walletFileName.split("--");
+
+                    String getAddress = fetchAddress[fetchAddress.length - 1].split("\\.")[0];
+
+                    String testQuery = "INSERT INTO wallets (id, publickey) VALUES (?, ?);";
+
+
+                    try (Connection conn = DriverManager.getConnection(url);
+                         PreparedStatement stmt = conn.prepareStatement(testQuery)) {
+
+                        stmt.setString(1, id);
+                        stmt.setString(2, getAddress);
+                        stmt.executeUpdate();
+                        return true;
+
+
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        return false;
+                    }
+                } catch (NoSuchAlgorithmException e) {
+                    System.out.println("exception");
+                    e.printStackTrace();
+                    return false;
+                } catch (SecurityException e) {
+                    e.printStackTrace();
+                    return false;
+                } catch (GeneralSecurityException e) {
+                    e.printStackTrace();
+                    return false;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return false;
+                } catch (CipherException e) {
+                    e.printStackTrace();
+                    return false;
+                }
+            } else {
+                String destinationDir = "tmp//" + id + "//";
+                File destination = new File(destinationDir);
+                destination.mkdirs();
+
+                try {
+
+                    web3 = Web3j.build(new HttpService("https://mainnet.infura.io/v3/338a115fa5324abeadccd992f9c6cbab"));
+
+
+
+                    String walletFileName = WalletUtils.generateFullNewWalletFile("password", destination);
+
+                    return true;
+                } catch (NoSuchAlgorithmException e) {
+                    System.out.println("exception");
+                    e.printStackTrace();
+                    return false;
+                } catch (SecurityException e) {
+                    e.printStackTrace();
+                    return false;
+                } catch (GeneralSecurityException e) {
+                    e.printStackTrace();
+                    return false;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return false;
+                } catch (CipherException e) {
+                    e.printStackTrace();
+                    return false;
+                }
+            }
+
+
+        }
+
+
     }
 
 
