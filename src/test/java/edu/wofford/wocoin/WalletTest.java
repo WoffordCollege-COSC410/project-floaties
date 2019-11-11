@@ -64,14 +64,22 @@ public class WalletTest{
 
 
     }
-/*
+
     @Test
-    public void testAddWalletToANonExistentUser(){
-        Database db =new Database("src/test/resources/testdb.db");
-        Wallet w = new Wallet ("i dont exist");
-        assertTrue(!w.WalletExists());
+    public void testAddWalletToANonExistentUser() throws IOException{
+        String fileName = "src/test/resources/testdb.db";
+        String destName = "src/test/resources/testdbcopy.db";
+        File file = new File(fileName);
+        File dest = new File(destName);
+        Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        Database db = new Database (destName);
+
+
+        db.CreateWallet("Mr DNE");
+
+        assertTrue(!db.walletExists("Mr DNE"));
     }
-*/
+
     @Test
     public void testAddWalletPathDNE(){
 

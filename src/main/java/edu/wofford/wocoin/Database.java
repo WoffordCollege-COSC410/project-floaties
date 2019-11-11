@@ -36,26 +36,14 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
 import java.lang.Exception.*;
-
-
-
-
 //import oracle.security.crypto.core.*;
-
-
-
 import io.reactivex.Single;
 import io.reactivex.disposables.Disposable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-
 import org.web3j.crypto.CipherException;
 //import org.apache.beam.sdk.coders.CoderException;
-
-
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.EthBlock;
 import org.web3j.protocol.core.methods.response.Transaction;
@@ -63,7 +51,6 @@ import org.web3j.protocol.http.HttpService;
 import org.web3j.utils.Convert;
 import org.web3j.crypto.WalletUtils;
 import org.web3j.crypto.*;
-
 import java.security.NoSuchAlgorithmException;
 import java.security.*;
 import java.lang.Exception.*;
@@ -300,7 +287,7 @@ public class Database {
     public boolean walletExists(String id ){
         File existingWalletFile = new File("tmp//" + id + "//");
 
-        if (existingWalletFile.isDirectory() && DBQueryWalletID(id)) {
+        if (existingWalletFile.isDirectory() ){//&& DBQueryWalletID(id)) {
             return true;
         }
         else{
@@ -331,11 +318,29 @@ public class Database {
 
                     String walletFileName = WalletUtils.generateFullNewWalletFile("password", destination);
                     //Credentials credentials = WalletUtils.loadCredentials("password", "/ethereum/node0/keystore/UTC--2019-08-07T17-24-10.532680697Z--0fce4741f3f54fbffb97837b4ddaa8f769ba0f91.json");
-                    File f2 = new File(destinationDir + walletFileName);
+                    //File f2 = new File(destinationDir + walletFileName);
 
                     String[] fetchAddress = walletFileName.split("--");
 
                     String getAddress = fetchAddress[fetchAddress.length - 1].split("\\.")[0];
+
+
+                    try (Connection conne = DriverManager.getConnection(url);
+                         PreparedStatement stmt = conne.prepareStatement("DELETE FROM wallets WHERE id = ?;")){
+                        stmt.setString(1,id);
+                        stmt.executeUpdate();
+
+
+                    }
+                    catch(SQLException e) {
+                        e.printStackTrace();
+                    }
+
+
+
+
+
+
 
                     String testQuery = "INSERT INTO wallets (id, publickey) VALUES (?, ?);";
 

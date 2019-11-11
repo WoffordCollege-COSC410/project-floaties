@@ -37,7 +37,7 @@ public class Main {
 
                 Database db = new Database(destName);
 
-                db.CreateWallet("kara");
+                db.CreateWallet("robert");
 
 
                 //Wallet w = new Wallet("kara");
