@@ -1,9 +1,10 @@
 package edu.wofford.wocoin;
 
 import org.junit.Test;
-
 import java.io.*;
 import java.sql.*;
+
+
 
 //package edu.wofford.wocoin;
 //import java.sql.*;
@@ -411,6 +412,33 @@ public class Database {
 
     }
 
+    private String turnPublicKeyToId(String publicKey){
+        try (Connection conn = DriverManager.getConnection(url);
+             PreparedStatement stmt = conn.prepareStatement("SELECT id FROM wallets WHERE publickey = ?;")){
+
+            stmt.setString(1,publicKey);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                if(rs.getString(1).equals(publicKey)){
+                    return rs.getString(1);
+                }
+                else{
+                    return "";
+                }
+            } else {
+                return "";
+            }
+
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+
+
     private boolean isValidName(String name){
         return !name.equals("");
     }
@@ -422,8 +450,9 @@ public class Database {
     }
 
     public boolean addProduct(String seller, int price, String name, String description){
+        String id = turnPublicKeyToId(seller);
 
-        if(walletExists()){ //change stubs to real methods from parent classes
+        if(walletExists(id)){ //change stubs to real methods from parent classes
             if(isValidName(name) && isValidPrice(price) && isValidDescription(description)){
 
                 String testQuery = "INSERT INTO products (seller, price, name, description) VALUES (?, ?, ?, ?);";
@@ -451,6 +480,8 @@ public class Database {
         }
 
     }
+
+
 
 
 
