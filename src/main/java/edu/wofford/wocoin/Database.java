@@ -1,17 +1,8 @@
 package edu.wofford.wocoin;
 
-import org.junit.Test;
 import java.io.*;
 import java.sql.*;
 
-
-
-//package edu.wofford.wocoin;
-//import java.sql.*;
-//import java.io.EOFException;
-//import java.io.IOException;
-//import java.io.File;
-import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -23,26 +14,13 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
 import javax.crypto.Cipher;
 import org.apache.commons.io.FileUtils;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.lang.Exception.*;
-//import oracle.security.crypto.core.*;
-import io.reactivex.Single;
-import io.reactivex.disposables.Disposable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import org.web3j.crypto.CipherException;
-//import org.apache.beam.sdk.coders.CoderException;
+
 import org.web3j.protocol.Web3j;
-import org.web3j.protocol.core.methods.response.EthBlock;
-import org.web3j.protocol.core.methods.response.Transaction;
+
 import org.web3j.protocol.http.HttpService;
-import org.web3j.utils.Convert;
+
 import org.web3j.crypto.WalletUtils;
 import org.web3j.crypto.*;
 import java.security.NoSuchAlgorithmException;
@@ -295,7 +273,7 @@ public class Database {
     }
 
 
-    public boolean CreateWallet(String id) {
+    public boolean createWallet(String id) {
 
         if (!isAValidUser(id)) {
             return false;
@@ -360,16 +338,7 @@ public class Database {
                     System.out.println("exception");
                     e.printStackTrace();
                     return false;
-                } catch (SecurityException e) {
-                    e.printStackTrace();
-                    return false;
-                } catch (GeneralSecurityException e) {
-                    e.printStackTrace();
-                    return false;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return false;
-                } catch (CipherException e) {
+                } catch (SecurityException | GeneralSecurityException | IOException | CipherException e) {
                     e.printStackTrace();
                     return false;
                 }
@@ -391,16 +360,7 @@ public class Database {
                     System.out.println("exception");
                     e.printStackTrace();
                     return false;
-                } catch (SecurityException e) {
-                    e.printStackTrace();
-                    return false;
-                } catch (GeneralSecurityException e) {
-                    e.printStackTrace();
-                    return false;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return false;
-                } catch (CipherException e) {
+                } catch (SecurityException | GeneralSecurityException | IOException | CipherException e) {
                     e.printStackTrace();
                     return false;
                 }
@@ -436,8 +396,6 @@ public class Database {
             return "";
         }
     }
-
-
 
     private boolean isValidName(String name){
         return !name.equals("");
@@ -481,9 +439,9 @@ public class Database {
 
     }
 
-
-
-
+    public boolean passwordCorrect(String username, String password){
+        return true;
+    }
 
 
 }
