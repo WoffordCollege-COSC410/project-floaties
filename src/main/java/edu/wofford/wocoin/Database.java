@@ -263,7 +263,7 @@ public class Database {
     public boolean walletExists(String id ){
         File existingWalletFile = new File("tmp//" + id + "//");
 
-        if (existingWalletFile.isDirectory() ){//&& DBQueryWalletID(id)) {
+        if (existingWalletFile.isDirectory() && existingWalletFile.list().length > 0) {
             return true;
         }
         else{
@@ -312,12 +312,6 @@ public class Database {
                         e.printStackTrace();
                     }
 
-
-
-
-
-
-
                     String testQuery = "INSERT INTO wallets (id, publickey) VALUES (?, ?);";
 
 
@@ -354,8 +348,28 @@ public class Database {
 
 
                     String walletFileName = WalletUtils.generateFullNewWalletFile("password", destination);
+                    String[] fetchAddress = walletFileName.split("--");
 
-                    return true;
+                    String getAddress = fetchAddress[fetchAddress.length - 1].split("\\.")[0];
+                    String testQuery = "INSERT INTO wallets (id, publickey) VALUES (?, ?);";
+
+
+                    try (Connection conn = DriverManager.getConnection(url);
+                         PreparedStatement stmt = conn.prepareStatement(testQuery)) {
+
+                        stmt.setString(1, id);
+                        stmt.setString(2, getAddress);
+                        stmt.executeUpdate();
+                        return true;
+
+
+
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        return false;
+                    }
+
+
                 } catch (NoSuchAlgorithmException e) {
                     System.out.println("exception");
                     e.printStackTrace();
@@ -374,13 +388,13 @@ public class Database {
 
     private String turnPublicKeyToId(String publicKey){
         try (Connection conn = DriverManager.getConnection(url);
-             PreparedStatement stmt = conn.prepareStatement("SELECT id FROM wallets WHERE publickey = ?;")){
+             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM wallets WHERE publickey = ?;")){
 
             stmt.setString(1,publicKey);
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                if(rs.getString(1).equals(publicKey)){
+                if(rs.getString(2).equals(publicKey)){
                     return rs.getString(1);
                 }
                 else{

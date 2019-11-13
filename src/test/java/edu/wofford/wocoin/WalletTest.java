@@ -30,7 +30,7 @@ public class WalletTest{
         Database db = new Database (destName);
 
 
-        db.CreateWallet("kara");
+        db.createWallet("kara");
 
         assertTrue(db.walletExists("kara"));
 
@@ -53,12 +53,12 @@ public class WalletTest{
         Database db = new Database (destName);
 
 
-        db.CreateWallet("kara");
+        db.createWallet("kara");
 
 
         assertTrue(db.walletExists("kara"));
 
-        db.CreateWallet("kara");
+        db.createWallet("kara");
 
         assertTrue(db.walletExists("kara"));
 
@@ -75,7 +75,7 @@ public class WalletTest{
         Database db = new Database (destName);
 
 
-        db.CreateWallet("Mr DNE");
+        db.createWallet("Mr DNE");
 
         assertTrue(!db.walletExists("Mr DNE"));
     }

@@ -13,13 +13,15 @@ public class Feature04Main {
         Database d = new Database(args[0]);
         Scanner scan = new Scanner(System.in);
 
-        System.out.println("1: exit");
-        System.out.println("2: administrator");
-        System.out.println("3: user");
 
-        String rootMenu = scan.nextLine();
 
         while (menuContinue) {
+            System.out.println("1: exit");
+            System.out.println("2: administrator");
+            System.out.println("3: user");
+
+            String rootMenu = scan.nextLine();
+
             switch (rootMenu) {
                 case "1":
                     menuContinue = false;
@@ -41,10 +43,17 @@ public class Feature04Main {
                                 String username = scan.nextLine();
                                 System.out.println("Password: ");
                                 String userPass = scan.nextLine();
-                                d.addUser(username, userPass);
-                                System.out.println(username + " was added.");
-                                menuContinue = false;
-                                break;
+                                if (d.addUser(username, userPass)) {
+                                    System.out.println(username + " was added.");
+                                    menuContinue = false;
+                                    break;
+                                } else {
+                                    System.out.println(username + " already exists.");
+                                    menuContinue = false;
+                                    break;
+                                }
+
+
                             case "3":
                                 System.out.println("Username please: ");
                                 String removeUser = scan.nextLine();
@@ -53,8 +62,14 @@ public class Feature04Main {
                                 menuContinue = false;
                                 break;
                         }
+                    }else {
+                        System.out.println("Incorrect administrator password.");
+                        menuContinue = false;
+                        break;
                     }
                     break;
+
+
                 case "3":
                     while (userMenuContinue) {
 
@@ -81,24 +96,36 @@ public class Feature04Main {
                                         if (scan.nextLine().equals("y")) {
                                             d.createWallet(user);
                                             System.out.println("Wallet added.");
-                                        } else if (scan.nextLine().equals("n")) {
+                                            userMenuContinue = false;
+                                            menuContinue = false;
+                                            break;
+                                        } else () {
                                             System.out.println("Action canceled.");
                                             userMenuContinue = false;
                                             break;
-                                        } else {
-                                            System.out.println("nah"); //fix
                                         }
-
+                                    } else {
+                                        d.createWallet(user);
+                                        System.out.println("Wallet added.");
+                                        userMenuContinue = false;
+                                        menuContinue = false;
+                                        break;
                                     }
-                                    break;
-                                case "3":
-                                    //d.addProduct();
-                            }
 
-                        } else {
+                            }
+                        }
+                        else {
                             System.out.println("No such user.");
                             userMenuContinue = false;
                             menuContinue = false;
+                                    }
+
+
+
+                                case "3":
+                                    //d.addProduct();
+                                }
+
                         }
 
                     }
