@@ -30,7 +30,7 @@ public class DatabaseTest {
        assertTrue(!db.checkIsAdmin("wrong"));
        dest.delete();
     }
-    //@Ignore
+
     @Test
     public void isAnAdminRightTest() throws IOException{
         String fileName = "src/test/resources/testdb.db";
@@ -44,9 +44,6 @@ public class DatabaseTest {
         dest.delete();
     }
 
-
-
-    //@Ignore
     @Test
     public void testCreateNewDatabase() throws IOException{
 
@@ -84,7 +81,7 @@ public class DatabaseTest {
 
     }
 
-    //@Ignore
+
     @Test
     public void testOpenExistingdb() throws IOException{
         //move db into test resources
@@ -145,7 +142,7 @@ public class DatabaseTest {
 
     }
 
-    //@Ignore
+
     @Test
     public void testGetAdminPwd() throws IOException{
         String fileName = "src/test/resources/testdb.db";
@@ -158,7 +155,7 @@ public class DatabaseTest {
         assertEquals("adminpwd", test.getAdminPwd());
         dest.delete();
     }
-    //@Ignore
+
     @Test
     public void testIsAdminPassWdCorrect() throws IOException {
         String fileName = "src/test/resources/testdb.db";
@@ -174,37 +171,6 @@ public class DatabaseTest {
 
 
     @Test
-    public void testAddUserEmptyDB(){
-
-        //works 100% of the time
-        String fileName = "src/test/resources/emptydb.db";
-        File file = new File(fileName);
-        Database db = new Database(fileName);
-
-        String url = "jdbc:sqlite:" + fileName;
-
-        assertTrue(db.addUser("kara", "porter"));
-
-        try (Connection conn = DriverManager.getConnection(url);
-             Statement stmt = conn.createStatement()) {
-            ResultSet rs = stmt.executeQuery("SELECT * FROM users");
-            assertNotNull(rs.next());
-            assertEquals("kara", rs.getString(1));
-
-            String saltedPwd = "porter" + rs.getInt(2);
-            String hash = Utilities.applySha256(saltedPwd);
-            assertEquals(hash, rs.getString(3));
-
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        file.delete();
-
-    }
-    //@Ignore
-    @Test
     public void addUserToExistingDB() throws IOException {
         String fileName = "src/test/resources/testdb.db";
         String destName = "src/test/resources/testdbcopy.db";
@@ -212,27 +178,20 @@ public class DatabaseTest {
         File dest = new File(destName);
         Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
-
-
         Database db = new Database(destName);
         String url = "jdbc:sqlite:" + destName;
-        String id = "robert";
 
-        assertTrue(db.addUser("robert", "porter"));
+        assertTrue(db.addUser("kara", "porter"));
 
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()) {
-
-            ResultSet rs = stmt.executeQuery("SELECT id FROM users WHERE id = 'robert';");
-
+            ResultSet rs = stmt.executeQuery("SELECT id FROM users WHERE id = 'kara';");
 
             if (rs.next()) {
-                assertEquals(rs.getString(1),id);
+                assertEquals("kara", rs.getString(1));
             } else {
                 assertEquals(0, 1); //obviously false
             }
-
-
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -254,15 +213,15 @@ public class DatabaseTest {
         String url = "jdbc:sqlite:" + destName;
         String id = "srogers";
 
-        assertFalse(db.addUser("srogers", "porter"));
+        assertFalse(db.addUser("jsmith", "porter"));
 
-        try (Connection conn = DriverManager.getConnection(url);
-             Statement stmt = conn.createStatement()) {
-            ResultSet rs = stmt.executeQuery("SELECT id FROM users WHERE id = 'srogers';");
-            //assertFalse(rs.next());
-        } catch(SQLException e) {
-            e.printStackTrace();
-        }
+//        try (Connection conn = DriverManager.getConnection(url);
+//             Statement stmt = conn.createStatement()) {
+//            ResultSet rs = stmt.executeQuery("SELECT id FROM users WHERE id = 'jsmith';");
+//
+//        } catch(SQLException e) {
+//            e.printStackTrace();
+//        }
 
         dest.delete();
     }
@@ -278,8 +237,8 @@ public class DatabaseTest {
 
         Database db = new Database(destName);
         String url = "jdbc:sqlite:" + destName;
-        String id = "srogers";
 
+        db.addUser("srogers", "porter");
         assertTrue(db.removeUser("srogers"));
 
         try (Connection conn = DriverManager.getConnection(url);

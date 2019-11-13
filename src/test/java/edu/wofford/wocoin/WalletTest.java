@@ -1,4 +1,5 @@
 package edu.wofford.wocoin;
+import cucumber.api.java.bs.I;
 import edu.wofford.wocoin.main.*;
 
 /*
@@ -62,7 +63,7 @@ public class WalletTest{
 
         assertTrue(db.walletExists("kara"));
 
-
+        dest.delete();
     }
 
     @Test
@@ -78,13 +79,16 @@ public class WalletTest{
         db.createWallet("Mr DNE");
 
         assertTrue(!db.walletExists("Mr DNE"));
+        dest.delete();
     }
 
+    @Ignore
     @Test
     public void testAddWalletPathDNE(){
 
     }
 
+    @Ignore
     @Test
     public void testPublicKeyIsNonEmptyAndGood(){
 
