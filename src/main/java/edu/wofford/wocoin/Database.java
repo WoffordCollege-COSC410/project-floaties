@@ -256,6 +256,21 @@ public class Database {
         }
     }
 
+<<<<<<< Updated upstream
+=======
+    //maybe dont use tmp????
+    public boolean walletExists(String id ){
+        File existingWalletFile = new File("tmp//" + id + "//");
+
+        if (existingWalletFile.isDirectory() && existingWalletFile.list().length > 0) {
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+>>>>>>> Stashed changes
 
     public boolean createWallet(String id) {
 
@@ -379,7 +394,8 @@ public class Database {
 
             if (rs.next()) {
                 if(rs.getString(2).equals(publicKey)){
-                    return rs.getString(1);
+                    String builder =  rs.getString(1);
+                    return builder;
                 }
                 else{
                     return "";
@@ -423,9 +439,12 @@ public class Database {
     private boolean isValidName(String name){
         return !name.equals("");
     }
+
     private boolean isValidPrice(int price){
         return price > 0;
     }
+
+
     private boolean isValidDescription(String description){
         return !description.equals("");
     }

@@ -63,13 +63,12 @@ public class Feature04Main {
                                 menuContinue = false;
                                 break;
                         }
-                    }else {
+                    } else {
                         System.out.println("Incorrect administrator password.");
                         menuContinue = false;
                         break;
                     }
                     break;
-
 
                 case "3":
                     while (userMenuContinue) {
@@ -83,7 +82,7 @@ public class Feature04Main {
                         if (d.userExists(user) && d.passwordCorrect(user, password)) {
                             System.out.println("1: back");
                             System.out.println("2: create wallet");
-                            System.out.println("3: add product");
+
                             String userMenu = scan.nextLine();
 
                             switch (userMenu) {
@@ -106,6 +105,7 @@ public class Feature04Main {
                                             menuContinue = false;
                                             break;
                                         }
+
                                     } else {
                                         d.createWallet(user);
                                         System.out.println("Wallet added.");
@@ -154,10 +154,13 @@ public class Feature04Main {
                                     }
                             }
 
+
                         } else {
-                            System.out.println("No such user.");
+                            System.out.println("No such user. 77777");
                             userMenuContinue = false;
                             menuContinue = false;
+                        }
+                            break;
                         }
 
 
@@ -169,7 +172,7 @@ public class Feature04Main {
 
     }
 
-}
+
 
 
 
