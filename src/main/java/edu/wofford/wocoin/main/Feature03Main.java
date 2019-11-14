@@ -43,7 +43,7 @@ public class Feature03Main {
                                 String username = scan.nextLine();
                                 System.out.println("Password: ");
                                 String userPass = scan.nextLine();
-                                if(d.addUser(username, userPass)){
+                                if (d.addUser(username, userPass)) {
                                     System.out.println(username + " was added.");
                                     menuContinue = false;
                                     break;
@@ -61,7 +61,7 @@ public class Feature03Main {
                                 menuContinue = false;
                                 break;
                         }
-                    } else{
+                    } else {
                         System.out.println("Incorrect administrator password.");
                         menuContinue = false;
                         break;
@@ -103,10 +103,17 @@ public class Feature03Main {
                                             break;
                                         }
 
+                                    } else {
+                                        d.createWallet(user);
+                                        System.out.println("Wallet added.");
+                                        userMenuContinue = false;
+                                        menuContinue = false;
+                                        break;
                                     }
 
-                            }
 
+                            }
+                            //i added below else
                         } else {
                             System.out.println("No such user.");
                             userMenuContinue = false;
@@ -115,9 +122,10 @@ public class Feature03Main {
                         }
 
                     }
+            }
                     break;
 
-            }
+
 
         }
     }
