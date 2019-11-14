@@ -231,10 +231,7 @@ public class Database {
     }
 
 
-
-    private boolean DBQueryWalletID (String id){
-
-
+    public boolean walletExists(String id ){
         try (Connection conn = DriverManager.getConnection(url);
              PreparedStatement stmt = conn.prepareStatement("SELECT id FROM wallets WHERE id = ?;")){
 
@@ -256,18 +253,6 @@ public class Database {
         catch(SQLException e){
             e.printStackTrace();
             return true;
-        }
-    }
-
-
-    public boolean walletExists(String id ){
-        File existingWalletFile = new File("tmp//" + id + "//");
-
-        if (existingWalletFile.isDirectory() && !existingWalletFile.list().equals(null)) {
-            return true;
-        }
-        else{
-            return false;
         }
     }
 

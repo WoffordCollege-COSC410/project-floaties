@@ -103,6 +103,7 @@ public class Feature04Main {
                                         } else {
                                             System.out.println("Action canceled.");
                                             userMenuContinue = false;
+                                            menuContinue = false;
                                             break;
                                         }
                                     } else {
@@ -116,23 +117,27 @@ public class Feature04Main {
                                     if(d.walletExists(user)){
                                         System.out.println("Enter product name: ");
                                         String name = scan.nextLine();
-                                        System.out.println("Enter description of product: ");
-                                        String description = scan.nextLine();
-                                        System.out.println("Enter price: ");
-                                        int price = Integer.parseInt(scan.nextLine());
-
-                                        if(name.equals("") || description.equals("")){
+                                        while(name.length() == 0){
                                             System.out.println("Invalid value.");
                                             System.out.println("Expected a string with at least 1 character.");
-                                            menuContinue = false;
-                                            userMenuContinue = false;
-                                            break;
-                                        } else if (price <= 1){
+                                            System.out.println("Enter product name: ");
+                                            name = scan.nextLine();
+                                        }
+                                        System.out.println("Enter product description: ");
+                                        String description = scan.nextLine();
+                                        while(description.length() == 0){
+                                            System.out.println("Invalid value.");
+                                            System.out.println("Expected a string with at least 1 character.");
+                                            System.out.println("Enter product description: ");
+                                            description = scan.nextLine();
+                                        }
+                                        System.out.println("Enter price: ");
+                                        int price = Integer.parseInt(scan.nextLine());
+                                        while(price < 1){
                                             System.out.println("Invalid value.");
                                             System.out.println("Expected an integer value greater than or equal to 1.");
-                                            menuContinue = false;
-                                            userMenuContinue = false;
-                                            break;
+                                            System.out.println("Enter product price greater than 1: ");
+                                            price = Integer.parseInt(scan.nextLine());
                                         }
 
                                         String seller = d.turnIdtoPublickey(user);
