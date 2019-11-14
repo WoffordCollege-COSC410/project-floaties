@@ -82,6 +82,7 @@ public class Feature04Main {
                         if (d.userExists(user) && d.passwordCorrect(user, password)) {
                             System.out.println("1: back");
                             System.out.println("2: create wallet");
+                            System.out.println("3: add product");
 
                             String userMenu = scan.nextLine();
 
@@ -156,7 +157,7 @@ public class Feature04Main {
 
 
                         } else {
-                            System.out.println("No such user. 77777");
+                            System.out.println("No such user.");
                             userMenuContinue = false;
                             menuContinue = false;
                         }

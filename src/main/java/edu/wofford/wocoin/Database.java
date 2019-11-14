@@ -256,21 +256,7 @@ public class Database {
         }
     }
 
-<<<<<<< Updated upstream
-=======
-    //maybe dont use tmp????
-    public boolean walletExists(String id ){
-        File existingWalletFile = new File("tmp//" + id + "//");
 
-        if (existingWalletFile.isDirectory() && existingWalletFile.list().length > 0) {
-            return true;
-        }
-        else{
-            return false;
-        }
-    }
-
->>>>>>> Stashed changes
 
     public boolean createWallet(String id) {
 
@@ -504,11 +490,13 @@ public class Database {
                 for(int i=1; i <= rows; i++){
 
                     if(rs.getString(2).equals(turnIdtoPublickey(id))){
-                        carrats = ">>> ";
+                        carrats = ">>>  ";
                     }
                     else {
                         carrats = "";
                     }
+
+
 
 
                     if(rs.getInt(3) == 1){
@@ -519,7 +507,7 @@ public class Database {
                         wocoin= "WoCoins]";
                     }
 
-                    builder += i + ": " + carrats + rs.getString(4) + ": " + rs.getString(5) + "[" + Integer.toString(rs.getInt(3)) + " " + wocoin + "\r\n";
+                    builder += i + ": " + carrats + rs.getString(4) + ": " + rs.getString(5) + "  " + "[" + Integer.toString(rs.getInt(3)) + " " + wocoin + "\r\n";
                     rs.next();
                 }
 
