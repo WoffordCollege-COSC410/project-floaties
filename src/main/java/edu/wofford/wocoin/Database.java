@@ -411,6 +411,32 @@ public class Database {
         }
     }
 
+
+    private String turnIdtoPublickey(String id){
+        try (Connection conn = DriverManager.getConnection(url);
+             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM wallets WHERE id = ?;")){
+
+            stmt.setString(1,id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                if(rs.getString(1).equals(id)){
+                    return rs.getString(2);
+                }
+                else{
+                    return "";
+                }
+            } else {
+                return "";
+            }
+
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+            return "";
+        }
+    }
+
     private boolean isValidName(String name){
         return !name.equals("");
     }
@@ -452,6 +478,128 @@ public class Database {
         }
 
     }
+
+
+
+    public String displayProduct(String id) {
+        String builder = "";
+        String carrats;
+        String wocoin;
+
+
+        if(userExists(id)){
+            //String key = getPublicKey(id);
+
+
+            try (Connection conn = DriverManager.getConnection(url);
+                 Statement stmt = conn.createStatement()) {
+                ResultSet rs = stmt.executeQuery("select *, count(*) over () total_rows from products order by price, name collate nocase;");
+
+
+                rs.next();
+                int rows = rs.getInt(6);
+
+                for(int i=1; i <= rows; i++){
+
+                    if(rs.getString(2).equals(turnIdtoPublickey(id))){
+                        carrats = ">>> ";
+                    }
+                    else {
+                        carrats = "";
+                    }
+
+
+                    if(rs.getInt(3) == 1){
+                        wocoin = "WoCoin]";
+
+                    }
+                    else{
+                        wocoin= "WoCoins]";
+                    }
+
+                    builder += i + ": " + carrats + rs.getString(4) + ": " + rs.getString(5) + "[" + Integer.toString(rs.getInt(3)) + " " + wocoin + "\r\n";
+                    rs.next();
+                }
+
+
+                return builder;
+
+
+
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return "e";
+            }
+
+
+            // check if products showing were added by user
+
+            // 2D string array of size 4 to capture >>>, name, display, and price
+            // menu uses string array to print a formatted string using the individual elements
+
+        }else{
+
+            String result ="No such user.";
+            return result;
+        }
+
+
+
+    }
+
+/*
+    public String[][] displayProduct(String id) {
+        String result[];
+        if(userExists(id)){
+            //String key = getPublicKey(id);
+
+
+            try (Connection conn = DriverManager.getConnection(url);
+                 Statement stmt = conn.createStatement()) {
+                ResultSet rs = stmt.executeQuery("select *, count(*) over () total_rows from products order by price, name collate nocase;");
+
+                int rows = rs.getInt(6);
+                System.out.println("rows: "+ Integer.toString(rows));
+                result = new String[rows][3];
+                while (rs.next()) {
+                    for(int i = 0; i < rows; i++){
+                        result[i][2] = Integer.toString(rs.getInt(3));
+                        result[i][0] = rs.getString(4);
+                        result[i][1] = rs.getString(5);
+
+                    }
+                }
+                return result;
+
+
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+                result = new String[1][1];
+                result[0][0] = "oops catch";
+                return result;
+            }
+
+
+            // check if products showing were added by user
+
+            // 2D string array of size 4 to capture >>>, name, display, and price
+            // menu uses string array to print a formatted string using the individual elements
+
+        }else{
+            result = new String[1][1];
+            result[0][0] = "oops else";
+            return result;
+        }
+
+
+
+    }
+
+
+
+ */
 
     public boolean passwordCorrect(String username, String password){
         return true;
