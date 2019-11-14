@@ -31,9 +31,9 @@ public class WalletTest{
         Database db = new Database (destName);
 
 
-        db.createWallet("kara");
+        db.createWallet("jdoe");
 
-        assertTrue(db.walletExists("kara"));
+        assertTrue(db.walletExists("jdoe"));
 
 
         dest.delete();
@@ -54,14 +54,14 @@ public class WalletTest{
         Database db = new Database (destName);
 
 
-        db.createWallet("kara");
+        db.createWallet("jdoe");
 
 
-        assertTrue(db.walletExists("kara"));
+        assertTrue(db.walletExists("jdoe"));
 
-        db.createWallet("kara");
+        db.createWallet("jdoe");
 
-        assertTrue(db.walletExists("kara"));
+        assertTrue(db.walletExists("jdoe"));
 
         dest.delete();
     }

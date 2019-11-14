@@ -263,13 +263,12 @@ public class Database {
     public boolean walletExists(String id ){
         File existingWalletFile = new File("tmp//" + id + "//");
 
-        if (existingWalletFile.isDirectory() && existingWalletFile.list().length > 0) {
+        if (existingWalletFile.isDirectory() && !existingWalletFile.list().equals(null)) {
             return true;
         }
         else{
             return false;
         }
-
     }
 
 
@@ -411,8 +410,7 @@ public class Database {
         }
     }
 
-
-    private String turnIdtoPublickey(String id){
+    public String turnIdtoPublickey(String id){
         try (Connection conn = DriverManager.getConnection(url);
              PreparedStatement stmt = conn.prepareStatement("SELECT * FROM wallets WHERE id = ?;")){
 
@@ -450,7 +448,7 @@ public class Database {
     public boolean addProduct(String seller, int price, String name, String description){
         String id = turnPublicKeyToId(seller);
 
-        if(walletExists(id)){ //change stubs to real methods from parent classes
+        if(walletExists(id)){
             if(isValidName(name) && isValidPrice(price) && isValidDescription(description)){
 
                 String testQuery = "INSERT INTO products (seller, price, name, description) VALUES (?, ?, ?, ?);";
@@ -548,58 +546,6 @@ public class Database {
 
     }
 
-/*
-    public String[][] displayProduct(String id) {
-        String result[];
-        if(userExists(id)){
-            //String key = getPublicKey(id);
-
-
-            try (Connection conn = DriverManager.getConnection(url);
-                 Statement stmt = conn.createStatement()) {
-                ResultSet rs = stmt.executeQuery("select *, count(*) over () total_rows from products order by price, name collate nocase;");
-
-                int rows = rs.getInt(6);
-                System.out.println("rows: "+ Integer.toString(rows));
-                result = new String[rows][3];
-                while (rs.next()) {
-                    for(int i = 0; i < rows; i++){
-                        result[i][2] = Integer.toString(rs.getInt(3));
-                        result[i][0] = rs.getString(4);
-                        result[i][1] = rs.getString(5);
-
-                    }
-                }
-                return result;
-
-
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-                result = new String[1][1];
-                result[0][0] = "oops catch";
-                return result;
-            }
-
-
-            // check if products showing were added by user
-
-            // 2D string array of size 4 to capture >>>, name, display, and price
-            // menu uses string array to print a formatted string using the individual elements
-
-        }else{
-            result = new String[1][1];
-            result[0][0] = "oops else";
-            return result;
-        }
-
-
-
-    }
-
-
-
- */
 
     public boolean passwordCorrect(String username, String password){
         return true;

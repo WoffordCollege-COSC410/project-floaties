@@ -3,6 +3,7 @@ package edu.wofford.wocoin.main;
 import edu.wofford.wocoin.Database;
 
 import java.util.Scanner;
+import java.lang.Integer;
 
 public class Feature04Main {
 
@@ -99,7 +100,7 @@ public class Feature04Main {
                                             userMenuContinue = false;
                                             menuContinue = false;
                                             break;
-                                        } else () {
+                                        } else {
                                             System.out.println("Action canceled.");
                                             userMenuContinue = false;
                                             break;
@@ -111,28 +112,59 @@ public class Feature04Main {
                                         menuContinue = false;
                                         break;
                                     }
+                                case "3":
+                                    if(d.walletExists(user)){
+                                        System.out.println("Enter product name: ");
+                                        String name = scan.nextLine();
+                                        System.out.println("Enter description of product: ");
+                                        String description = scan.nextLine();
+                                        System.out.println("Enter price: ");
+                                        int price = Integer.parseInt(scan.nextLine());
 
+                                        if(name.equals("") || description.equals("")){
+                                            System.out.println("Invalid value.");
+                                            System.out.println("Expected a string with at least 1 character.");
+                                            menuContinue = false;
+                                            userMenuContinue = false;
+                                            break;
+                                        } else if (price <= 1){
+                                            System.out.println("Invalid value.");
+                                            System.out.println("Expected an integer value greater than or equal to 1.");
+                                            menuContinue = false;
+                                            userMenuContinue = false;
+                                            break;
+                                        }
+
+                                        String seller = d.turnIdtoPublickey(user);
+                                        d.addProduct(seller, price, name, description);
+                                        System.out.println("Product added.");
+                                        menuContinue = false;
+                                        userMenuContinue = false;
+                                        break;
+                                    } else {
+                                        System.out.println("User has no wallet.");
+                                        userMenuContinue = false;
+                                        menuContinue = false;
+                                        break;
+                                    }
                             }
-                        }
-                        else {
+
+                        } else {
                             System.out.println("No such user.");
                             userMenuContinue = false;
                             menuContinue = false;
-                                    }
-
-
-
-                                case "3":
-                                    //d.addProduct();
-                                }
-
                         }
 
+
                     }
-                    break;
+
             }
 
         }
+
     }
+
 }
+
+
 
