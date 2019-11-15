@@ -201,37 +201,12 @@ public class Database {
     }
 
 
-
-
-
-
-    private boolean isAValidUser(String id){
-        try (Connection conn = DriverManager.getConnection(url);
-             PreparedStatement stmt = conn.prepareStatement("SELECT id FROM users WHERE id = ?;")){
-
-            stmt.setString(1,id);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                if(rs.getString(1).equals(id)){
-                    return true;
-                }
-                else{
-                    return false;
-                }
-            } else {
-                return false;
-            }
-
-        }
-        catch(SQLException e){
-            e.printStackTrace();
-            return true;
-        }
-    }
-
-
-    public boolean walletExists(String id ){
+    /**
+     * Checks to see if the user has a wallet in the table
+     * @param id the name of the user
+     * @return boolean of if the user has a wallet
+     */
+    public boolean walletExists(String id){
         try (Connection conn = DriverManager.getConnection(url);
              PreparedStatement stmt = conn.prepareStatement("SELECT id FROM wallets WHERE id = ?;")){
 
@@ -260,7 +235,7 @@ public class Database {
 
     public boolean createWallet(String id) {
 
-        if (!isAValidUser(id)) {
+        if (!userExists(id)) {
             return false;
         }
         else{
@@ -434,6 +409,8 @@ public class Database {
     private boolean isValidDescription(String description){
         return !description.equals("");
     }
+
+
 
     public boolean addProduct(String seller, int price, String name, String description){
         String id = turnPublicKeyToId(seller);
