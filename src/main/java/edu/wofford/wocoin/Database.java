@@ -231,6 +231,12 @@ public class Database {
         }
     }
 
+    /**
+     *
+     * @param id this is the parameter that reprent's username
+     * @return whether or not if the wallet was created.
+     */
+
 
 
     public boolean createWallet(String id) {
@@ -410,7 +416,13 @@ public class Database {
         return !description.equals("");
     }
 
-
+    /**
+     * @param seller this is the public key found in the wallets table of the seller of the product
+     * @param price this is the amount of Wocoins a product costs.
+     * @param name this is the name of the product.
+     * @param description this is a user defined description of the product.
+     * @return whether or not the product was added.
+     */
 
     public boolean addProduct(String seller, int price, String name, String description){
         String id = turnPublicKeyToId(seller);
@@ -444,6 +456,11 @@ public class Database {
 
     }
 
+    /**
+     *
+     * @param id this is the username of whoever wants to display products
+     * @return a string of all of the products
+     */
 
 
     public String displayProduct(String id) {
@@ -515,6 +532,12 @@ public class Database {
 
     }
 
+    /**
+     *
+     * @param username of the person querying the db
+     * @param password of the person querying the db
+     * @return whether or not if the password is correct g
+     */
 
     public boolean passwordCorrect(String username, String password){
         return true;
