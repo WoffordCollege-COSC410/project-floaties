@@ -15,6 +15,7 @@ public class Database {
     private String adminPwd = "adminpwd";
     private String url;
     private Connection con;
+    public boolean detectsExisting;
 
     /**
      * This is the constructor for db
@@ -28,9 +29,7 @@ public class Database {
         if(!file.exists()){
             Utilities.createNewDatabase(fileName);
         }
-
-
-
+        return detectsExisting;
     }
 
     /**
@@ -61,21 +60,50 @@ public class Database {
      *helper method to add user currently not working
      * @return boolean if the user exists
      */
-    //stub
-    public boolean userExists() {
-        String user = " ";
-        return false;
-    }
 
-    /*private boolean userExists(String username) {
+    private boolean userExists(String id) {
+
+        //link this to add user
+
+        String testQuery = "SELECT id FROM users WHERE VALUES (?);";  //maybe we need parens look up format
+        try (Connection conn = DriverManager.getConnection(url);
+             Statement stmt = conn.executeStatement(testQuery) ){
+
+                 stmt.setString(1,id);
+                 stmt.executeUpdate();
+
+                 ResultSet rs = stmt.executeQuery(testQuery);
+                 rs.next();
+                 if(rs.getString((2), id)){
+                     return false;
+                 }
+                 else{
+                     return true;
+                 }
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+            return true;
+        }
+    }
+/*
+    private boolean userExists(String username) {
+
+
+
         String user ="";
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()){
+
+
             String testQuery = String.format("SELECT id FROM users WHERE id = %s;", username);
+
             ResultSet rs = stmt.executeQuery(testQuery);
             while(rs.next()){
                 user = rs.getString(1);
             }
+
+
             if (!(user.equals(null))) {  //.wasNull
                 return false;
             } else {
@@ -91,19 +119,20 @@ public class Database {
     /**
      *currently not working depends on the above UserExists method that is not correctly working
      * we know this because of the code coverage report that does not go inside the main if of the function
-     * @param id - this will be the value stored in the id column of the Database
+     * @param username - this will be the value stored in the id column of the Database
      * @param password - this value will be salted and hashed and stored in the salt and hash columns of the DB
      * @return boolean - if user exists or not
      */
 
     public boolean addUser(String id, String password) {
-        if(!userExists()){
+        if(!userExists(id)){
             String saltedPasswd;
             int salt = generateSalt();
             saltedPasswd = getSaltedPasswd(password, salt);
             String hash = getHash(saltedPasswd);
+            //url is empty
+            //sql statement addUser
 
-            String testQuery = "INSERT INTO users (id, salt, hash) VALUES (?, ?, ?);";
 
 
             try (Connection conn= DriverManager.getConnection(url);
@@ -157,7 +186,10 @@ public class Database {
      * @return a string that will be stored in the hash field of the DB
      */
     private String getHash(String saltedPasswd){
-        return Utilities.applySha256(saltedPasswd);
+        String hash = "";
+        hash = Utilities.applySha256(saltedPasswd);
+
+        return hash;
     }
 
 
