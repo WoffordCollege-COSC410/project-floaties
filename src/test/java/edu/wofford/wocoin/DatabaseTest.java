@@ -367,12 +367,14 @@ public class DatabaseTest {
             Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
             Database db = new Database(destName);
-            String url = "jdbc:sqlite:" + destName;
 
             assertEquals(db.displayProduct("MR DNE"), "No such user.");
 
+            dest.delete();
+
         }
 
+        @Test
         public void showNoAddedProductsTest() throws IOException{
             String fileName = "src/test/resources/testdb.db";
             String destName = "src/test/resources/testdbcopy.db";
@@ -381,9 +383,25 @@ public class DatabaseTest {
             Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
             Database db = new Database(destName);
-            String url = "jdbc:sqlite:" + destName;
 
             assertEquals(db.displayProduct("hjones")," false");
+
+            dest.delete();
+        }
+
+        @Test
+        public void testRemoveProduct() throws IOException{
+            String fileName = "src/test/resources/testdb.db";
+            String destName = "src/test/resources/testdbcopy.db";
+            File file = new File(fileName);
+            File dest = new File(destName);
+            Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+            Database db = new Database(destName);
+
+            assertTrue(db.removeProduct("jsmith", "chalk"));
+
+            dest.delete();
         }
 
 }

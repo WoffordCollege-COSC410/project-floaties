@@ -1,32 +1,14 @@
 package edu.wofford.wocoin;
-
 import java.io.*;
 import java.sql.*;
-
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.security.spec.AlgorithmParameterSpec;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.KeySpec;
-import javax.crypto.*;
-import javax.crypto.spec.PBEKeySpec;
-import javax.crypto.spec.PBEParameterSpec;
-import javax.crypto.Cipher;
 import org.apache.commons.io.FileUtils;
-
 import org.web3j.crypto.CipherException;
-
 import org.web3j.protocol.Web3j;
-
 import org.web3j.protocol.http.HttpService;
-
 import org.web3j.crypto.WalletUtils;
-import org.web3j.crypto.*;
-import java.security.NoSuchAlgorithmException;
 import java.security.*;
-import java.lang.Exception.*;
-
+import java.util.ArrayList;
 
 public class Database {
     private String adminPwd;
@@ -51,7 +33,8 @@ public class Database {
     }
 
     /**
-     * returns the administrators password
+     * Returns the administrator password
+     * @return the administrators password
      */
 
     public  String getAdminPwd(){
@@ -59,7 +42,7 @@ public class Database {
     }
 
     /**
-     * returns TRUE if the caller's input is administrator
+     * Checks if administrator is valid
      * @param password - user input to check against
      * @return boolean if the password exists or not
      */
@@ -75,7 +58,8 @@ public class Database {
 
     }
     /**
-     *helper method to add user currently not working
+     * Checks if user already exists in the table
+     * @param id username
      * @return boolean if the user exists
      */
 
@@ -108,8 +92,7 @@ public class Database {
     }
 
     /**
-     *currently not working depends on the above UserExists method that is not correctly working
-     * we know this because of the code coverage report that does not go inside the main if of the function
+     * Adds user to the table
      * @param id this will be the value stored in the id column of the Database
      * @param password this value will be salted and hashed and stored in the salt and hash columns of the DB
      * @return boolean if user exists or not
@@ -232,12 +215,10 @@ public class Database {
     }
 
     /**
-     *
+     * Creates a wallet for the user
      * @param id this is the parameter that reprent's username
      * @return whether or not if the wallet was created.
      */
-
-
 
     public boolean createWallet(String id) {
 
@@ -417,13 +398,13 @@ public class Database {
     }
 
     /**
+     * Adds a product to the table
      * @param seller this is the public key found in the wallets table of the seller of the product
      * @param price this is the amount of Wocoins a product costs.
      * @param name this is the name of the product.
      * @param description this is a user defined description of the product.
      * @return whether or not the product was added.
      */
-
     public boolean addProduct(String seller, int price, String name, String description){
         String id = turnPublicKeyToId(seller);
 
@@ -457,7 +438,29 @@ public class Database {
     }
 
     /**
-     *
+     * Removes a product identified by their id from the Database
+     * @param id a value passed in by the product to be removed
+     * @return a boolean value of if the product was removed or not
+     */
+    public boolean removeProduct(String id, String name){
+        if(walletExists(id)){
+            try (Connection conn = DriverManager.getConnection(url);
+                 PreparedStatement stmt = conn.prepareStatement("DELETE FROM product WHERE name = ?;")){
+                stmt.setString(1, name);
+                stmt.executeUpdate();
+
+                return true;
+            } catch(SQLException e) {
+                e.printStackTrace();
+                return false; }
+        } else {
+            return false;
+        }
+
+    }
+
+    /**
+     * Displays the product
      * @param id this is the username of whoever wants to display products
      * @return a string of all of the products
      */
@@ -471,7 +474,7 @@ public class Database {
 
         if(userExists(id)){
             //String key = getPublicKey(id);
-
+            ArrayList<ArrayList<String>> list = new ArrayList<ArrayList<String>>();
 
             try (Connection conn = DriverManager.getConnection(url);
                  Statement stmt = conn.createStatement()) {
@@ -533,7 +536,7 @@ public class Database {
     }
 
     /**
-     *
+     * Determines if the password is correct
      * @param username of the person querying the db
      * @param password of the person querying the db
      * @return whether or not if the password is correct g

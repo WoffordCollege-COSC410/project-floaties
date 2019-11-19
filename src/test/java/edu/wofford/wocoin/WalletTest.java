@@ -56,7 +56,6 @@ public class WalletTest{
 
         db.createWallet("jdoe");
 
-
         assertTrue(db.walletExists("jdoe"));
 
         db.createWallet("jdoe");
