@@ -14,7 +14,8 @@ public class Feature05Main {
 
         Database d = new Database(args[0]);
         Scanner scan = new Scanner(System.in);
-        MenuOption op1 = new AddUserMenuOption;
+
+
 
 
 //        while (menuContinue) {

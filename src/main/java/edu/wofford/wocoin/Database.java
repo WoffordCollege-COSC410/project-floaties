@@ -8,6 +8,7 @@ import org.web3j.protocol.Web3j;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.crypto.WalletUtils;
 import java.security.*;
+import java.util.List;
 import java.util.ArrayList;
 
 public class Database {
@@ -461,20 +462,79 @@ public class Database {
 
     /**
      * Displays the product
-     * @param id this is the username of whoever wants to display products
      * @return a string of all of the products
      */
 
 
-    public String displayProduct(String id) {
-        String builder = "";
+    public List<Product> displayProductF6() {
+        List<Product> list = new ArrayList<Product>();
+        list.add(0, null);
+        try(Connection conn = DriverManager.getConnection(url);
+            Statement stmt = conn.createStatement()) {
+            ResultSet rs = stmt.executeQuery("select * from products order by name collate nocase;");
+            ResultSet rsCount = stmt.executeQuery("select count(*) from products;");
+            rs.next();
+            for (int i = 1; i <= rsCount.getInt(1); i++) {
+                Product p = new Product(rs.getString(2), rs.getInt(3), rs.getString(4), rs.getString(5));
+                list.add(p);
+                rs.next();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+//write unit test
+
+
+    /**
+     *
+     * @param seller
+     * @return
+     */
+
+    public List displayProductF5(String seller){
+        List<Product> list = new ArrayList<Product>();
+        list.add(0, null);
+        String query = "select *, count(*) over () total_rows from products where seller = ? order by name collate nocase;";
+        try(Connection conn = DriverManager.getConnection(url);
+            PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, seller);
+            ResultSet rs = stmt.executeQuery(query);
+            rs.next();
+            int rows = rs.getInt(6);
+            for(int i=1; i <= rows; i++){
+                Product p = new Product(rs.getString(2), rs.getInt(3), rs.getString(4), rs.getString(5));
+                list.add(p);
+                rs.next();
+            }
+        }  catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    //write unit tests
+
+    /**
+     * Determines if the password is correct
+     * @param username of the person querying the db
+     * @param password of the person querying the db
+     * @return whether or not if the password is correct g
+     */
+
+    public boolean passwordCorrect(String username, String password){
+        return true;
+    }
+
+
+        /*String builder = "";
         String carrats;
         String wocoin;
 
 
         if(userExists(id)){
             //String key = getPublicKey(id);
-            ArrayList<ArrayList<String>> list = new ArrayList<ArrayList<String>>();
 
             try (Connection conn = DriverManager.getConnection(url);
                  Statement stmt = conn.createStatement()) {
@@ -529,22 +589,5 @@ public class Database {
 
             String result ="No such user.";
             return result;
-        }
-
-
-
-    }
-
-    /**
-     * Determines if the password is correct
-     * @param username of the person querying the db
-     * @param password of the person querying the db
-     * @return whether or not if the password is correct g
-     */
-
-    public boolean passwordCorrect(String username, String password){
-        return true;
-    }
-
-
+        }*/
 }
