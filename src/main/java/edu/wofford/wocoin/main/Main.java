@@ -25,7 +25,7 @@ public class Main {
             } else if (args[0].equals("4")) {
                 Feature04Main.main(realArgs);
             } else if(args[0].equals("6")) {
-                Feature06Main.main(realArgs);
+                //Feature06Main.main(realArgs);
             }
                 else
              {

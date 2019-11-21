@@ -440,12 +440,11 @@ public class Database {
 
     /**
      * Removes a product identified by their id from the Database
-     * @param id a value passed in by the product to be removed
+     * @param name a value passed in by the product to be removed
      * @return a boolean value of if the product was removed or not
      */
-    public boolean removeProduct(String id, String name){
-        if(walletExists(id)){
-            try (Connection conn = DriverManager.getConnection(url);
+    public boolean removeProduct(String name){
+        try (Connection conn = DriverManager.getConnection(url);
                  PreparedStatement stmt = conn.prepareStatement("DELETE FROM product WHERE name = ?;")){
                 stmt.setString(1, name);
                 stmt.executeUpdate();
@@ -453,10 +452,21 @@ public class Database {
                 return true;
             } catch(SQLException e) {
                 e.printStackTrace();
-                return false; }
-        } else {
-            return false;
-        }
+                return false;
+            }
+//        if(walletExists(id)){
+//            try (Connection conn = DriverManager.getConnection(url);
+//                 PreparedStatement stmt = conn.prepareStatement("DELETE FROM product WHERE name = ?;")){
+//                stmt.setString(1, name);
+//                stmt.executeUpdate();
+//
+//                return true;
+//            } catch(SQLException e) {
+//                e.printStackTrace();
+//                return false; }
+//        } else {
+//            return false;
+//        }
 
     }
 

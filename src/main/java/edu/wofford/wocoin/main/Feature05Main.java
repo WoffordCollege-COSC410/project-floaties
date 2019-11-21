@@ -1,7 +1,7 @@
 package edu.wofford.wocoin.main;
 
 import edu.wofford.wocoin.Database;
-import edu.wofford.wocoin.MenuOption;
+//import edu.wofford.wocoin.MenuOption;
 
 import java.util.Scanner;
 import java.lang.Integer;

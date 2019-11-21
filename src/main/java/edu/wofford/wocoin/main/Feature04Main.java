@@ -1,6 +1,7 @@
 package edu.wofford.wocoin.main;
 
 import edu.wofford.wocoin.Database;
+import edu.wofford.wocoin.Menu;
 
 import java.util.Scanner;
 import java.lang.Integer;
@@ -8,14 +9,18 @@ import java.lang.Integer;
 public class Feature04Main {
 
     public static void main(String[] args) {
-        boolean menuContinue = true;
-        boolean userMenuContinue = true;
+        //boolean menuContinue = true;
+        //boolean userMenuContinue = true;
 
         Database d = new Database(args[0]);
         Scanner scan = new Scanner(System.in);
 
+        Menu menu = new Menu(d, scan, System.out);
+        menu.display();
 
 
+
+        /*
         while (menuContinue) {
             System.out.println("1: exit");
             System.out.println("2: administrator");
@@ -168,6 +173,8 @@ public class Feature04Main {
                     }
 
             }
+
+         */
 
         }
 
