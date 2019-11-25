@@ -278,6 +278,92 @@ public class DatabaseTest {
         dest.delete();
         }
 
+
+        // right here is wallet tests
+        @Test
+        public void testMakingWalletWhereUserDNE() throws IOException{
+
+            String fileName = "src/test/resources/testdb.db";
+            String destName = "src/test/resources/testdbcopy.db";
+            File file = new File(fileName);
+            File dest = new File(destName);
+            Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            Database db = new Database (destName);
+
+
+            db.createWallet("MR DNE");
+
+            assertTrue(!db.walletExists("MR DNE"));
+
+
+            dest.delete();
+
+        }
+
+    @Test
+    public void testMakingWalletWhereWalletDoesNotExistForThatUser() throws IOException{
+
+        String fileName = "src/test/resources/testdb.db";
+        String destName = "src/test/resources/testdbcopy.db";
+        File file = new File(fileName);
+        File dest = new File(destName);
+        Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        Database db = new Database (destName);
+
+        db.addUser("kara", "1234");
+        db.createWallet("kara");
+
+        assertTrue(db.walletExists("kara"));
+
+
+        dest.delete();
+
+    }
+
+    @Test
+    public void testturnIdtoPublickey() throws IOException{
+        String fileName = "src/test/resources/testdb.db";
+        String destName = "src/test/resources/testdbcopy.db";
+        File file = new File(fileName);
+        File dest = new File(destName);
+        Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+        System.out.println("test full path = " + destName);
+
+        String user = "jsmith";
+        Database db = new Database(destName);
+
+        assertEquals(db.turnIdtoPublickey("jsmith"), "a615316333ba8622fd5bb60fe39758b3515f774d");
+
+
+
+
+        dest.delete();
+    }
+
+    @Test
+    public void testturnIdtoPublickey2() throws IOException{
+        String fileName = "src/test/resources/testdb.db";
+        String destName = "src/test/resources/testdbcopy.db";
+        File file = new File(fileName);
+        File dest = new File(destName);
+        Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+        System.out.println("test full path = " + destName);
+
+        String user = "jsmith";
+        Database db = new Database(destName);
+
+        assertEquals(db.turnIdtoPublickey("MR DNE"), "");
+
+
+
+
+        dest.delete();
+    }
+
+
+
         @Test
         public void testProductNameValid() throws IOException{
             String fileName = "src/test/resources/testdb.db";
@@ -314,7 +400,7 @@ public class DatabaseTest {
         }
 
         @Test
-        public void testProductPriceValid() throws IOException{
+        public void testProductPriceInValid() throws IOException{
             String fileName = "src/test/resources/testdb.db";
             String destName = "src/test/resources/testdbcopy.db";
             File file = new File(fileName);
@@ -325,7 +411,7 @@ public class DatabaseTest {
 
             String user = "jsmith";
             Database p = new Database(destName);
-            assertTrue(! p.addProduct("walletKey", 0, "name","description"));
+            assertTrue(!p.addProduct("a615316333ba8622fd5bb60fe39758b3515f774d", 0, "lamp","FIAT LUX!"));
 
             dest.delete();
         }
@@ -341,7 +427,7 @@ public class DatabaseTest {
             Database p = new Database(destName);
             String url = "jdbc:sqlite:" + destName;
 
-            assertTrue(p.addProduct("walletkey", 3, "lamp", "light"));
+            assertTrue(p.addProduct("a615316333ba8622fd5bb60fe39758b3515f774d", 3, "lamp", "light"));
 
             try (Connection conn = DriverManager.getConnection(url);
                  Statement stmt = conn.createStatement()) {
@@ -356,7 +442,7 @@ public class DatabaseTest {
 
         }
 
-
+/*
         @Test
         public void nonExistentUserTest() throws IOException{
 
@@ -403,6 +489,8 @@ public class DatabaseTest {
 
             dest.delete();
         }
+
+ */
 
 }
 

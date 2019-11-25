@@ -16,6 +16,7 @@ public class Database {
     private String url;
     private Connection con;
     private Web3j web3;
+    private String address;
 
     /**
      * This is the constructor for db
@@ -233,20 +234,37 @@ public class Database {
                     File directory = new File(directoryString);
                     FileUtils.cleanDirectory(directory);
                     directory.delete();
+                }
+                catch(IOException | IllegalArgumentException e){
+                    System.out.println("error");
+                }
 
                     String destinationDir = "tmp//" + id + "//";
                     File destination = new File(destinationDir);
                     destination.mkdirs();
 
-                    web3 = Web3j.build(new HttpService("https://mainnet.infura.io/v3/338a115fa5324abeadccd992f9c6cbab"));
 
-                    String walletFileName = WalletUtils.generateFullNewWalletFile("password", destination);
-                    //Credentials credentials = WalletUtils.loadCredentials("password", "/ethereum/node0/keystore/UTC--2019-08-07T17-24-10.532680697Z--0fce4741f3f54fbffb97837b4ddaa8f769ba0f91.json");
-                    //File f2 = new File(destinationDir + walletFileName);
+                    try {
+                        web3 = Web3j.build(new HttpService("https://mainnet.infura.io/v3/338a115fa5324abeadccd992f9c6cbab"));
 
-                    String[] fetchAddress = walletFileName.split("--");
+                        String walletFileName = WalletUtils.generateFullNewWalletFile("password", destination);
+                        //Credentials credentials = WalletUtils.loadCredentials("password", "/ethereum/node0/keystore/UTC--2019-08-07T17-24-10.532680697Z--0fce4741f3f54fbffb97837b4ddaa8f769ba0f91.json");
+                        //File f2 = new File(destinationDir + walletFileName);
 
-                    String getAddress = fetchAddress[fetchAddress.length - 1].split("\\.")[0];
+                        String[] fetchAddress = walletFileName.split("--");
+
+                        String getAddress = fetchAddress[fetchAddress.length - 1].split("\\.")[0];
+                        address =getAddress;
+                    }
+                    catch (NoSuchAlgorithmException e) {
+                        System.out.println("exception");
+                        e.printStackTrace();
+                        return false;
+                    } catch (SecurityException | GeneralSecurityException | IOException | CipherException e) {
+                        e.printStackTrace();
+                        return false;
+                    }
+
 
 
                     try (Connection conne = DriverManager.getConnection(url);
@@ -267,7 +285,7 @@ public class Database {
                          PreparedStatement stmt = conn.prepareStatement(testQuery)) {
 
                         stmt.setString(1, id);
-                        stmt.setString(2, getAddress);
+                        stmt.setString(2, address);
                         stmt.executeUpdate();
                         return true;
 
@@ -276,7 +294,23 @@ public class Database {
                         e.printStackTrace();
                         return false;
                     }
-                } catch (NoSuchAlgorithmException e) {
+
+
+            } else {
+                String destinationDir = "tmp//" + id + "//";
+                File destination = new File(destinationDir);
+                destination.mkdirs();
+
+                try {
+                    web3 = Web3j.build(new HttpService("https://mainnet.infura.io/v3/338a115fa5324abeadccd992f9c6cbab"));
+                    String walletFileName = WalletUtils.generateFullNewWalletFile("password", destination);
+                    String[] fetchAddress = walletFileName.split("--");
+
+                    String getAddress = fetchAddress[fetchAddress.length - 1].split("\\.")[0];
+                    address = getAddress;
+                }
+
+                catch (NoSuchAlgorithmException e) {
                     System.out.println("exception");
                     e.printStackTrace();
                     return false;
@@ -284,21 +318,7 @@ public class Database {
                     e.printStackTrace();
                     return false;
                 }
-            } else {
-                String destinationDir = "tmp//" + id + "//";
-                File destination = new File(destinationDir);
-                destination.mkdirs();
 
-                try {
-
-                    web3 = Web3j.build(new HttpService("https://mainnet.infura.io/v3/338a115fa5324abeadccd992f9c6cbab"));
-
-
-
-                    String walletFileName = WalletUtils.generateFullNewWalletFile("password", destination);
-                    String[] fetchAddress = walletFileName.split("--");
-
-                    String getAddress = fetchAddress[fetchAddress.length - 1].split("\\.")[0];
                     String testQuery = "INSERT INTO wallets (id, publickey) VALUES (?, ?);";
 
 
@@ -306,7 +326,7 @@ public class Database {
                          PreparedStatement stmt = conn.prepareStatement(testQuery)) {
 
                         stmt.setString(1, id);
-                        stmt.setString(2, getAddress);
+                        stmt.setString(2, address);
                         stmt.executeUpdate();
                         return true;
 
@@ -318,14 +338,6 @@ public class Database {
                     }
 
 
-                } catch (NoSuchAlgorithmException e) {
-                    System.out.println("exception");
-                    e.printStackTrace();
-                    return false;
-                } catch (SecurityException | GeneralSecurityException | IOException | CipherException e) {
-                    e.printStackTrace();
-                    return false;
-                }
             }
 
 
@@ -536,6 +548,41 @@ public class Database {
     public boolean passwordCorrect(String username, String password){
         return true;
     }
+
+
+
+    public String Carrats(String id){
+        String builder = "";
+        String carrats;
+        String wocoin;
+
+
+        if(userExists(id)){
+            //String key = getPublicKey(id);
+
+            try (Connection conn = DriverManager.getConnection(url);
+                 Statement stmt = conn.createStatement()) {
+                ResultSet rs = stmt.executeQuery("select *, count(*) over () total_rows from products order by price, name collate nocase;");
+
+
+                rs.next();
+                int rows = rs.getInt(6);
+
+                for(int i=1; i <= rows; i++){
+
+                    if(rs.getString(2).equals(turnIdtoPublickey(id))){
+                        carrats = ">>>  ";
+                    }
+                    else {
+                        carrats = "";
+                    }
+                    rs.next();
+                }
+
+
+                return builder;
+    }
+
 
 
         /*String builder = "";
