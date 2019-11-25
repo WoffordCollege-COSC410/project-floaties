@@ -1,6 +1,12 @@
 package edu.wofford.wocoin;
 
+import java.io.PrintStream;
+import java.util.Scanner;
+
 public class AddUserMenuOption extends MenuOption {
+
+
+
     public void execute() {
         terminal.println("Username: ");
         String username = keyboard.nextLine();
@@ -12,4 +18,6 @@ public class AddUserMenuOption extends MenuOption {
             terminal.println(username + " already exists.");
         }
     }
+
 }
+

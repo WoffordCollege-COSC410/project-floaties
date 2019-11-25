@@ -2,6 +2,7 @@ package edu.wofford.wocoin;
 
 import java.util.Scanner;
 import java.io.PrintStream;
+import java.util.List;
 
 
 public class Menu {
@@ -36,13 +37,13 @@ public class Menu {
         }
     }
 
-    /*
+
     public void addAdminOption(MenuOption opt) {
         opt.setDatabase(db);
         opt.setKeyboard(keyboard);
         adminOptions.add(opt);
     }
-    */
+
 
     private void displayAdminSubmenu() {
         terminal.println("Enter password: ");
@@ -52,7 +53,7 @@ public class Menu {
             while (menuContinue) {
                 terminal.println("1: back");
 
-                /*
+
                 for (MenuOption opt : adminOptions) {
                     terminal.println(opt.toString());
                 }
@@ -67,13 +68,13 @@ public class Menu {
                     }
                 }
 
-                 */
+
 
 
 
                 terminal.println("2: add user");
                 terminal.println("3: remove user");
-                String adminMenu = keyboard.nextLine();
+                //String adminMenu = keyboard.nextLine();
 
                 switch (adminMenu) {
                     case "1":
@@ -195,5 +196,5 @@ public class Menu {
     private Database db;
     private Scanner keyboard;
     private PrintStream terminal;
-    //private List<MenuOption> adminOptions;
+    private List<MenuOption> adminOptions;
 }

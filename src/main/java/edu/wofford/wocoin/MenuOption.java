@@ -16,7 +16,7 @@ public abstract class MenuOption {
     }
 
     public boolean isTriggered(String s) {
-
+        return true; //stub
     }
 
     public void setDatabase(Database d) {
@@ -25,6 +25,14 @@ public abstract class MenuOption {
 
     public void setKeyboard(Scanner k) {
         scan = k;
+    }
+
+    public void setUsername(String user){
+        username = user;
+    }
+
+    public void setPassword(String pass){
+        password = pass;
     }
 
     public String toString() {
