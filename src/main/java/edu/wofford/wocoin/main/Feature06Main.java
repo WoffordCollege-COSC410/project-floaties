@@ -1,24 +1,21 @@
-
 package edu.wofford.wocoin.main;
 
 import edu.wofford.wocoin.Database;
-//import edu.wofford.wocoin.MenuOption;
 
 import java.util.Scanner;
 import java.lang.Integer;
 
-public class Feature05Main {
+public class Feature06Main {
 
-    public static void main(String[] args) {
-        boolean menuContinue = true;
-        boolean userMenuContinue = true;
-
-        Database d = new Database(args[0]);
-        Scanner scan = new Scanner(System.in);
-
-
-
-
+//    public static void main(String[] args) {
+//        boolean menuContinue = true;
+//        boolean userMenuContinue = true;
+//
+//        Database d = new Database(args[0]);
+//        Scanner scan = new Scanner(System.in);
+//
+//
+//
 //        while (menuContinue) {
 //            System.out.println("1: exit");
 //            System.out.println("2: administrator");
@@ -87,6 +84,8 @@ public class Feature05Main {
 //                            System.out.println("2: create wallet");
 //                            System.out.println("3: add product");
 //                            System.out.println("4: remove product");
+//                            System.out.println("5: display product");
+//
 //
 //                            String userMenu = scan.nextLine();
 //
@@ -157,21 +156,12 @@ public class Feature05Main {
 //                                        menuContinue = false;
 //                                        break;
 //                                    }
-//                                case "4":
-//                                    System.out.println("1: cancel");
 //
-//
-//                                    String productMenu = scan.nextLine();
-//
-//                                    switch (productMenu){
-//                                        case "1":
-//                                            menuContinue = true;
-//                                            userMenuContinue = false;
-//                                            break;
-//                                        case "2":
-//
-//                                    }
-//                                    //remove product
+//                                case "5":
+//                                    System.out.println(d.displayProduct(user));
+//                                    userMenuContinue = false;
+//                                    menuContinue = false;
+//                                    break;
 //                            }
 //
 //
@@ -187,7 +177,12 @@ public class Feature05Main {
 //            }
 //
 //        }
-
-    }
+//
+//    }
 
 }
+
+
+
+
+

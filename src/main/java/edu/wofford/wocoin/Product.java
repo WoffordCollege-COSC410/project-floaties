@@ -5,7 +5,8 @@ public class Product {
     public String seller;
     public int price;
     public String name;
-    public String description;
+    private String carrats;
+    private String description;
 
     public Product(String seller, int price, String name, String description){
         this.seller = seller;
@@ -23,3 +24,4 @@ public class Product {
 
     }
 }
+

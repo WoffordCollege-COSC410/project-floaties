@@ -3,27 +3,42 @@ import java.util.Scanner;
 
 public abstract class MenuOption {
 
-    protected Database db = new Database("jdbc:sqlite:src/test/resources/testdbcopy.db");
-    protected Scanner scan = new Scanner(System.in);
+    protected Database db;
+    protected Scanner scan;
     protected String username;
     protected String password;
-    protected int trigger;
+    protected String trigger;
+    protected String triggerText;
+
+    public MenuOption(String trigger, String triggerText) {
+        this.trigger = trigger;
+        this.triggerText = triggerText;
+    }
 
     public boolean isTriggered(String s) {
-
+        return true; //stub
     }
 
-    public int getTrigger() {
-
+    public void setDatabase(Database d) {
+        db = d;
     }
 
-    public String getTriggerText(){
-
+    public void setKeyboard(Scanner k) {
+        scan = k;
     }
 
-    public boolean setTrigger(String s) {
-
+    public void setUsername(String user){
+        username = user;
     }
 
-    public void execute() {};
+    public void setPassword(String pass){
+        password = pass;
+    }
+
+    public String toString() {
+        return trigger + ": " + triggerText;
+    }
+
+
+    public abstract void execute();
 }
