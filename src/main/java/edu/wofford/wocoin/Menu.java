@@ -187,4 +187,5 @@ public class Menu {
     private Scanner keyboard;
     private PrintStream terminal;
     private List<MenuOption> adminOptions;
+    private List<MenuOption> userOptions;
 }
