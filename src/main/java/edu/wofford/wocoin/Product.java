@@ -5,7 +5,6 @@ public class Product {
     private String seller;
     private int price;
     private String name;
-    private String carrats;
 
     private String description;
 
@@ -25,7 +24,8 @@ public class Product {
 
     }
 
- //   public String carrats(){
+    public String getSeller(){
+        return seller;
+    }
 
-   // }
 }

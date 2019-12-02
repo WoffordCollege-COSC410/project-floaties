@@ -5,7 +5,12 @@ import java.util.Scanner;
 
 public class AddUserMenuOption extends MenuOption {
 
+    Scanner keyboard;
+    PrintStream terminal;
 
+    public AddUserMenuOption(String trigger, String triggerText) {
+        super(trigger, triggerText);
+    }
 
     public void execute() {
         terminal.println("Username: ");

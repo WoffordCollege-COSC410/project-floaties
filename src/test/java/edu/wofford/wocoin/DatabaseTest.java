@@ -442,6 +442,28 @@ public class DatabaseTest {
 
         }
 
+        @Test
+        public void testDisplayProductF6() throws IOException {
+            String fileName = "src/test/resources/testdb.db";
+            String destName = "src/test/resources/testdbcopy.db";
+            File file = new File(fileName);
+            File dest = new File(destName);
+            Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+            Database p = new Database(destName);
+            String url = "jdbc:sqlite:" + destName;
+
+            try (Connection conn = DriverManager.getConnection(url);
+                 Statement stmt = conn.createStatement()) {
+                ResultSet rs = stmt.executeQuery("SELECT * FROM products;");
+                assertEquals(rs, p.displayProductF6("jsmith"));
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            dest.delete();
+        }
+
 /*
         @Test
         public void nonExistentUserTest() throws IOException{

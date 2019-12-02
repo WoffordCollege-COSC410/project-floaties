@@ -41,7 +41,7 @@ public class Menu {
     public void addAdminOption(MenuOption opt) {
         opt.setDatabase(db);
         opt.setKeyboard(keyboard);
-        adminOptions.add(opt);
+        //opt.setTriggerText();
     }
 
 
@@ -81,19 +81,7 @@ public class Menu {
                         menuContinue = false;
                         break;
                     case "2":
-                        terminal.println("Username: ");
-                        String username = keyboard.nextLine();
-                        terminal.println("Password: ");
-                        String userPass = keyboard.nextLine();
-                        if (db.addUser(username, userPass)) {
-                            terminal.println(username + " was added.");
-                            break;
-                        } else {
-                            terminal.println(username + " already exists.");
-                            break;
-                        }
-
-
+                        AddUserMenuOption.execute();
                     case "3":
                         terminal.println("Username please: ");
                         String removeUser = keyboard.nextLine();
@@ -122,6 +110,8 @@ public class Menu {
                 terminal.println("1: back");
                 terminal.println("2: create wallet");
                 terminal.println("3: add product");
+                terminal.println("4: remove product");
+                terminal.println("5: display products");
 
                 String userMenu = keyboard.nextLine();
 
