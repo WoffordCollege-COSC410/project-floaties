@@ -14,7 +14,6 @@ apply plugin: 'jacoco'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 
-
 mainClassName = 'edu.wofford.wocoin.main.Main'
 
 repositories {
@@ -25,7 +24,6 @@ jar {
     baseName = rootProject.name
     manifest {
         attributes 'Main-Class': application.mainClassName
-
     }
 }
 

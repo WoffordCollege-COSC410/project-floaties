@@ -30,7 +30,7 @@ public class Database {
         url = "jdbc:sqlite:" + fileName;
 
         File file = new File(fileName);
-        if (!file.exists()) {
+        if(!file.exists()){
             Utilities.createNewDatabase(fileName);
 
         }
@@ -63,7 +63,6 @@ public class Database {
 
 
     }
-
     /**
      * Checks if user already exists in the table
      *
@@ -133,7 +132,6 @@ public class Database {
         }
 
     }
-
     /**
      * Removes a user identified by their id from the Database
      *
@@ -143,15 +141,14 @@ public class Database {
     public boolean removeUser(String id) {
         if (userExists(id)) {
             try (Connection conn = DriverManager.getConnection(url);
-                 PreparedStatement stmt = conn.prepareStatement("DELETE FROM users WHERE id = ?;")) {
-                stmt.setString(1, id);
+                 PreparedStatement stmt = conn.prepareStatement("DELETE FROM users WHERE id = ?;")){
+                stmt.setString(1,id);
                 stmt.executeUpdate();
 
                 return true;
-            } catch (SQLException e) {
+            } catch(SQLException e) {
                 e.printStackTrace();
-                return false;
-            }
+                return false; }
         } else {
             return false;
         }
@@ -160,23 +157,21 @@ public class Database {
 
     /**
      * Salts the username
-     *
      * @return a random salt value
      */
-    private int generateSalt() {
+    private int generateSalt(){
         int saltValue = Utilities.generateSalt();
         return saltValue;
     }
 
     /**
      * Creates salted password
-     *
-     * @param passWd    - the plain text password passed into the functions initially
+     * @param passWd - the plain text password passed into the functions initially
      * @param saltValue - a random int that is converted to a string
      * @return passWd concatenated with SaltValue
      */
 
-    private String getSaltedPasswd(String passWd, int saltValue) {
+    private String getSaltedPasswd(String passWd, int saltValue){
 
         String SaltValueString = Integer.toString(saltValue);
         String builder = passWd + SaltValueString;
@@ -186,7 +181,6 @@ public class Database {
 
     /**
      * Creates hash of salted password
-     *
      * @param saltedPasswd this is the value returned from the above function
      * @return a string that will be stored in the hash field of the DB
      */
@@ -197,28 +191,29 @@ public class Database {
 
     /**
      * Checks to see if the user has a wallet in the table
-     *
      * @param id the name of the user
      * @return boolean of if the user has a wallet
      */
-    public boolean walletExists(String id) {
+    public boolean walletExists(String id){
         try (Connection conn = DriverManager.getConnection(url);
-             PreparedStatement stmt = conn.prepareStatement("SELECT id FROM wallets WHERE id = ?;")) {
+             PreparedStatement stmt = conn.prepareStatement("SELECT id FROM wallets WHERE id = ?;")){
 
-            stmt.setString(1, id);
+            stmt.setString(1,id);
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                if (rs.getString(1).equals(id)) {
+                if(rs.getString(1).equals(id)){
                     return true;
-                } else {
+                }
+                else{
                     return false;
                 }
             } else {
                 return false;
             }
 
-        } catch (SQLException e) {
+        }
+        catch(SQLException e){
             e.printStackTrace();
             return true;
         }
@@ -226,7 +221,6 @@ public class Database {
 
     /**
      * Creates a wallet for the user
-     *
      * @param id this is the parameter that reprent's username
      * @return whether or not if the wallet was created.
      */
@@ -235,69 +229,74 @@ public class Database {
 
         if (!userExists(id)) {
             return false;
-        } else {
+        }
+        else{
             if (walletExists(id)) {
                 try {
                     String directoryString = "tmp//" + id + "//";
                     File directory = new File(directoryString);
                     FileUtils.cleanDirectory(directory);
                     directory.delete();
-                } catch (IOException | IllegalArgumentException e) {
+                }
+                catch(IOException | IllegalArgumentException e){
                     System.out.println("error");
                 }
 
-                String destinationDir = "tmp//" + id + "//";
-                File destination = new File(destinationDir);
-                destination.mkdirs();
+                    String destinationDir = "tmp//" + id + "//";
+                    File destination = new File(destinationDir);
+                    destination.mkdirs();
 
 
-                try {
-                    web3 = Web3j.build(new HttpService("https://mainnet.infura.io/v3/338a115fa5324abeadccd992f9c6cbab"));
+                    try {
+                        web3 = Web3j.build(new HttpService("https://mainnet.infura.io/v3/338a115fa5324abeadccd992f9c6cbab"));
 
-                    String walletFileName = WalletUtils.generateFullNewWalletFile("password", destination);
-                    //Credentials credentials = WalletUtils.loadCredentials("password", "/ethereum/node0/keystore/UTC--2019-08-07T17-24-10.532680697Z--0fce4741f3f54fbffb97837b4ddaa8f769ba0f91.json");
-                    //File f2 = new File(destinationDir + walletFileName);
+                        String walletFileName = WalletUtils.generateFullNewWalletFile("password", destination);
+                        //Credentials credentials = WalletUtils.loadCredentials("password", "/ethereum/node0/keystore/UTC--2019-08-07T17-24-10.532680697Z--0fce4741f3f54fbffb97837b4ddaa8f769ba0f91.json");
+                        //File f2 = new File(destinationDir + walletFileName);
 
-                    String[] fetchAddress = walletFileName.split("--");
+                        String[] fetchAddress = walletFileName.split("--");
 
-                    String getAddress = fetchAddress[fetchAddress.length - 1].split("\\.")[0];
-                    address = getAddress;
-                } catch (NoSuchAlgorithmException e) {
-                    System.out.println("exception");
-                    e.printStackTrace();
-                    return false;
-                } catch (SecurityException | GeneralSecurityException | IOException | CipherException e) {
-                    e.printStackTrace();
-                    return false;
-                }
-
-
-                try (Connection conne = DriverManager.getConnection(url);
-                     PreparedStatement stmt = conne.prepareStatement("DELETE FROM wallets WHERE id = ?;")) {
-                    stmt.setString(1, id);
-                    stmt.executeUpdate();
+                        String getAddress = fetchAddress[fetchAddress.length - 1].split("\\.")[0];
+                        address =getAddress;
+                    }
+                    catch (NoSuchAlgorithmException e) {
+                        System.out.println("exception");
+                        e.printStackTrace();
+                        return false;
+                    } catch (SecurityException | GeneralSecurityException | IOException | CipherException e) {
+                        e.printStackTrace();
+                        return false;
+                    }
 
 
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
 
-                String testQuery = "INSERT INTO wallets (id, publickey) VALUES (?, ?);";
-
-
-                try (Connection conn = DriverManager.getConnection(url);
-                     PreparedStatement stmt = conn.prepareStatement(testQuery)) {
-
-                    stmt.setString(1, id);
-                    stmt.setString(2, address);
-                    stmt.executeUpdate();
-                    return true;
+                    try (Connection conne = DriverManager.getConnection(url);
+                         PreparedStatement stmt = conne.prepareStatement("DELETE FROM wallets WHERE id = ?;")){
+                        stmt.setString(1,id);
+                        stmt.executeUpdate();
 
 
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    return false;
-                }
+                    }
+                    catch(SQLException e) {
+                        e.printStackTrace();
+                    }
+
+                    String testQuery = "INSERT INTO wallets (id, publickey) VALUES (?, ?);";
+
+
+                    try (Connection conn = DriverManager.getConnection(url);
+                         PreparedStatement stmt = conn.prepareStatement(testQuery)) {
+
+                        stmt.setString(1, id);
+                        stmt.setString(2, address);
+                        stmt.executeUpdate();
+                        return true;
+
+
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        return false;
+                    }
 
 
             } else {
@@ -312,7 +311,9 @@ public class Database {
 
                     String getAddress = fetchAddress[fetchAddress.length - 1].split("\\.")[0];
                     address = getAddress;
-                } catch (NoSuchAlgorithmException e) {
+                }
+
+                catch (NoSuchAlgorithmException e) {
                     System.out.println("exception");
                     e.printStackTrace();
                     return false;
@@ -321,22 +322,23 @@ public class Database {
                     return false;
                 }
 
-                String testQuery = "INSERT INTO wallets (id, publickey) VALUES (?, ?);";
+                    String testQuery = "INSERT INTO wallets (id, publickey) VALUES (?, ?);";
 
 
-                try (Connection conn = DriverManager.getConnection(url);
-                     PreparedStatement stmt = conn.prepareStatement(testQuery)) {
+                    try (Connection conn = DriverManager.getConnection(url);
+                         PreparedStatement stmt = conn.prepareStatement(testQuery)) {
 
-                    stmt.setString(1, id);
-                    stmt.setString(2, address);
-                    stmt.executeUpdate();
-                    return true;
+                        stmt.setString(1, id);
+                        stmt.setString(2, address);
+                        stmt.executeUpdate();
+                        return true;
 
 
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    return false;
-                }
+
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        return false;
+                    }
 
 
             }
@@ -347,85 +349,88 @@ public class Database {
 
     }
 
-    private String turnPublicKeyToId(String publicKey) {
+    private String turnPublicKeyToId(String publicKey){
         try (Connection conn = DriverManager.getConnection(url);
-             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM wallets WHERE publickey = ?;")) {
+             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM wallets WHERE publickey = ?;")){
 
-            stmt.setString(1, publicKey);
+            stmt.setString(1,publicKey);
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                if (rs.getString(2).equals(publicKey)) {
-                    String builder = rs.getString(1);
+                if(rs.getString(2).equals(publicKey)){
+                    String builder =  rs.getString(1);
                     return builder;
-                } else {
+                }
+                else{
                     return "";
                 }
             } else {
                 return "";
             }
 
-        } catch (SQLException e) {
+        }
+        catch(SQLException e){
             e.printStackTrace();
             return "";
         }
     }
 
-    public String turnIdtoPublickey(String id) {
+    public String turnIdtoPublickey(String id){
         try (Connection conn = DriverManager.getConnection(url);
-             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM wallets WHERE id = ?;")) {
+             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM wallets WHERE id = ?;")){
 
-            stmt.setString(1, id);
+            stmt.setString(1,id);
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                if (rs.getString(1).equals(id)) {
+                if(rs.getString(1).equals(id)){
                     return rs.getString(2);
-                } else {
+                }
+                else{
                     return "";
                 }
             } else {
                 return "";
             }
 
-        } catch (SQLException e) {
+        }
+        catch(SQLException e){
             e.printStackTrace();
             return "";
         }
     }
 
-    private boolean isValidName(String name) {
+    private boolean isValidName(String name){
         return !name.equals("");
     }
 
-    private boolean isValidPrice(int price) {
+    private boolean isValidPrice(int price){
         return price > 0;
     }
 
 
-    private boolean isValidDescription(String description) {
+    private boolean isValidDescription(String description){
         return !description.equals("");
     }
 
     /**
      * Adds a product to the table
-     *
-     * @param seller      this is the public key found in the wallets table of the seller of the product
-     * @param price       this is the amount of Wocoins a product costs.
-     * @param name        this is the name of the product.
+     * @param seller this is the public key found in the wallets table of the seller of the product
+     * @param price this is the amount of Wocoins a product costs.
+     * @param name this is the name of the product.
      * @param description this is a user defined description of the product.
      * @return whether or not the product was added.
      */
-    public boolean addProduct(String seller, int price, String name, String description) {
+    public boolean addProduct(String seller, int price, String name, String description){
         String id = turnPublicKeyToId(seller);
 
-        if (walletExists(id)) {
-            if (isValidName(name) && isValidPrice(price) && isValidDescription(description)) {
+        if(walletExists(id)){
+            if(isValidName(name) && isValidPrice(price) && isValidDescription(description)){
 
                 String testQuery = "INSERT INTO products (seller, price, name, description) VALUES (?, ?, ?, ?);";
 
-                try (Connection conn = DriverManager.getConnection(url);
-                     PreparedStatement stmt = conn.prepareStatement(testQuery)) {
+                try (Connection conn= DriverManager.getConnection(url);
+                     PreparedStatement stmt = conn.prepareStatement(testQuery)){
 
                     stmt.setString(1, seller);
                     stmt.setInt(2, price);
@@ -433,12 +438,13 @@ public class Database {
                     stmt.setString(4, description);
                     stmt.executeUpdate();
                     return true;
-                } catch (SQLException e) {
+                }
+                catch(SQLException e){
                     e.printStackTrace();
                     return false;
                 }
 
-            } else {
+            }else{
                 return false;
             }
         } else {
@@ -449,21 +455,20 @@ public class Database {
 
     /**
      * Removes a product identified by their id from the Database
-     *
      * @param name a value passed in by the product to be removed
      * @return a boolean value of if the product was removed or not
      */
-    public boolean removeProduct(String name) {
+    public boolean removeProduct(String name){
         try (Connection conn = DriverManager.getConnection(url);
-             PreparedStatement stmt = conn.prepareStatement("DELETE FROM product WHERE name = ?;")) {
-            stmt.setString(1, name);
-            stmt.executeUpdate();
+                 PreparedStatement stmt = conn.prepareStatement("DELETE FROM product WHERE name = ?;")){
+                stmt.setString(1, name);
+                stmt.executeUpdate();
 
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+                return true;
+            } catch(SQLException e) {
+                e.printStackTrace();
+                return false;
+            }
 //        if(walletExists(id)){
 //            try (Connection conn = DriverManager.getConnection(url);
 //                 PreparedStatement stmt = conn.prepareStatement("DELETE FROM product WHERE name = ?;")){
@@ -482,31 +487,23 @@ public class Database {
 
     /**
      * Displays the product
-     *
      * @return a string of all of the products
      */
 
 
-    public List<Product> displayProductF6(String id) {
+    public List<Product> displayProductF6() {
         List<Product> list = new ArrayList<Product>();
         list.add(0, null);
-//        List<String> sList = new ArrayList<String>();
-//        String productList = "";
-        try (Connection conn = DriverManager.getConnection(url);
-             Statement stmt = conn.createStatement()) {
+        try(Connection conn = DriverManager.getConnection(url);
+            Statement stmt = conn.createStatement()) {
             ResultSet rs = stmt.executeQuery("select * from products order by name collate nocase;");
             ResultSet rsCount = stmt.executeQuery("select count(*) from products;");
             rs.next();
             for (int i = 1; i <= rsCount.getInt(1); i++) {
                 Product p = new Product(rs.getString(2), rs.getInt(3), rs.getString(4), rs.getString(5));
                 list.add(p);
-                //p.toString();
                 rs.next();
-
-
             }
-
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -516,32 +513,32 @@ public class Database {
 
         }*/
         return list;
-
     }
 //write unit test
 
 
     /**
+     *
      * @param seller
      * @return
      */
 
-    public List displayProductF5(String seller) {
+    public List displayProductF5(String seller){
         List<Product> list = new ArrayList<Product>();
         list.add(0, null);
         String query = "select *, count(*) over () total_rows from products where seller = ? order by name collate nocase;";
-        try (Connection conn = DriverManager.getConnection(url);
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+        try(Connection conn = DriverManager.getConnection(url);
+            PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, seller);
             ResultSet rs = stmt.executeQuery(query);
             rs.next();
             int rows = rs.getInt(6);
-            for (int i = 1; i <= rows; i++) {
+            for(int i=1; i <= rows; i++){
                 Product p = new Product(rs.getString(2), rs.getInt(3), rs.getString(4), rs.getString(5));
                 list.add(p);
                 rs.next();
             }
-        } catch (SQLException e) {
+        }  catch (SQLException e) {
             e.printStackTrace();
         }
         return list;
@@ -551,16 +548,48 @@ public class Database {
 
     /**
      * Determines if the password is correct
-     *
      * @param username of the person querying the db
      * @param password of the person querying the db
      * @return whether or not if the password is correct g
      */
 
-    public boolean passwordCorrect(String username, String password) {
+    public boolean passwordCorrect(String username, String password){
         return true;
     }
-}
+
+
+
+    public String Carrats(String id){
+        String builder = "";
+        String carrats;
+        String wocoin;
+
+
+        if(userExists(id)){
+            //String key = getPublicKey(id);
+
+            try (Connection conn = DriverManager.getConnection(url);
+                 Statement stmt = conn.createStatement()) {
+                ResultSet rs = stmt.executeQuery("select *, count(*) over () total_rows from products order by price, name collate nocase;");
+
+
+                rs.next();
+                int rows = rs.getInt(6);
+
+                for(int i=1; i <= rows; i++){
+
+                    if(rs.getString(2).equals(turnIdtoPublickey(id))){
+                        carrats = ">>>  ";
+                    }
+                    else {
+                        carrats = "";
+                    }
+                    rs.next();
+                }
+
+
+                return builder;
+    }
 
 
 //    public String Carrats(String id){

@@ -1,3 +1,4 @@
+
 package edu.wofford.wocoin.main;
 
 import java.util.Scanner;
@@ -87,4 +88,3 @@ public class Feature01Main {
 
 
 }
-
