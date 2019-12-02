@@ -17,7 +17,7 @@ public class DisplayProductMenuOption extends MenuOption {
         String user = scan.nextLine();
         System.out.println("Password: ");
         String password = scan.nextLine();
-        list = super.db.displayProductF6(user);
+        list = super.db.displayProductF6();
         String userWallet = super.db.turnIdtoPublickey(user);
 
         for(int i = 1; i<= list.size(); i++){

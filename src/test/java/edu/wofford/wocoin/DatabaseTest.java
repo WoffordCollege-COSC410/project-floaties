@@ -11,6 +11,8 @@ import edu.wofford.wocoin.main.*;
 import org.junit.*;
 import static org.junit.Assert.*;
 import org.junit.Test;
+
+import javax.xml.crypto.Data;
 import java.io.*;
 import java.nio.file.*;
 import java.sql.*;
@@ -387,7 +389,7 @@ public class DatabaseTest {
 
         String workingDir = System.getProperty("user.dir");
         String fullPath = workingDir + "\\" + fileName;
-        File file = new File(fullPath);
+        Database db = new Database(destName);
         assertTrue(!file.exists());
         Utilities.createTestDatabase(fullPath);
         assertTrue(file.exists());
@@ -466,16 +468,17 @@ public class DatabaseTest {
             File dest = new File(destName);
             Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
+            Database db = new Database(destName);
 
         //make sure db
 
-        boolean first;
-        first = db.addUser("kporter", "password");
-        boolean second;
-        second = db.addUser("kporter", "password");
+            boolean first;
+            first = db.addUser("kporter", "password");
+            boolean second;
+            second = db.addUser("kporter", "password");
 
-        assertTrue(first);
-        assertTrue(second);
+            assertTrue(first);
+            assertTrue(second);
 
 
         //String url = "jdbc:sqlite:" + fileName;
@@ -539,7 +542,7 @@ public class DatabaseTest {
             try (Connection conn = DriverManager.getConnection(url);
                  Statement stmt = conn.createStatement()) {
                 ResultSet rs = stmt.executeQuery("SELECT * FROM products;");
-                assertEquals(rs, p.displayProductF6("jsmith"));
+                assertEquals(rs, p.displayProductF6());
             } catch (SQLException e) {
                 e.printStackTrace();
             }

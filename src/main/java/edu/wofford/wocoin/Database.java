@@ -559,13 +559,13 @@ public class Database {
 
 
 
-    public String Carrats(String id){
+    public String Carrats(String id) {
         String builder = "";
         String carrats;
         String wocoin;
 
 
-        if(userExists(id)){
+        if (userExists(id)) {
             //String key = getPublicKey(id);
 
             try (Connection conn = DriverManager.getConnection(url);
@@ -576,19 +576,21 @@ public class Database {
                 rs.next();
                 int rows = rs.getInt(6);
 
-                for(int i=1; i <= rows; i++){
+                for (int i = 1; i <= rows; i++) {
 
-                    if(rs.getString(2).equals(turnIdtoPublickey(id))){
+                    if (rs.getString(2).equals(turnIdtoPublickey(id))) {
                         carrats = ">>>  ";
-                    }
-                    else {
+                    } else {
                         carrats = "";
                     }
                     rs.next();
                 }
 
-
-                return builder;
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return builder;
     }
 
 
@@ -690,4 +692,4 @@ public class Database {
 //            return result;
 //        }*/
 //
-//}
+}

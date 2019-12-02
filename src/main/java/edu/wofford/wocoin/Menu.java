@@ -81,7 +81,7 @@ public class Menu {
                         menuContinue = false;
                         break;
                     case "2":
-                        AddUserMenuOption.execute();
+                        //AddUserMenuOption.execute();
                     case "3":
                         terminal.println("Username please: ");
                         String removeUser = keyboard.nextLine();
