@@ -9,8 +9,9 @@ public class DisplayProductMenuOption extends MenuOption {
     //List<String> list = new ArrayList<String>();
     List<Product> list;
 
-    public DisplayProductMenuOption(String trigger, String triggerText) {
-        super(trigger, triggerText);
+    public DisplayProductMenuOption() {
+        this.trigger = "";
+        this.triggerText = "display product";
     }
     public void execute() {
         System.out.println("Username: ");

@@ -1,12 +1,7 @@
 package edu.wofford.wocoin;
 
-import java.io.PrintStream;
-import java.util.Scanner;
 
 public class RemoveUserMenuOption extends MenuOption {
-
-    Scanner keyboard;
-    PrintStream terminal;
 
     public RemoveUserMenuOption() {
         this.triggerText = "remove user";

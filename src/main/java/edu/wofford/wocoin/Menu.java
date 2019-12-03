@@ -41,7 +41,16 @@ public class Menu {
     public void addAdminOption(MenuOption opt) {
         opt.setDatabase(db);
         opt.setKeyboard(keyboard);
+        opt.setTerminal(terminal);
+        adminOptions.add(opt);
         //opt.setTriggerText();
+    }
+
+    public void addUserOption(MenuOption opt) {
+        opt.setDatabase(db);
+        opt.setKeyboard(keyboard);
+        opt.setTerminal(terminal);
+        userOptions.add(opt);
     }
 
 
@@ -99,11 +108,6 @@ public class Menu {
             String password = keyboard.nextLine();
 
             if (db.userExists(user) && db.passwordCorrect(user, password)) {
-//                terminal.println("1: back");
-//                terminal.println("2: create wallet");
-//                terminal.println("3: add product");
-//                terminal.println("4: remove product");
-//                terminal.println("5: display products");
                 terminal.println("1: back");
                 int i = 2;
                 for (MenuOption opt : userOptions) {

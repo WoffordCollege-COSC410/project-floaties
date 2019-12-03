@@ -1,10 +1,12 @@
 package edu.wofford.wocoin;
+import java.io.PrintStream;
 import java.util.Scanner;
 
 public abstract class MenuOption {
 
     protected Database db;
     protected Scanner scan;
+    protected PrintStream terminal;
     protected String username;
     protected String password;
     protected String trigger;
@@ -35,6 +37,8 @@ public abstract class MenuOption {
     public void setKeyboard(Scanner k) {
         scan = k;
     }
+
+    public void setTerminal(PrintStream t) {terminal = t;}
 
     public void setUsername(String user){
         username = user;
