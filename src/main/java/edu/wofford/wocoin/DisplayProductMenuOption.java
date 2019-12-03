@@ -20,11 +20,11 @@ public class DisplayProductMenuOption extends MenuOption {
         list = super.db.displayProductF6();
         String userWallet = super.db.turnIdtoPublickey(user);
 
-        for(int i = 1; i<= list.size(); i++){
+        for(int i = 0; i<= list.size(); i++){
             if(list.get(i).getSeller().equals(userWallet)){
-                System.out.println(i + ">>>" + list.get(i).toString());
+                System.out.println(i+1 + ">>>" + list.get(i).toString());
             }else{
-                System.out.println(i + list.get(i).toString());
+                System.out.println(i+1 + list.get(i).toString());
             }
 
         }

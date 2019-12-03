@@ -8,8 +8,9 @@ public class AddUserMenuOption extends MenuOption {
     Scanner keyboard;
     PrintStream terminal;
 
-    public AddUserMenuOption(String trigger, String triggerText) {
-        super(trigger, triggerText);
+    public AddUserMenuOption() {
+        this.triggerText = "add user";
+        this.trigger = "";
     }
 
     public void execute() {
@@ -23,6 +24,5 @@ public class AddUserMenuOption extends MenuOption {
             terminal.println(username + " already exists.");
         }
     }
-
 }
 

@@ -10,6 +10,11 @@ public abstract class MenuOption {
     protected String trigger;
     protected String triggerText;
 
+    public MenuOption(){
+        this.triggerText = "";
+        this.trigger = "";
+    }
+
     public MenuOption(String trigger, String triggerText) {
         this.trigger = trigger;
         this.triggerText = triggerText;
@@ -17,6 +22,10 @@ public abstract class MenuOption {
 
     public boolean isTriggered(String s) {
         return true; //stub
+    }
+
+    public void setTriggers(int trigger){
+        this.trigger = Integer.toString(trigger);
     }
 
     public void setDatabase(Database d) {
