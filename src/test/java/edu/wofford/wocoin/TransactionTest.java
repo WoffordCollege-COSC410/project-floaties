@@ -31,12 +31,28 @@ public class TransactionTest{
         dest.delete();
     }
     @Test
-    public void sendFundsToUserWalletDNE() {
-
+    public void sendFundsToUserWalletDNETest() {
+        String fileName = "src/test/resources/testdb.db";
+        String destName = "src/test/resources/testdbcopy.db";
+        File file = new File(fileName);
+        File dest = new File(destName);
+        Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        assertTrue(file.exists());
+        Database db = new Database(destName);
+        assertTrue(!db.sendTransaction("jdoe"));
+        dest.delete();
     }
     @Test
-    public void sendFundsToUserWalletDNE(){
-
+    public void sendFundsToUserTest(){
+        String fileName = "src/test/resources/testdb.db";
+        String destName = "src/test/resources/testdbcopy.db";
+        File file = new File(fileName);
+        File dest = new File(destName);
+        Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        assertTrue(file.exists());
+        Database db = new Database(destName);
+        assertTrue(!db.sendTransaction("jsmith"));
+        dest.delete();
     }
 
 

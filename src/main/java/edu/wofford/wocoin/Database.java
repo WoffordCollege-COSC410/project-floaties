@@ -12,6 +12,26 @@ import org.web3j.crypto.WalletUtils;
 import java.security.*;
 import java.util.List;
 import java.util.ArrayList;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.util.Optional;
+
+import org.web3j.crypto.Credentials;
+import org.web3j.crypto.RawTransaction;
+import org.web3j.crypto.TransactionEncoder;
+import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
+import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt;
+import org.web3j.protocol.core.methods.response.EthSendTransaction;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
+import org.web3j.protocol.http.HttpService;
+import org.web3j.utils.Convert;
+import org.web3j.utils.Convert.Unit;
+import org.web3j.utils.Numeric;
+
+
+
 
 public class Database {
     private String adminPwd;
@@ -69,142 +89,141 @@ public class Database {
     public boolean userExists(String id) {
 
 
-       // String testQuery = "SELECT id FROM users WHERE id = ?;";
+        // String testQuery = "SELECT id FROM users WHERE id = ?;";
         try (Connection conn = DriverManager.getConnection(url);
-             PreparedStatement stmt = conn.prepareStatement("SELECT id FROM users WHERE id = ?;")){
+             PreparedStatement stmt = conn.prepareStatement("SELECT id FROM users WHERE id = ?;")) {
 
-                 stmt.setString(1,id);
-                 ResultSet rs = stmt.executeQuery();
+            stmt.setString(1, id);
+            ResultSet rs = stmt.executeQuery();
 
-                 if (rs.next()) {
-                     if(rs.getString(1).equals(id)){
-                         return true;
-                     }
-                     else{
-                         return false;
-                     }
-                 } else {
+            if (rs.next()) {
+                if (rs.getString(1).equals(id)) {
+                    return true;
+                } else {
                     return false;
-                 }
-
-        String user ="";
-        try (Connection conn = DriverManager.getConnection(url);
-             Statement stmt = conn.createStatement()){
-
-
-            String testQuery = String.format("SELECT id FROM users WHERE id = %s;", username);
-
-            ResultSet rs = stmt.executeQuery(testQuery);
-            while(rs.next()){
-                user = rs.getString(1);
-            }
-
-
-            if (!(user.equals(null))) {  //.wasNull
-                return false;
+                }
             } else {
-                return true;
+                return false;
             }
-        }
-        catch(SQLException e){
-            e.printStackTrace();
-            return true;
-        }
-    }
 
-    /**
-     * Adds user to the table
-     *
-     * @param id       this will be the value stored in the id column of the Database
-     * @param password this value will be salted and hashed and stored in the salt and hash columns of the DB
-     * @return boolean if user exists or not
-     */
-
-    public boolean addUser(String id, String password) {
-        if(!userExists(id)){
-            String saltedPasswd;
-            int salt = generateSalt();
-            saltedPasswd = getSaltedPasswd(password, salt);
-            String hash = getHash(saltedPasswd);
-            //url is empty
-            //sql statement addUser
-
-            String testQuery = "INSERT INTO users (id, salt, hash) VALUES (?, ?, ?);";
-
-            try (Connection conn= DriverManager.getConnection(url);
-                 PreparedStatement stmt = conn.prepareStatement(testQuery)){
-
-                stmt.setString(1, id);
-                stmt.setInt(2, salt);
-                stmt.setString(3, hash);
-                stmt.executeUpdate();
+            String user = "";
+            try (Connection connee = DriverManager.getConnection(url);
+                 Statement stmt2 = connee.createStatement()) {
 
 
-                return true;
+                String testQuery = String.format("SELECT id FROM users WHERE id = %s;", id);
+
+                ResultSet rs = stmt2.executeQuery(testQuery);
+                while (rs.next()) {
+                    user = rs.getString(1);
+                }
+
+
+                if (!(user.equals(null))) {  //.wasNull
+                    return false;
+                } else {
+                    return true;
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
+                return true;
+            }
+        }
+    }
+        /**
+         * Adds user to the table
+         *
+         * @param id       this will be the value stored in the id column of the Database
+         * @param password this value will be salted and hashed and stored in the salt and hash columns of the DB
+         * @return boolean if user exists or not
+         */
+
+        public boolean addUser (String id, String password){
+            if (!userExists(id)) {
+                String saltedPasswd;
+                int salt = generateSalt();
+                saltedPasswd = getSaltedPasswd(password, salt);
+                String hash = getHash(saltedPasswd);
+                //url is empty
+                //sql statement addUser
+
+                String testQuery = "INSERT INTO users (id, salt, hash) VALUES (?, ?, ?);";
+
+                try (Connection conn = DriverManager.getConnection(url);
+                     PreparedStatement stmt = conn.prepareStatement(testQuery)) {
+
+                    stmt.setString(1, id);
+                    stmt.setInt(2, salt);
+                    stmt.setString(3, hash);
+                    stmt.executeUpdate();
+
+
+                    return true;
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    return false;
+                }
+            } else {
                 return false;
             }
-        } else {
-            return false;
+
+        }
+        /**
+         * Removes a user identified by their id from the Database
+         *
+         * @param id a value passed in by the user to be removed
+         * @return a boolean value of if the user was removed or not
+         */
+        public boolean removeUser (String id){
+            if (userExists(id)) {
+                try (Connection conn = DriverManager.getConnection(url);
+                     PreparedStatement stmt = conn.prepareStatement("DELETE FROM users WHERE id = ?;")) {
+                    stmt.setString(1, id);
+                    stmt.executeUpdate();
+
+                    return true;
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    return false;
+                }
+            } else {
+                return false;
+            }
+
         }
 
-    }
-    /**
-     * Removes a user identified by their id from the Database
-     *
-     * @param id a value passed in by the user to be removed
-     * @return a boolean value of if the user was removed or not
-     */
-    public boolean removeUser(String id) {
-        if (userExists(id)) {
-            try (Connection conn = DriverManager.getConnection(url);
-                 PreparedStatement stmt = conn.prepareStatement("DELETE FROM users WHERE id = ?;")){
-                stmt.setString(1,id);
-                stmt.executeUpdate();
-
-                return true;
-            } catch(SQLException e) {
-                e.printStackTrace();
-                return false; }
-        } else {
-            return false;
+        /**
+         * Salts the username
+         * @return a random salt value
+         */
+        private int generateSalt () {
+            int saltValue = Utilities.generateSalt();
+            return saltValue;
         }
 
-    }
+        /**
+         * Creates salted password
+         * @param passWd - the plain text password passed into the functions initially
+         * @param saltValue - a random int that is converted to a string
+         * @return passWd concatenated with SaltValue
+         */
 
-    /**
-     * Salts the username
-     * @return a random salt value
-     */
-    private int generateSalt(){
-        int saltValue = Utilities.generateSalt();
-        return saltValue;
-    }
+        private String getSaltedPasswd (String passWd,int saltValue){
 
-    /**
-     * Creates salted password
-     * @param passWd - the plain text password passed into the functions initially
-     * @param saltValue - a random int that is converted to a string
-     * @return passWd concatenated with SaltValue
-     */
+            String SaltValueString = Integer.toString(saltValue);
+            String builder = passWd + SaltValueString;
+            return builder;
 
-    private String getSaltedPasswd(String passWd, int saltValue){
+        }
 
-        String SaltValueString = Integer.toString(saltValue);
-        String builder = passWd + SaltValueString;
-        return builder;
-
-    }
-
-    /**
-     * Creates hash of salted password
-     * @param saltedPasswd this is the value returned from the above function
-     * @return a string that will be stored in the hash field of the DB
-     */
-    private String getHash(String saltedPasswd) {
-        return Utilities.applySha256(saltedPasswd);
-    }
+        /**
+         * Creates hash of salted password
+         * @param saltedPasswd this is the value returned from the above function
+         * @return a string that will be stored in the hash field of the DB
+         */
+        private String getHash (String saltedPasswd){
+            return Utilities.applySha256(saltedPasswd);
+        }
 
 
         /**
@@ -341,7 +360,6 @@ public class Database {
                         stmt.setString(2, address);
                         stmt.executeUpdate();
                         return true;
-
 
 
                     } catch (SQLException e) {
@@ -559,7 +577,15 @@ public class Database {
 
         public boolean sendTransaction (String id,int value){
 
+
+            String toAddress = turnIdtoPublickey(id);
             if (userExists(id) && walletExists(id)) {
+
+                web3 = Web3j.build(new HttpService("https://mainnet.infura.io/v3/338a115fa5324abeadccd992f9c6cbab"));
+
+                //run batch script here?
+                BatRunner b = new BatRunner();
+
                 String address = "ethereum/node0/keystore/UTC--2019-08-07T17-24-10.532680697Z--0fce4741f3f54fbffb97837b4ddaa8f769ba0f91.json";
                 //getting the nonce
                 EthGetTransactionCount ethGetTransactionCount = web3j.ethGetTransactionCount(
@@ -568,8 +594,11 @@ public class Database {
                 BigInteger nonce = ethGetTransactionCount.getTransactionCount();
 
                 //create raw transaction object
+                BigInteger f = new BigInteger("0");
+                String v = Integer.toString(value);
+                BigInteger val = new BigInteger(v);
                 RawTransaction rawTransaction = RawTransaction.createEtherTransaction(
-                        nonce, 0, 0, toAddress, value);
+                        nonce, f, f, toAddress, val);
 
                 //encode and sign transaction object
                 Credentials credentials = WalletUtils.loadCredentials(
@@ -591,39 +620,39 @@ public class Database {
         }
 
 
-    public String Carrats(String id) {
-        String builder = "";
-        String carrats;
-        String wocoin;
+        public String Carrats (String id){
+            String builder = "";
+            String carrats;
+            String wocoin;
 
 
-        if (userExists(id)) {
-            //String key = getPublicKey(id);
+            if (userExists(id)) {
+                //String key = getPublicKey(id);
 
-            try (Connection conn = DriverManager.getConnection(url);
-                 Statement stmt = conn.createStatement()) {
-                ResultSet rs = stmt.executeQuery("select *, count(*) over () total_rows from products order by price, name collate nocase;");
+                try (Connection conn = DriverManager.getConnection(url);
+                     Statement stmt = conn.createStatement()) {
+                    ResultSet rs = stmt.executeQuery("select *, count(*) over () total_rows from products order by price, name collate nocase;");
 
 
-                rs.next();
-                int rows = rs.getInt(6);
-
-                for (int i = 1; i <= rows; i++) {
-
-                    if (rs.getString(2).equals(turnIdtoPublickey(id))) {
-                        carrats = ">>>  ";
-                    } else {
-                        carrats = "";
-                    }
                     rs.next();
-                }
+                    int rows = rs.getInt(6);
 
-            } catch (SQLException e) {
-                e.printStackTrace();
+                    for (int i = 1; i <= rows; i++) {
+
+                        if (rs.getString(2).equals(turnIdtoPublickey(id))) {
+                            carrats = ">>>  ";
+                        } else {
+                            carrats = "";
+                        }
+                        rs.next();
+                    }
+
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
+            return builder;
         }
-        return builder;
-    }
 
 
 //    public String Carrats(String id){
@@ -725,3 +754,4 @@ public class Database {
 //        }*/
 //
 }
+
