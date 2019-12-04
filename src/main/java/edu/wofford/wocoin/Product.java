@@ -2,10 +2,10 @@ package edu.wofford.wocoin;
 
 public class Product {
 
-    public String seller;
-    public int price;
-    public String name;
-    private String carrats;
+    private String seller;
+    private int price;
+    private String name;
+
     private String description;
 
     public Product(String seller, int price, String name, String description){
@@ -23,5 +23,9 @@ public class Product {
         }
 
     }
-}
 
+    public String getSeller(){
+        return seller;
+    }
+
+}
