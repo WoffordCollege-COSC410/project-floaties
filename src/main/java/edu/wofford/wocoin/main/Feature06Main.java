@@ -16,6 +16,8 @@ public class Feature06Main {
         PrintStream t = new PrintStream(System.out);
 
         Menu menu = new Menu(d, k, t);
+
+
         menu.addAdminOption(new AddUserMenuOption());
         menu.addAdminOption(new RemoveUserMenuOption());
         menu.addUserOption(new CreateWalletMenuOption());
