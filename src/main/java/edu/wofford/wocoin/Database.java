@@ -383,12 +383,7 @@ public class Database {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                if(rs.getString(1).equals(id)){
-                    return rs.getString(2);
-                }
-                else{
-                    return "";
-                }
+                return rs.getString(2);
             } else {
                 return "";
             }
@@ -469,19 +464,6 @@ public class Database {
                 e.printStackTrace();
                 return false;
             }
-//        if(walletExists(id)){
-//            try (Connection conn = DriverManager.getConnection(url);
-//                 PreparedStatement stmt = conn.prepareStatement("DELETE FROM product WHERE name = ?;")){
-//                stmt.setString(1, name);
-//                stmt.executeUpdate();
-//
-//                return true;
-//            } catch(SQLException e) {
-//                e.printStackTrace();
-//                return false; }
-//        } else {
-//            return false;
-//        }
 
     }
 
@@ -493,13 +475,13 @@ public class Database {
 
     public List<Product> displayProductF6() {
         List<Product> list = new ArrayList<Product>();
-        list.add(0, null);
         try(Connection conn = DriverManager.getConnection(url);
             Statement stmt = conn.createStatement()) {
-            ResultSet rs = stmt.executeQuery("select * from products order by name collate nocase;");
             ResultSet rsCount = stmt.executeQuery("select count(*) from products;");
+            int n = rsCount.getInt(1);
+            ResultSet rs = stmt.executeQuery("select * from products order by name collate nocase;");
             rs.next();
-            for (int i = 1; i <= rsCount.getInt(1); i++) {
+            for (int i = 1; i <= n; i++) {
                 Product p = new Product(rs.getString(2), rs.getInt(3), rs.getString(4), rs.getString(5));
                 list.add(p);
                 rs.next();

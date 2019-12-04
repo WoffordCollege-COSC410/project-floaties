@@ -1,5 +1,8 @@
 package edu.wofford.wocoin;
 
+import org.web3j.abi.datatypes.Int;
+
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.PrintStream;
 import java.util.List;
@@ -10,6 +13,8 @@ public class Menu {
         db = d;
         keyboard = k;
         terminal = t;
+        adminOptions = new ArrayList<>();
+        userOptions = new ArrayList<>();
     }
 
     public void display() {
@@ -55,62 +60,15 @@ public class Menu {
 
 
     private void displayAdminSubmenu() {
-        terminal.println("Enter password: ");
-        String pwd = keyboard.nextLine();
-        if (db.checkIsAdmin(pwd)) {
-            terminal.println("1: back");
-
-            int i = 2;
-            for (MenuOption opt : adminOptions) {
-                opt.setTriggers(i);
-                terminal.println(opt.toString());
-                i++;
-            }
-//                String adminMenu = keyboard.nextLine();
-//                if (adminMenu.equals("1")) {
-//                    menuContinue = false;
-//                } else {
-//                    for (MenuOption opt : adminOptions) {
-//                        if (opt.isTriggered(adminMenu)) {
-//                            opt.execute();
-//                        }
-//                    }
-//                }
-            int adminMenu = keyboard.nextInt();
-            if (adminMenu == 1) {
-                display();
-            } else {
-                adminOptions.get(adminMenu - 2).execute();
-            }
-//                switch () {
-//                    case "1":
-//                        menuContinue = false;
-//                        break;
-//                    case "2":
-//                        //AddUserMenuOption.execute();
-//                    case "3":
-//                        terminal.println("Username please: ");
-//                        String removeUser = keyboard.nextLine();
-//                        db.removeUser(removeUser);
-//                        terminal.println(removeUser + " was removed.");
-//                        break;
-//
-        } else {
-            terminal.println("Incorrect administrator password.");
-        }
-    }
-
-    private void displayUserSubmenu() {
-
-            terminal.println("Username: ");
-            String user = keyboard.nextLine();
-            terminal.println("Password: ");
-            String password = keyboard.nextLine();
-
-            if (db.userExists(user) && db.passwordCorrect(user, password)) {
+        boolean adminMenuContinue = true;
+        while (adminMenuContinue) {
+            terminal.println("Enter password: ");
+            String pwd = keyboard.nextLine();
+            if (db.checkIsAdmin(pwd)) {
                 terminal.println("1: back");
+
                 int i = 2;
-                for (MenuOption opt : userOptions) {
+                for (MenuOption opt : adminOptions) {
                     opt.setTriggers(i);
                     terminal.println(opt.toString());
                     i++;
@@ -125,13 +83,71 @@ public class Menu {
 //                        }
 //                    }
 //                }
-                int userMenu = keyboard.nextInt();
-                if(userMenu == 1){
-                    display();
-                } else{
-                    userOptions.get(userMenu - 2).execute();
+                String adminMenu = keyboard.nextLine();
+                if (Integer.parseInt(adminMenu) == 1) {
+                    adminMenuContinue = false;
+                } else {
+                    adminOptions.get(Integer.parseInt(adminMenu) - 2).execute();
+                    adminMenuContinue = true;
                 }
+//                switch () {
+//                    case "1":
+//                        menuContinue = false;
+//                        break;
+//                    case "2":
+//                        //AddUserMenuOption.execute();
+//                    case "3":
+//                        terminal.println("Username please: ");
+//                        String removeUser = keyboard.nextLine();
+//                        db.removeUser(removeUser);
+//                        terminal.println(removeUser + " was removed.");
+//                        break;
+//
+            } else {
+                terminal.println("Incorrect administrator password.");
+                adminMenuContinue = false;
+            }
+        }
 
+    }
+
+    private void displayUserSubmenu() {
+        boolean userMenuContinue = true;
+
+            terminal.println("Username: ");
+            String user = keyboard.nextLine();
+            terminal.println("Password: ");
+            String password = keyboard.nextLine();
+
+            if (db.userExists(user) && db.passwordCorrect(user, password)) {
+                while(userMenuContinue) {
+                    terminal.println("1: back");
+                    int i = 2;
+                    for (MenuOption opt : userOptions) {
+                        opt.setUsername(user);
+                        opt.setPassword(password);
+                        opt.setTriggers(i);
+                        terminal.println(opt.toString());
+                        i++;
+                    }
+//                String adminMenu = keyboard.nextLine();
+//                if (adminMenu.equals("1")) {
+//                    menuContinue = false;
+//                } else {
+//                    for (MenuOption opt : adminOptions) {
+//                        if (opt.isTriggered(adminMenu)) {
+//                            opt.execute();
+//                        }
+//                    }
+//                }
+                    String userMenu = keyboard.nextLine();
+                    if (Integer.parseInt(userMenu) == 1) {
+                        userMenuContinue = false;
+                    } else {
+                        userOptions.get(Integer.parseInt(userMenu) - 2).execute();
+                        userMenuContinue = true;
+                    }
+                }
 
 //
 //                switch (userMenu) {
@@ -195,8 +211,9 @@ public class Menu {
 //                }
             } else {
                 terminal.println("No such user.");
-                display();
+                userMenuContinue = false;
             }
+
     }
 
 
