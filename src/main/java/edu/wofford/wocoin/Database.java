@@ -479,7 +479,7 @@ public class Database {
             Statement stmt = conn.createStatement()) {
             ResultSet rsCount = stmt.executeQuery("select count(*) from products;");
             int n = rsCount.getInt(1);
-            ResultSet rs = stmt.executeQuery("select * from products order by name collate nocase;");
+            ResultSet rs = stmt.executeQuery("select * from products order by price, name collate nocase;");
             rs.next();
             for (int i = 1; i <= n; i++) {
                 Product p = new Product(rs.getString(2), rs.getInt(3), rs.getString(4), rs.getString(5));
