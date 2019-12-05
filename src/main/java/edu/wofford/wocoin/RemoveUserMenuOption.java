@@ -10,7 +10,15 @@ public class RemoveUserMenuOption extends MenuOption {
     public void execute(){
         System.out.println("Username please: ");
         String removeUser = scan.nextLine();
-        db.removeUser(removeUser);
-        System.out.println(removeUser + " was removed.");
+
+        if (db.removeUser(removeUser)) {
+            System.out.println(removeUser + " was removed.");
+
+        } else {
+            System.out.println(removeUser + " does not exist.");
+
+        }
     }
+
 }
+

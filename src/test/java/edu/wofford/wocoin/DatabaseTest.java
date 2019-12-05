@@ -387,17 +387,9 @@ public class DatabaseTest {
         File dest = new File(destName);
         Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
-        String workingDir = System.getProperty("user.dir");
-        String fullPath = workingDir + "\\" + fileName;
         Database db = new Database(destName);
 
-        Utilities.createTestDatabase(fullPath);
-        assertTrue(file.exists());
-
         assertEquals(db.turnIdtoPublickey("jsmith"), "a615316333ba8622fd5bb60fe39758b3515f774d");
-
-
-
 
         dest.delete();
     }
@@ -467,35 +459,6 @@ public class DatabaseTest {
             File file = new File(fileName);
             File dest = new File(destName);
             Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
-
-            Database db = new Database(destName);
-
-        //make sure db
-
-            boolean first;
-            first = db.addUser("kporter", "password");
-            boolean second;
-            second = db.addUser("kporter", "password");
-
-            assertTrue(first);
-            assertTrue(second);
-
-
-        //String url = "jdbc:sqlite:" + fileName;
-        //try (Connection conn= DriverManager.getConnection(url);
-        // Statement stmt = conn.createStatement()){
-        //String testQuery = "SELECT * FROM users;";
-        // ResultSet rs = stmt.executeQuery(testQuery);
-        // assertTrue( !rs.next());
-        //  }
-        //catch(SQLException e) {
-        //e.printStackTrace();
-
-        // }
-
-        //  file.delete();
-
-            String user = "jsmith";
             Database p = new Database(destName);
             assertTrue(!p.addProduct("a615316333ba8622fd5bb60fe39758b3515f774d", 0, "lamp","FIAT LUX!"));
 
@@ -537,15 +500,8 @@ public class DatabaseTest {
             Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
             Database p = new Database(destName);
-            String url = "jdbc:sqlite:" + destName;
 
-            try (Connection conn = DriverManager.getConnection(url);
-                 Statement stmt = conn.createStatement()) {
-                ResultSet rs = stmt.executeQuery("SELECT * FROM products;");
-                assertEquals(rs, p.displayProductF6());
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            assertEquals(7, p.displayProductF6().size());
 
             dest.delete();
         }

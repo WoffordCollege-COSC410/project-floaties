@@ -9,8 +9,9 @@ import java.util.Scanner;
 import java.lang.Integer;
 import java.io.PrintStream;
 
-public class Feature06Main {
+public class Feature08Main {
     public static void main(String[] args) {
+
         Database d = new Database(args[0]);
         Scanner k = new Scanner(System.in);
         PrintStream t = new PrintStream(System.out);
@@ -20,17 +21,10 @@ public class Feature06Main {
 
         menu.addAdminOption(new AddUserMenuOption());
         menu.addAdminOption(new RemoveUserMenuOption());
-
-        menu.addUserOption(new CreateWalletMenuOption());
-        menu.addUserOption(new AddProductMenuOption());
-        menu.addUserOption(new RemoveUserMenuOption());
-        menu.addUserOption(new DisplayProductMenuOption());
+        menu.addAdminOption(new TransferWoCoinsMenuOption());
 
         menu.display();
+
     }
+
 }
-
-
-
-
-
