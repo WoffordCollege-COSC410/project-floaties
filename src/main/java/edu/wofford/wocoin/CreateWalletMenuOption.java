@@ -14,10 +14,13 @@ public class CreateWalletMenuOption extends MenuOption{
         System.out.println(username);
 
         if (db.walletExists(username)) {
-            terminal.println("Would you like to replace the existing wallet?");
+            terminal.println("Would you like to replace the existing wallet? 'y' or 'n'");
             if (scan.nextLine().equals("y")) {
-                db.createWallet(username);
-                terminal.println("Wallet added.");
+                if(db.createWallet(username)){
+                    terminal.println("Wallet added.");
+                } else{
+                    terminal.println("wallet not created");
+                }
             } else {
                 terminal.println("Action canceled.");
             }

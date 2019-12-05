@@ -61,9 +61,9 @@ public class Menu {
 
     private void displayAdminSubmenu() {
         boolean adminMenuContinue = true;
+        terminal.println("Enter password: ");
+        String pwd = keyboard.nextLine();
         while (adminMenuContinue) {
-            terminal.println("Enter password: ");
-            String pwd = keyboard.nextLine();
             if (db.checkIsAdmin(pwd)) {
                 terminal.println("1: back");
 
@@ -73,16 +73,6 @@ public class Menu {
                     terminal.println(opt.toString());
                     i++;
                 }
-//                String adminMenu = keyboard.nextLine();
-//                if (adminMenu.equals("1")) {
-//                    menuContinue = false;
-//                } else {
-//                    for (MenuOption opt : adminOptions) {
-//                        if (opt.isTriggered(adminMenu)) {
-//                            opt.execute();
-//                        }
-//                    }
-//                }
                 String adminMenu = keyboard.nextLine();
                 if (Integer.parseInt(adminMenu) == 1) {
                     adminMenuContinue = false;
@@ -90,19 +80,6 @@ public class Menu {
                     adminOptions.get(Integer.parseInt(adminMenu) - 2).execute();
                     adminMenuContinue = true;
                 }
-//                switch () {
-//                    case "1":
-//                        menuContinue = false;
-//                        break;
-//                    case "2":
-//                        //AddUserMenuOption.execute();
-//                    case "3":
-//                        terminal.println("Username please: ");
-//                        String removeUser = keyboard.nextLine();
-//                        db.removeUser(removeUser);
-//                        terminal.println(removeUser + " was removed.");
-//                        break;
-//
             } else {
                 terminal.println("Incorrect administrator password.");
                 adminMenuContinue = false;

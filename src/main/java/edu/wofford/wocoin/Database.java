@@ -482,7 +482,7 @@ public class Database {
 
     /**
      * Displays the product
-     * @return a string of all of the products
+     * @return a list of all of the products in order by price and name
      */
 
 
@@ -503,13 +503,8 @@ public class Database {
             e.printStackTrace();
         }
 
-        /*for (int i = 0; i <= 9; i++){
-            sList.add(productList);
-
-        }*/
         return list;
     }
-//write unit test
 
 
         /**

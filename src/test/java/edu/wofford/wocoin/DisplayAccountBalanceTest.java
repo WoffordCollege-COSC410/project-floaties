@@ -4,6 +4,7 @@ import org.junit.*;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import java.io.*;
+import java.net.ConnectException;
 import java.nio.file.*;
 import java.sql.*;
 import java.util.concurrent.ExecutionException;
@@ -29,9 +30,9 @@ public class DisplayAccountBalanceTest{
         db.createWallet("Quavo");
         db.sendTransaction("Quavo" , 42069);
         try{
-            assertEquals(db.displayAccountBalance("Quavo"), "User has " + 42069 + " WoCoins.");
+            assertEquals("User has " + 42069 + " WoCoins.", db.displayAccountBalance("Quavo"));
         }
-        catch(CipherException e){
+        catch(CipherException | ConnectException e){
             System.out.println("e");
         }
 

@@ -1,15 +1,11 @@
 package edu.wofford.wocoin.main;
+
 import edu.wofford.wocoin.*;
 
-
-import edu.wofford.wocoin.Database;
-
-import java.io.OutputStream;
-import java.util.Scanner;
-import java.lang.Integer;
 import java.io.PrintStream;
+import java.util.Scanner;
 
-public class Feature08Main {
+public class Feature09Main {
     public static void main(String[] args) {
 
         Database d = new Database(args[0]);
@@ -31,5 +27,4 @@ public class Feature08Main {
         menu.display();
 
     }
-
 }
