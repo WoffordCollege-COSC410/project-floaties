@@ -250,7 +250,7 @@ public class Database {
          * @return whether or not if the wallet was created.
          */
 
-        public boolean createWallet (String id){
+        public boolean createWallet (String id, String filename, String password){
 
             if (!userExists(id)) {
                 return false;
@@ -265,17 +265,24 @@ public class Database {
                         System.out.println("error");
                     }
 
+
+                    if(filename.equals("")){
+                        String homeDir = System.getProperty("user.home");
+                        File dir = new File(homeDir);
+                    } else {
+                        File dir = new File(filename);
+                    }
+
+
+
                     String destinationDir = "tmp//" + id + "//";
                     File destination = new File(destinationDir);
                     destination.mkdirs();
 
-
                     try {
-                        web3 = Web3j.build(new HttpService("https://mainnet.infura.io/v3/338a115fa5324abeadccd992f9c6cbab"));
+                        web3 = Web3j.build(new HttpService());
 
-                        String walletFileName = WalletUtils.generateFullNewWalletFile("password", destination);
-                        //Credentials credentials = WalletUtils.loadCredentials("password", "/ethereum/node0/keystore/UTC--2019-08-07T17-24-10.532680697Z--0fce4741f3f54fbffb97837b4ddaa8f769ba0f91.json");
-                        //File f2 = new File(destinationDir + walletFileName);
+                        String walletFileName = WalletUtils.generateFullNewWalletFile(password, new File(filename));
 
                         String[] fetchAddress = walletFileName.split("--");
 
@@ -575,7 +582,7 @@ public class Database {
 
                 address = "0x" + senderAddress;
                 try{
-                    System.out.println("1");
+                    System.out.println("1"); //how to create an account in geth - geth terminal?
                     EthGetTransactionCount ethGetTransactionCount = web3.ethGetTransactionCount(
                             address, DefaultBlockParameterName.LATEST).sendAsync().get();
                     //BigInteger nonce1 = getNonce(toAddress);

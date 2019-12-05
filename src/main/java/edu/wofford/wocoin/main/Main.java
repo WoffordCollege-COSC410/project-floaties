@@ -1,8 +1,5 @@
 package edu.wofford.wocoin.main;
-import java.io.*;
-import java.nio.file.*;
 
-import edu.wofford.wocoin.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.Arrays;
@@ -22,7 +19,7 @@ public class Main {
                 Feature02Main.main(realArgs);
             } else if (args[0].equals("3")) {
                 Feature03Main.main(realArgs);
-            } else if (args[0].equals("4")) {
+            } /*else if (args[0].equals("4")) {
                 Feature04Main.main(realArgs);
             } else if(args[0].equals("6")) {
                 Feature06Main.main(realArgs);
@@ -30,7 +27,7 @@ public class Main {
                 Feature08Main.main(realArgs);
             } else if(args[0].equals("9")) {
                 Feature09Main.main(realArgs);
-            }
+            }*/
                 else
              {
                 System.out.println("Feature " + args[0] + " is not valid.");

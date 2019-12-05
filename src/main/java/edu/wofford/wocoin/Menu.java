@@ -74,7 +74,7 @@ public class Menu {
                     i++;
                 }
                 String adminMenu = keyboard.nextLine();
-                if (Integer.parseInt(adminMenu) == 1) {
+                if (adminMenu.equals("1")) {
                     adminMenuContinue = false;
                 } else {
                     adminOptions.get(Integer.parseInt(adminMenu) - 2).execute();
@@ -118,8 +118,11 @@ public class Menu {
 //                        }
 //                    }
 //                }
+                    //user directory
+                    String directory = keyboard.nextLine();
+
                     String userMenu = keyboard.nextLine();
-                    if (Integer.parseInt(userMenu) == 1) {
+                    if (userMenu.equals("1")) {
                         userMenuContinue = false;
                     } else {
                         userOptions.get(Integer.parseInt(userMenu) - 2).execute();
