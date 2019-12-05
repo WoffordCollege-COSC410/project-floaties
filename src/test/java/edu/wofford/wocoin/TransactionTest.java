@@ -27,11 +27,11 @@ public class TransactionTest{
         Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
         assertTrue(file.exists());
         Database db = new Database(destName);
-        assertTrue(!db.sendTransaction("MR. DNE"));
+        assertTrue(!db.sendTransaction("MR. DNE", 69));
         dest.delete();
     }
     @Test
-    public void sendFundsToUserWalletDNETest() {
+    public void sendFundsToUserWalletDNETest() throws IOException {
         String fileName = "src/test/resources/testdb.db";
         String destName = "src/test/resources/testdbcopy.db";
         File file = new File(fileName);
@@ -39,11 +39,12 @@ public class TransactionTest{
         Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
         assertTrue(file.exists());
         Database db = new Database(destName);
-        assertTrue(!db.sendTransaction("jdoe"));
+        db.addUser("Snoop Dogg", "GinAndJuice");
+        assertTrue(!db.sendTransaction("Snoop Dogg", 5));
         dest.delete();
     }
     @Test
-    public void sendFundsToUserTest(){
+    public void sendFundsToUserTest() throws IOException{
         String fileName = "src/test/resources/testdb.db";
         String destName = "src/test/resources/testdbcopy.db";
         File file = new File(fileName);
@@ -51,7 +52,7 @@ public class TransactionTest{
         Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
         assertTrue(file.exists());
         Database db = new Database(destName);
-        assertTrue(!db.sendTransaction("jsmith"));
+        assertTrue(db.sendTransaction("jsmith", 420));
         dest.delete();
     }
 

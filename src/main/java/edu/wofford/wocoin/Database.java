@@ -2,6 +2,9 @@ package edu.wofford.wocoin;
 import java.io.*;
 import java.sql.*;
 import java.security.NoSuchAlgorithmException;
+import java.lang.InterruptedException;
+import java.util.concurrent.ExecutionException;
+import javax.crypto.Cipher;
 
 import org.apache.commons.beanutils.converters.SqlDateConverter;
 import org.apache.commons.io.FileUtils;
@@ -23,6 +26,7 @@ import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
 import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt;
+import org.web3j.protocol.core.methods.response.EthGetBalance;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.http.HttpService;
@@ -40,6 +44,9 @@ public class Database {
     public boolean detectsExisting;
     private Web3j web3;
     private String address;
+    private RawTransaction rt;
+    private BigInteger nonce;
+    private String senderAddress;
 
     /**
      * This is the constructor for db
@@ -106,29 +113,11 @@ public class Database {
                 return false;
             }
 
-            String user = "";
-            try (Connection connee = DriverManager.getConnection(url);
-                 Statement stmt2 = connee.createStatement()) {
-
-
-                String testQuery = String.format("SELECT id FROM users WHERE id = %s;", id);
-
-                ResultSet rs = stmt2.executeQuery(testQuery);
-                while (rs.next()) {
-                    user = rs.getString(1);
-                }
-
-
-                if (!(user.equals(null))) {  //.wasNull
-                    return false;
-                } else {
-                    return true;
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                return true;
-            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return true;
         }
+
     }
         /**
          * Adds user to the table
@@ -574,9 +563,19 @@ public class Database {
             return true;
         }
 
+        public BigInteger getNonce(String address) throws Exception {
+            web3 = Web3j.build(new HttpService("https://mainnet.infura.io/v3/338a115fa5324abeadccd992f9c6cbab"));
+
+            EthGetTransactionCount ethGetTransactionCount =
+                    web3.ethGetTransactionCount(address, DefaultBlockParameterName.LATEST)
+                        .sendAsync()
+                        .get();
+            return ethGetTransactionCount.getTransactionCount();
+        }
+
 
         public boolean sendTransaction (String id,int value){
-
+            senderAddress = "0fce4741f3f54fbffb97837b4ddaa8f769ba0f91";
 
             String toAddress = turnIdtoPublickey(id);
             if (userExists(id) && walletExists(id)) {
@@ -588,37 +587,119 @@ public class Database {
 
                 String address = "ethereum/node0/keystore/UTC--2019-08-07T17-24-10.532680697Z--0fce4741f3f54fbffb97837b4ddaa8f769ba0f91.json";
                 //getting the nonce
-                EthGetTransactionCount ethGetTransactionCount = web3j.ethGetTransactionCount(
-                        address, DefaultBlockParameterName.LATEST).sendAsync().get();
 
-                BigInteger nonce = ethGetTransactionCount.getTransactionCount();
 
-                //create raw transaction object
-                BigInteger f = new BigInteger("0");
-                String v = Integer.toString(value);
-                BigInteger val = new BigInteger(v);
-                RawTransaction rawTransaction = RawTransaction.createEtherTransaction(
-                        nonce, f, f, toAddress, val);
+                address = "0x" + senderAddress;
+                try{
+                    System.out.println("1");
+                    EthGetTransactionCount ethGetTransactionCount = web3.ethGetTransactionCount(
+                            address, DefaultBlockParameterName.LATEST).sendAsync().get();
+                    //BigInteger nonce1 = getNonce(toAddress);
+                    BigInteger nonce = ethGetTransactionCount.getTransactionCount();
+                    System.out.println("2");
 
-                //encode and sign transaction object
-                Credentials credentials = WalletUtils.loadCredentials(
-                        "adminpwd",
-                        "ethereum/node0/keystore/UTC--2019-08-07T17-24-10.532680697Z--0fce4741f3f54fbffb97837b4ddaa8f769ba0f91.json");
+                    //create raw transaction object
+                    BigInteger f = new BigInteger("0");
+                    String v = Integer.toString(value);
+                    BigInteger val = new BigInteger(v);
+                    RawTransaction rawTransaction = RawTransaction.createEtherTransaction(
+                            nonce, f, f, toAddress, val);
 
-                byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
-                String hexValue = Numeric.toHexString(signedMessage);
+                    rt = rawTransaction;
 
-                //send the raw transaction object to the node
-                EthSendTransaction ethSendTransaction = web3j.ethSendRawTransaction(hexValue).sendAsync().get();
-                String transactionHash = ethSendTransaction.getTransactionHash();
-                return true;
+                }
+                 catch(InterruptedException | ExecutionException e){
+                    System.out.println("there is an error");
+                }
+
+                try{
+                    //encode and sign transaction object
+                    Credentials credentials = WalletUtils.loadCredentials(
+                            "adminpwd",
+                            "ethereum/node0/keystore/UTC--2019-08-07T17-24-10.532680697Z--0fce4741f3f54fbffb97837b4ddaa8f769ba0f91.json");
+
+                    byte[] signedMessage = TransactionEncoder.signMessage(rt, credentials);
+                    String hexValue = Numeric.toHexString(signedMessage);
+
+                    //send the raw transaction object to the node
+                    EthSendTransaction ethSendTransaction = web3.ethSendRawTransaction(hexValue).sendAsync().get();
+                    String transactionHash = ethSendTransaction.getTransactionHash();
+                    return true;
+                }
+                catch(IOException | InterruptedException | CipherException | ExecutionException e){
+                    System.out.println("error");
+                }
             } else {
                 return false;
             }
-
+            return true;
 
         }
 
+
+
+        public String displayAccountBalance(String id) throws InterruptedException, ExecutionException, IOException, CipherException {
+
+            if(!userExists(id)){
+                return "No such user.";
+            }
+            else if (!walletExists(id)){
+                return "User has no wallet.";
+            }
+            else{
+
+                BatRunner b = new BatRunner();
+                Web3j web3 = Web3j.build(new HttpService());  // defaults to http://localhost:8545/
+                String pubKey = "0x" + turnIdtoPublickey(id);
+
+                int balanceInt = -1;
+
+
+
+                Credentials credentials = WalletUtils.loadCredentials(
+                        "adminpwd",
+                        "ethereum/node0/keystore/UTC--2019-08-07T17-24-10.532680697Z--0fce4741f3f54fbffb97837b4ddaa8f769ba0f91.json");
+                EthGetTransactionCount ethGetTransactionCount = web3.ethGetTransactionCount(credentials.getAddress(), DefaultBlockParameterName.LATEST).send();
+                BigInteger nonce =  ethGetTransactionCount.getTransactionCount();
+
+                int nonceInt = nonce.intValue();
+
+                /*
+                try{
+                    BigInteger balance = web3.ethGetBalance(pubKey, DefaultBlockParameterName.LATEST).send().getBalance();
+                    balanceInt = balance.intValue();
+                }
+                catch(IOException e){
+                    System.out.println("I have an IOException");
+                }
+
+
+
+
+
+                // send asynchronous requests to get balance
+                EthGetBalance ethGetBalance = web3
+                        .ethGetBalance(pubKey, DefaultBlockParameterName.LATEST)
+                        .sendAsync()
+                        .get();
+                */
+               // BigInteger wei = ethGetBalance.getBalance();
+
+                //int weiInt = wei.intValue();
+
+
+                if(nonceInt == 1){
+                    return "User has 1 WoCoin.";
+                }
+                else if (nonceInt > 1 ) {
+                    return "User has " + nonceInt + " WoCoins.";
+                }
+                else{
+                    return "User has 0 WoCoins.";
+                }
+            }
+
+        }
 
         public String Carrats (String id){
             String builder = "";

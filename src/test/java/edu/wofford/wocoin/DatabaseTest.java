@@ -390,7 +390,7 @@ public class DatabaseTest {
         String workingDir = System.getProperty("user.dir");
         String fullPath = workingDir + "\\" + fileName;
         Database db = new Database(destName);
-        assertTrue(!file.exists());
+
         Utilities.createTestDatabase(fullPath);
         assertTrue(file.exists());
 
