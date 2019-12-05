@@ -116,6 +116,7 @@ public class Menu {
 
             terminal.println("Username: ");
             String user = keyboard.nextLine();
+
             terminal.println("Password: ");
             String password = keyboard.nextLine();
 

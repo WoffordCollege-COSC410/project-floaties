@@ -459,7 +459,6 @@ public class DatabaseTest {
             File file = new File(fileName);
             File dest = new File(destName);
             Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
-
             Database p = new Database(destName);
             assertTrue(!p.addProduct("a615316333ba8622fd5bb60fe39758b3515f774d", 0, "lamp","FIAT LUX!"));
 
