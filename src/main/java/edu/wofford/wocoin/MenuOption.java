@@ -52,6 +52,5 @@ public abstract class MenuOption {
         return trigger + ": " + triggerText;
     }
 
-
     public abstract void execute();
 }

@@ -252,124 +252,68 @@ public class Database {
 
         public boolean createWallet (String id, String filename, String password){
 
-            if (!userExists(id)) {
+//                try {
+//                    String directoryString = "tmp//" + id + "//";
+//                    File directory = new File(directoryString);
+//                    FileUtils.cleanDirectory(directory);
+//                    directory.delete();
+//                } catch (IOException | IllegalArgumentException e) {
+//                    System.out.println("error");
+//                }
+
+                //move
+//                if (filename.equals("")) {
+//                    String homeDir = System.getProperty("user.home");
+//                    File dir = new File(homeDir);
+//                } else {
+//                    File dir = new File(filename);
+//                }
+            File dir = new File(filename);
+
+            try {
+                web3 = Web3j.build(new HttpService());
+
+                String walletFileName = WalletUtils.generateFullNewWalletFile(password, dir);
+
+                String[] fetchAddress = walletFileName.split("--");
+
+                String getAddress = fetchAddress[fetchAddress.length - 1].split("\\.")[0];
+                address = getAddress;
+            } catch (NoSuchAlgorithmException e) {
+                System.out.println("exception");
+                e.printStackTrace();
                 return false;
-            } else {
-                if (walletExists(id)) {
-                    try {
-                        String directoryString = "tmp//" + id + "//";
-                        File directory = new File(directoryString);
-                        FileUtils.cleanDirectory(directory);
-                        directory.delete();
-                    } catch (IOException | IllegalArgumentException e) {
-                        System.out.println("error");
-                    }
-
-
-                    if(filename.equals("")){
-                        String homeDir = System.getProperty("user.home");
-                        File dir = new File(homeDir);
-                    } else {
-                        File dir = new File(filename);
-                    }
-
-
-
-                    String destinationDir = "tmp//" + id + "//";
-                    File destination = new File(destinationDir);
-                    destination.mkdirs();
-
-                    try {
-                        web3 = Web3j.build(new HttpService());
-
-                        String walletFileName = WalletUtils.generateFullNewWalletFile(password, new File(filename));
-
-                        String[] fetchAddress = walletFileName.split("--");
-
-                        String getAddress = fetchAddress[fetchAddress.length - 1].split("\\.")[0];
-                        address = getAddress;
-                    } catch (NoSuchAlgorithmException e) {
-                        System.out.println("exception");
-                        e.printStackTrace();
-                        return false;
-                    } catch (SecurityException | GeneralSecurityException | IOException | CipherException e) {
-                        e.printStackTrace();
-                        return false;
-                    }
-
-
-                    try (Connection conne = DriverManager.getConnection(url);
-                         PreparedStatement stmt = conne.prepareStatement("DELETE FROM wallets WHERE id = ?;")) {
-                        stmt.setString(1, id);
-                        stmt.executeUpdate();
-
-
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-
-                    String testQuery = "INSERT INTO wallets (id, publickey) VALUES (?, ?);";
-
-
-                    try (Connection conn = DriverManager.getConnection(url);
-                         PreparedStatement stmt = conn.prepareStatement(testQuery)) {
-
-                        stmt.setString(1, id);
-                        stmt.setString(2, address);
-                        stmt.executeUpdate();
-                        return true;
-
-
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                        return false;
-                    }
-
-
-                } else {
-                    String destinationDir = "tmp//" + id + "//";
-                    File destination = new File(destinationDir);
-                    destination.mkdirs();
-
-                    try {
-                        web3 = Web3j.build(new HttpService("https://mainnet.infura.io/v3/338a115fa5324abeadccd992f9c6cbab"));
-                        String walletFileName = WalletUtils.generateFullNewWalletFile("password", destination);
-                        String[] fetchAddress = walletFileName.split("--");
-
-                        String getAddress = fetchAddress[fetchAddress.length - 1].split("\\.")[0];
-                        address = getAddress;
-                    } catch (NoSuchAlgorithmException e) {
-                        System.out.println("exception");
-                        e.printStackTrace();
-                        return false;
-                    } catch (SecurityException | GeneralSecurityException | IOException | CipherException e) {
-                        e.printStackTrace();
-                        return false;
-                    }
-
-                    String testQuery = "INSERT INTO wallets (id, publickey) VALUES (?, ?);";
-
-
-                    try (Connection conn = DriverManager.getConnection(url);
-                         PreparedStatement stmt = conn.prepareStatement(testQuery)) {
-
-                        stmt.setString(1, id);
-                        stmt.setString(2, address);
-                        stmt.executeUpdate();
-                        return true;
-
-
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                        return false;
-                    }
-
-
-                }
-
-
+            } catch (SecurityException | GeneralSecurityException | IOException | CipherException e) {
+                e.printStackTrace();
+                return false;
             }
 
+            try (Connection conne = DriverManager.getConnection(url);
+                 PreparedStatement stmt = conne.prepareStatement("DELETE FROM wallets WHERE id = ?;")) {
+                stmt.setString(1, id);
+                stmt.executeUpdate();
+
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            String testQuery = "INSERT INTO wallets (id, publickey) VALUES (?, ?);";
+
+
+            try (Connection conn = DriverManager.getConnection(url);
+                 PreparedStatement stmt = conn.prepareStatement(testQuery)) {
+
+                stmt.setString(1, id);
+                stmt.setString(2, address);
+                stmt.executeUpdate();
+                return true;
+
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return false;
+            }
 
         }
 

@@ -27,7 +27,7 @@ public class DisplayAccountBalanceTest{
         assertTrue(file.exists());
         Database db = new Database(destName);
         db.addUser("Quavo", "WhipItAtTheBandoBoySKRAAAAAAAAAAAAAA");
-        db.createWallet("Quavo");
+        db.createWallet("Quavo", destName, "WhipItAtTheBandoBoySKRAAAAAAAAAAAAAA");
         db.sendTransaction("Quavo" , 42069);
         try{
             assertEquals("User has " + 42069 + " WoCoins.", db.displayAccountBalance("Quavo"));

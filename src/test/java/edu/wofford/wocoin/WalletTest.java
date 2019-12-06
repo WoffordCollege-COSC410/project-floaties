@@ -31,7 +31,7 @@ public class WalletTest{
         Database db = new Database (destName);
 
 
-        db.createWallet("jdoe");
+        db.createWallet("jdoe", destName, "password");
 
         assertTrue(db.walletExists("jdoe"));
 
@@ -54,11 +54,11 @@ public class WalletTest{
         Database db = new Database (destName);
 
 
-        db.createWallet("jdoe");
+        db.createWallet("jdoe", destName, "password");
 
         assertTrue(db.walletExists("jdoe"));
 
-        db.createWallet("jdoe");
+        db.createWallet("jdoe", destName, "password");
 
         assertTrue(db.walletExists("jdoe"));
 
@@ -75,7 +75,7 @@ public class WalletTest{
         Database db = new Database (destName);
 
 
-        db.createWallet("Mr DNE");
+        db.createWallet("Mr DNE", destName, "DNE");
 
         assertTrue(!db.walletExists("Mr DNE"));
         dest.delete();

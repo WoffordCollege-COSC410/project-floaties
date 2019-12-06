@@ -295,7 +295,7 @@ public class DatabaseTest {
             Database db = new Database (destName);
 
 
-            db.createWallet("MR DNE");
+            db.createWallet("MR DNE", destName, "uthot");
 
             assertTrue(!db.walletExists("MR DNE"));
 
@@ -315,7 +315,7 @@ public class DatabaseTest {
         Database db = new Database (destName);
 
         db.addUser("kara", "1234");
-        db.createWallet("kara");
+        db.createWallet("kara", destName, "porter");
 
         assertTrue(db.walletExists("kara"));
 

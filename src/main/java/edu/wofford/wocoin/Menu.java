@@ -70,16 +70,23 @@ public class Menu {
                 int i = 2;
                 for (MenuOption opt : adminOptions) {
                     opt.setTriggers(i);
+                    opt.setPassword(pwd);
                     terminal.println(opt.toString());
                     i++;
                 }
                 String adminMenu = keyboard.nextLine();
                 if (adminMenu.equals("1")) {
                     adminMenuContinue = false;
+                } else if (adminMenu.equals("4")){
+                    String directory = adminMenu;
+                    String adminMenu2 = keyboard.nextLine();
+                    adminOptions.get(Integer.parseInt(adminMenu2) - 2).execute();
+                    adminMenuContinue = false;
                 } else {
                     adminOptions.get(Integer.parseInt(adminMenu) - 2).execute();
                     adminMenuContinue = true;
                 }
+
             } else {
                 terminal.println("Incorrect administrator password.");
                 adminMenuContinue = false;
@@ -108,88 +115,22 @@ public class Menu {
                         terminal.println(opt.toString());
                         i++;
                     }
-//                String adminMenu = keyboard.nextLine();
-//                if (adminMenu.equals("1")) {
-//                    menuContinue = false;
-//                } else {
-//                    for (MenuOption opt : adminOptions) {
-//                        if (opt.isTriggered(adminMenu)) {
-//                            opt.execute();
-//                        }
-//                    }
-//                }
-                    //user directory
-                    String directory = keyboard.nextLine();
-
                     String userMenu = keyboard.nextLine();
                     if (userMenu.equals("1")) {
                         userMenuContinue = false;
-                    } else {
+                    } else if(userMenu.equals("2")){
+                        int optInt = Integer.parseInt(userMenu);
+                        if( optInt == 2){
+                            userOptions.get(optInt - 2).execute();
+                        } else{
+                            userOptions.get(0).execute();
+                        }
+                        userMenuContinue = false;
+                    } else{
                         userOptions.get(Integer.parseInt(userMenu) - 2).execute();
                         userMenuContinue = true;
                     }
                 }
-
-//
-//                switch (userMenu) {
-//                    case "1":
-//                        menuContinue = false;
-//                        break;
-//                    case "2":
-//                        if (db.walletExists(user)) {
-//                            terminal.println("Would you like to replace the existing wallet?");
-//                            if (keyboard.nextLine().equals("y")) {
-//                                db.createWallet(user);
-//                                terminal.println("Wallet added.");
-//                                menuContinue = false;
-//                            } else {
-//                                terminal.println("Action canceled.");
-//                                menuContinue = false;
-//                            }
-//
-//                        } else {
-//                            db.createWallet(user);
-//                            terminal.println("Wallet added.");
-//                            menuContinue = false;
-//                        }
-//                        break;
-//                    case "3":
-//                        if(db.walletExists(user)){
-//                            terminal.println("Enter product name: ");
-//                            String name = keyboard.nextLine();
-//                            while(name.length() == 0){
-//                                terminal.println("Invalid value.");
-//                                terminal.println("Expected a string with at least 1 character.");
-//                                terminal.println("Enter product name: ");
-//                                name = keyboard.nextLine();
-//                            }
-//                            terminal.println("Enter product description: ");
-//                            String description = keyboard.nextLine();
-//                            while(description.length() == 0){
-//                                terminal.println("Invalid value.");
-//                                terminal.println("Expected a string with at least 1 character.");
-//                                terminal.println("Enter product description: ");
-//                                description = keyboard.nextLine();
-//                            }
-//                            terminal.println("Enter price: ");
-//                            int price = Integer.parseInt(keyboard.nextLine());
-//                            while(price < 1){
-//                                terminal.println("Invalid value.");
-//                                terminal.println("Expected an integer value greater than or equal to 1.");
-//                                terminal.println("Enter product price greater than 1: ");
-//                                price = Integer.parseInt(keyboard.nextLine());
-//                            }
-//
-//                            String seller = db.turnIdtoPublickey(user);
-//                            db.addProduct(seller, price, name, description);
-//                            terminal.println("Product added.");
-//                            menuContinue = false;
-//                        } else {
-//                            terminal.println("User has no wallet.");
-//                            menuContinue = false;
-//                        }
-//                        break;
-//                }
             } else {
                 terminal.println("No such user.");
                 userMenuContinue = false;
