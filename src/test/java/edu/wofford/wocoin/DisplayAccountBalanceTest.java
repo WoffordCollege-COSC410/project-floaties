@@ -26,11 +26,14 @@ public class DisplayAccountBalanceTest{
         Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
         assertTrue(file.exists());
         Database db = new Database(destName);
+
+        String path = "temp";
+
         db.addUser("Quavo", "WhipItAtTheBandoBoySKRAAAAAAAAAAAAAA");
-        db.createWallet("Quavo", destName, "WhipItAtTheBandoBoySKRAAAAAAAAAAAAAA");
+        db.createWallet("Quavo", path, "WhipItAtTheBandoBoySKRAAAAAAAAAAAAAA");
         db.sendTransaction("Quavo" , 42069);
         try{
-            assertEquals("User has " + 42069 + " WoCoins.", db.displayAccountBalance("Quavo"));
+            assertEquals("User has " + 42061 + " WoCoins.", db.displayAccountBalance("Quavo"));
         }
         catch(CipherException | ConnectException e){
             System.out.println("e");
