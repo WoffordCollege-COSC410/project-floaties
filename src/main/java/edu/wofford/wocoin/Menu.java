@@ -32,10 +32,12 @@ public class Menu {
                     break;
                 case "2":
                     displayAdminSubmenu();
+                    menuContinue = false;
                     break;
 
                 case "3":
                     displayUserSubmenu();
+                    menuContinue = false;
                     break;
             }
 

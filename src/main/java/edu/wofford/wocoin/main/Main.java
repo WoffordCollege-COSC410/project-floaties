@@ -21,11 +21,11 @@ public class Main {
                 Feature03Main.main(realArgs);
             } /*else if (args[0].equals("4")) {
                 Feature04Main.main(realArgs);
-            } else if(args[0].equals("6")) {
+            } */else if(args[0].equals("6")) {
                 Feature06Main.main(realArgs);
             } else if(args[0].equals("8")) {
                 Feature08Main.main(realArgs);
-            } else if(args[0].equals("9")) {
+            } /*else if(args[0].equals("9")) {
                 Feature09Main.main(realArgs);
             }*/
                 else

@@ -18,7 +18,7 @@ public class CreateWalletMenuOption extends MenuOption{
             if (db.walletExists(username)) {
                 terminal.println("Would you like to replace the existing wallet? 'y' or 'n'");
                 if (scan.nextLine().equals("y")) {
-                    if(db.createWallet(username, directory, password)){
+                    if(db.createWallet(username, directory.trim(), password)){
                         terminal.println("Wallet added.");
                     }else{
                         terminal.println("wallet not created");
