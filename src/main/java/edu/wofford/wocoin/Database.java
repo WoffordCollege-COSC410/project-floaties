@@ -268,7 +268,10 @@ public class Database {
 //                } else {
 //                    File dir = new File(filename);
 //                }
-            File dir = new File(filename);
+            String temp = filename + "//" + id + "//";
+            File dir = new File(temp);
+
+            dir.mkdirs();
 
             try {
                 web3 = Web3j.build(new HttpService());
@@ -512,15 +515,12 @@ public class Database {
         public boolean sendTransaction (String id,int value){
             senderAddress = "0fce4741f3f54fbffb97837b4ddaa8f769ba0f91";
 
-            String toAddress = turnIdtoPublickey(id);
+            String toAddress = "0x" + turnIdtoPublickey(id);
             if (userExists(id) && walletExists(id)) {
 
                 web3 = Web3j.build(new HttpService("https://mainnet.infura.io/v3/338a115fa5324abeadccd992f9c6cbab"));
 
-                //run batch script here?
-                BatRunner b = new BatRunner();
-
-                String address = "ethereum/node0/keystore/UTC--2019-08-07T17-24-10.532680697Z--0fce4741f3f54fbffb97837b4ddaa8f769ba0f91.json";
+                String path = "ethereum/node0/keystore/UTC--2019-08-07T17-24-10.532680697Z--0fce4741f3f54fbffb97837b4ddaa8f769ba0f91.json";
                 //getting the nonce
 
 
@@ -583,7 +583,7 @@ public class Database {
             }
             else{
 
-                BatRunner b = new BatRunner();
+
                 Web3j web3 = Web3j.build(new HttpService());  // defaults to http://localhost:8545/
                 String pubKey = "0x" + turnIdtoPublickey(id);
 
@@ -594,10 +594,7 @@ public class Database {
                 Credentials credentials = WalletUtils.loadCredentials(
                         "adminpwd",
                         "ethereum/node0/keystore/UTC--2019-08-07T17-24-10.532680697Z--0fce4741f3f54fbffb97837b4ddaa8f769ba0f91.json");
-                EthGetTransactionCount ethGetTransactionCount = web3.ethGetTransactionCount(credentials.getAddress(), DefaultBlockParameterName.LATEST).send();
-                BigInteger nonce =  ethGetTransactionCount.getTransactionCount();
 
-                int nonceInt = nonce.intValue();
 
                 /*
                 try{
@@ -607,7 +604,7 @@ public class Database {
                 catch(IOException e){
                     System.out.println("I have an IOException");
                 }
-
+            */
 
 
 
@@ -617,20 +614,20 @@ public class Database {
                         .ethGetBalance(pubKey, DefaultBlockParameterName.LATEST)
                         .sendAsync()
                         .get();
-                */
-               // BigInteger wei = ethGetBalance.getBalance();
 
-                //int weiInt = wei.intValue();
+                BigInteger wei = ethGetBalance.getBalance();
+                int weiInt=0;
+                weiInt = wei.intValue();
 
-
-                if(nonceInt == 1){
+                System.out.println(weiInt);
+                if(weiInt == 1){
                     return "User has 1 WoCoin.";
                 }
-                else if (nonceInt > 1 ) {
-                    return "User has " + nonceInt + " WoCoins.";
+                else if (weiInt > 1 ) {
+                    return "User has " + weiInt + " WoCoins.";
                 }
                 else{
-                    return "User has 0 WoCoins.";
+                    return "User has 0 WoCoins." + weiInt;
                 }
             }
 
