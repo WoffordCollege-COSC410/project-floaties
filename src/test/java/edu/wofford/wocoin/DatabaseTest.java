@@ -313,9 +313,10 @@ public class DatabaseTest {
         File dest = new File(destName);
         Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
         Database db = new Database (destName);
+        String path = "temp";
 
         db.addUser("kara", "1234");
-        db.createWallet("kara", destName, "porter");
+        assertTrue (db.createWallet("kara", path, "porter"));
 
         assertTrue(db.walletExists("kara"));
 

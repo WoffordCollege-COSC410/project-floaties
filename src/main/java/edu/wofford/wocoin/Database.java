@@ -37,6 +37,8 @@ import org.web3j.utils.Numeric;
 
 
 
+
+
 public class Database {
     private String adminPwd;
     private String url;
@@ -501,18 +503,26 @@ public class Database {
             return true;
         }
 
-        public BigInteger getNonce(String address) throws Exception {
+        public BigInteger getNonce() throws Exception {
             web3 = Web3j.build(new HttpService("https://mainnet.infura.io/v3/338a115fa5324abeadccd992f9c6cbab"));
-
-            EthGetTransactionCount ethGetTransactionCount =
-                    web3.ethGetTransactionCount(address, DefaultBlockParameterName.LATEST)
-                        .sendAsync()
-                        .get();
-            return ethGetTransactionCount.getTransactionCount();
+            senderAddress = "0fce4741f3f54fbffb97837b4ddaa8f769ba0f91";
+            String toAddr = "0x" + senderAddress;
+            EthGetTransactionCount ethGetTransactionCount = web3.ethGetTransactionCount(
+                    toAddr, DefaultBlockParameterName.LATEST).sendAsync().get();
+            //BigInteger nonce1 = getNonce(toAddress);
+            BigInteger nonce = ethGetTransactionCount.getTransactionCount();
+            return nonce;
         }
 
 
         public boolean sendTransaction (String id,int value){
+
+            String bigValString = Integer.toString(value);
+            BigInteger bigValue = new BigInteger(bigValString);
+
+            String gasLim = "12288";
+            BigInteger gasLimit = new BigInteger(gasLim);
+            //maybe change value to big int
             senderAddress = "0fce4741f3f54fbffb97837b4ddaa8f769ba0f91";
 
             String toAddress = "0x" + turnIdtoPublickey(id);
@@ -526,19 +536,19 @@ public class Database {
 
                 address = "0x" + senderAddress;
                 try{
-                    System.out.println("1"); //how to create an account in geth - geth terminal?
+
                     EthGetTransactionCount ethGetTransactionCount = web3.ethGetTransactionCount(
                             address, DefaultBlockParameterName.LATEST).sendAsync().get();
                     //BigInteger nonce1 = getNonce(toAddress);
                     BigInteger nonce = ethGetTransactionCount.getTransactionCount();
-                    System.out.println("2");
+
 
                     //create raw transaction object
                     BigInteger f = new BigInteger("0");
                     String v = Integer.toString(value);
                     BigInteger val = new BigInteger(v);
                     RawTransaction rawTransaction = RawTransaction.createEtherTransaction(
-                            nonce, f, f, toAddress, val);
+                            nonce, f,f, toAddress, bigValue);
 
                     rt = rawTransaction;
 
@@ -557,11 +567,13 @@ public class Database {
                     String hexValue = Numeric.toHexString(signedMessage);
 
                     //send the raw transaction object to the node
-                    EthSendTransaction ethSendTransaction = web3.ethSendRawTransaction(hexValue).sendAsync().get();
+                    EthSendTransaction ethSendTransaction = web3.ethSendRawTransaction(hexValue).send();
                     String transactionHash = ethSendTransaction.getTransactionHash();
+
+                    EthGetTransactionReceipt ethGetTransactionReceiptResp = web3.ethGetTransactionReceipt(transactionHash).send();
                     return true;
                 }
-                catch(IOException | InterruptedException | CipherException | ExecutionException e){
+                catch(IOException | CipherException e){
                     System.out.println("error");
                 }
             } else {
@@ -570,6 +582,21 @@ public class Database {
             return true;
 
         }
+
+
+    public String createOfflineTx(String toAddress, BigInteger gasPrice, BigInteger gasLimit, BigInteger amount, BigInteger nonce) throws IOException, CipherException {
+
+        Credentials credentials = WalletUtils.loadCredentials(
+                "adminpwd",
+                "ethereum/node0/keystore/UTC--2019-08-07T17-24-10.532680697Z--0fce4741f3f54fbffb97837b4ddaa8f769ba0f91.json");
+
+        RawTransaction rawTransaction  = RawTransaction.createEtherTransaction(nonce, gasPrice, gasLimit, toAddress, amount);
+        byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
+        String hexValue = Numeric.toHexString(signedMessage);
+
+        return hexValue;
+    }
+
 
 
 
