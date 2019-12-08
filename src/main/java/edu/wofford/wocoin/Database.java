@@ -595,6 +595,21 @@ public class Database {
         return hexValue;
     }
 
+    public boolean sendOfflineTx(String hexValue){
+       try{
+           EthSendTransaction ethSendTransaction = web3.ethSendRawTransaction(hexValue).send();
+           String transactionHash = ethSendTransaction.getTransactionHash();
+
+           EthGetTransactionReceipt ethGetTransactionReceiptResp = web3.ethGetTransactionReceipt(transactionHash).send();
+           return true;
+       }
+       catch(IOException e){
+            System.out.println("exception");
+            return false;
+        }
+
+    }
+
 
 
 

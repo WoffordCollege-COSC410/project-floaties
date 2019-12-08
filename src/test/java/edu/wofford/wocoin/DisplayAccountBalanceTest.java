@@ -33,6 +33,31 @@ public class DisplayAccountBalanceTest{
         db.createWallet("Quavo", path, "WhipItAtTheBandoBoySKRAAAAAAAAAAAAAA");
         db.sendTransaction("Quavo" , 42069);
         try{
+            assertEquals("User has " + 42061 + " WoCoins.", db.displayAccountBalance("jsmith"));
+        }
+        catch(CipherException | ConnectException e){
+            System.out.println("e");
+        }
+
+        dest.delete();
+    }
+
+
+    @Test
+    public void displayCreatedAccountorigBalanceTest() throws IOException, InterruptedException, ExecutionException {
+        String fileName = "src/test/resources/testdb.db";
+        String destName = "src/test/resources/testdbcopy.db";
+        File file = new File(fileName);
+        File dest = new File(destName);
+        Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        assertTrue(file.exists());
+        Database db = new Database(destName);
+
+        String path = "temp";
+
+
+
+        try{
             assertEquals("User has " + 42061 + " WoCoins.", db.displayAccountBalance("Quavo"));
         }
         catch(CipherException | ConnectException e){
@@ -41,4 +66,6 @@ public class DisplayAccountBalanceTest{
 
         dest.delete();
     }
+
+
 }

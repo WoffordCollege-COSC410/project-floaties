@@ -30,6 +30,7 @@ import org.web3j.protocol.http.HttpService;
 import org.web3j.utils.Convert;
 import org.web3j.utils.Convert.Unit;
 import org.web3j.utils.Numeric;
+import java.net.ConnectException;
 
 import org.junit.*;
 import static org.junit.Assert.*;
@@ -107,7 +108,15 @@ public class TransactionTest{
 
         BigInteger nonce = db.getNonce();
 
-        assertEquals((db.createOfflineTx("0xa615316333ba8622fd5bb60fe39758b3515f774d", f, f, value, nonce)), "sss"  );
+        String trans = db.createOfflineTx("0xa615316333ba8622fd5bb60fe39758b3515f774d", f, f, value, nonce);
+        assertTrue(db.sendOfflineTx(trans));
+        try{
+            assertEquals("User has " + 42061 + " WoCoins.", db.displayAccountBalance("jsmith"));
+        }
+        catch(CipherException | ConnectException e){
+            System.out.println("e");
+        }
+
         dest.delete();
     }
 
