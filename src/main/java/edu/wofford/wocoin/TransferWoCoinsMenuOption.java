@@ -34,7 +34,7 @@ public class TransferWoCoinsMenuOption extends MenuOption {
 
 
         } else {
-            terminal.println("No such user");
+            terminal.println("No such user.");
         }
     }
 }

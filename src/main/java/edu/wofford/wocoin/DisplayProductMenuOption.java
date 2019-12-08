@@ -19,7 +19,7 @@ public class DisplayProductMenuOption extends MenuOption {
         String userWallet = super.db.turnIdtoPublickey(username);
         for(int i = 0; i< list.size(); i++){
             if(list.get(i).getSeller().equals(userWallet)){
-                System.out.println(i+1 + ": " + ">>> " + list.get(i).toString());
+                System.out.println(i+1 + ": " + ">>>  " + list.get(i).toString());
             }else{
                 System.out.println(i+1 + ": " + list.get(i).toString());
             }
