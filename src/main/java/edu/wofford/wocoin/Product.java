@@ -17,9 +17,9 @@ public class Product {
 
     public String toString(){
         if(price == 1){
-            return name + ": " + description + " [" + price + " WoCoin]";
+            return name + ": " + description + "  [" + price + " WoCoin]";
         } else {
-            return name + ": " + description + " [" + price + " WoCoins]";
+            return name + ": " + description + "  [" + price + " WoCoins]";
         }
 
     }
