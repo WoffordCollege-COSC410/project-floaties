@@ -254,16 +254,11 @@ public class Database {
 
             String temp = filename + "//" + id + "//";
             File dir = new File(temp);
-
             dir.mkdirs();
-
             try {
                 web3 = Web3j.build(new HttpService());
-
                 String walletFileName = WalletUtils.generateFullNewWalletFile(password, dir);
-
                 String[] fetchAddress = walletFileName.split("--");
-
                 String getAddress = fetchAddress[fetchAddress.length - 1].split("\\.")[0];
                 address = getAddress;
             } catch (NoSuchAlgorithmException e) {
@@ -279,38 +274,28 @@ public class Database {
                  PreparedStatement stmt = conne.prepareStatement("DELETE FROM wallets WHERE id = ?;")) {
                 stmt.setString(1, id);
                 stmt.executeUpdate();
-
-
             } catch (SQLException e) {
                 e.printStackTrace();
             }
 
             String testQuery = "INSERT INTO wallets (id, publickey) VALUES (?, ?);";
-
-
             try (Connection conn = DriverManager.getConnection(url);
                  PreparedStatement stmt = conn.prepareStatement(testQuery)) {
-
                 stmt.setString(1, id);
                 stmt.setString(2, address);
                 stmt.executeUpdate();
                 return true;
-
-
             } catch (SQLException e) {
                 e.printStackTrace();
                 return false;
             }
-
         }
 
         private String turnPublicKeyToId (String publicKey){
             try (Connection conn = DriverManager.getConnection(url);
                  PreparedStatement stmt = conn.prepareStatement("SELECT * FROM wallets WHERE publickey = ?;")) {
-
                 stmt.setString(1, publicKey);
                 ResultSet rs = stmt.executeQuery();
-
                 if (rs.next()) {
                     if (rs.getString(2).equals(publicKey)) {
                         String builder = rs.getString(1);
@@ -331,10 +316,8 @@ public class Database {
         public String turnIdtoPublickey (String id){
             try (Connection conn = DriverManager.getConnection(url);
                  PreparedStatement stmt = conn.prepareStatement("SELECT * FROM wallets WHERE id = ?;")) {
-
                 stmt.setString(1, id);
                 ResultSet rs = stmt.executeQuery();
-
             if (rs.next()) {
                 return rs.getString(2);
             } else {
@@ -373,12 +356,9 @@ public class Database {
 
             if (walletExists(id)) {
                 if (isValidName(name) && isValidPrice(price) && isValidDescription(description)) {
-
                     String testQuery = "INSERT INTO products (seller, price, name, description) VALUES (?, ?, ?, ?);";
-
                     try (Connection conn = DriverManager.getConnection(url);
                          PreparedStatement stmt = conn.prepareStatement(testQuery)) {
-
                         stmt.setString(1, seller);
                         stmt.setInt(2, price);
                         stmt.setString(3, name);
@@ -389,14 +369,12 @@ public class Database {
                         e.printStackTrace();
                         return false;
                     }
-
                 } else {
                     return false;
                 }
             } else {
                 return false;
             }
-
         }
 
         /**
@@ -409,13 +387,11 @@ public class Database {
                  PreparedStatement stmt = conn.prepareStatement("DELETE FROM product WHERE name = ?;")) {
                 stmt.setString(1, name);
                 stmt.executeUpdate();
-
                 return true;
             } catch (SQLException e) {
                 e.printStackTrace();
                 return false;
             }
-
     }
 
     /**
@@ -495,7 +471,6 @@ public class Database {
 
 
         public boolean sendTransaction (String id,int value){
-
             String bigValString = Integer.toString(value);
             BigInteger bigValue = new BigInteger(bigValString);
 
@@ -595,7 +570,6 @@ public class Database {
 
 
         public String displayAccountBalance(String id) throws InterruptedException, ExecutionException, IOException, CipherException {
-
             if(!userExists(id)){
                 return "No such user.";
             }
@@ -603,33 +577,12 @@ public class Database {
                 return "User has no wallet.";
             }
             else{
-
-
-                Web3j web3 = Web3j.build(new HttpService());  // defaults to http://localhost:8545/
+                Web3j web3 = Web3j.build(new HttpService());
                 String pubKey = "0x" + turnIdtoPublickey(id);
-
                 int balanceInt = -1;
-
-
-
                 Credentials credentials = WalletUtils.loadCredentials(
                         "adminpwd",
                         "ethereum/node0/keystore/UTC--2019-08-07T17-24-10.532680697Z--0fce4741f3f54fbffb97837b4ddaa8f769ba0f91.json");
-
-
-                /*
-                try{
-                    BigInteger balance = web3.ethGetBalance(pubKey, DefaultBlockParameterName.LATEST).send().getBalance();
-                    balanceInt = balance.intValue();
-                }
-                catch(IOException e){
-                    System.out.println("I have an IOException");
-                }
-            */
-
-
-
-
                 // send asynchronous requests to get balance
                 EthGetBalance ethGetBalance = web3
                         .ethGetBalance(pubKey, DefaultBlockParameterName.LATEST)
