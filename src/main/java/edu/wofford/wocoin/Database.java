@@ -441,7 +441,7 @@ public class Database {
 
 
     public List<Product> displayProductF6() {
-        List<Product> list = new ArrayList<Product>();
+        List<Product> list = new ArrayList<>();
         try(Connection conn = DriverManager.getConnection(url);
             Statement stmt = conn.createStatement()) {
             ResultSet rsCount = stmt.executeQuery("select count(*) from products;");
@@ -463,21 +463,18 @@ public class Database {
 
         /**
          *
-         * @param seller
          * @return
          */
 
-        public List displayProductF5 (String seller){
-            List<Product> list = new ArrayList<Product>();
-            list.add(0, null);
-            String query = "select *, count(*) over () total_rows from products where seller = ? order by name collate nocase;";
-            try (Connection conn = DriverManager.getConnection(url);
-                 PreparedStatement stmt = conn.prepareStatement(query)) {
-                stmt.setString(1, seller);
-                ResultSet rs = stmt.executeQuery(query);
+        public List displayProductF5() {
+            List<Product> list = new ArrayList<>();
+            try(Connection conn = DriverManager.getConnection(url);
+                Statement stmt = conn.createStatement()) {
+                ResultSet rsCount = stmt.executeQuery("select count(*) from products;");
+                int n = rsCount.getInt(1);
+                ResultSet rs = stmt.executeQuery("select * from products order by price, name collate nocase;");
                 rs.next();
-                int rows = rs.getInt(6);
-                for (int i = 1; i <= rows; i++) {
+                for (int i = 1; i <= n; i++) {
                     Product p = new Product(rs.getString(2), rs.getInt(3), rs.getString(4), rs.getString(5));
                     list.add(p);
                     rs.next();
@@ -485,6 +482,7 @@ public class Database {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+
             return list;
         }
 

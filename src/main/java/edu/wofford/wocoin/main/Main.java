@@ -19,9 +19,9 @@ public class Main {
                 Feature02Main.main(realArgs);
             } else if (args[0].equals("3")) {
                 Feature03Main.main(realArgs);
-            } /*else if (args[0].equals("4")) {
+            } else if (args[0].equals("4")) {
                 Feature04Main.main(realArgs);
-            } */else if(args[0].equals("6")) {
+            } else if(args[0].equals("6")) {
                 Feature06Main.main(realArgs);
             } else if(args[0].equals("8")) {
                 Feature08Main.main(realArgs);
