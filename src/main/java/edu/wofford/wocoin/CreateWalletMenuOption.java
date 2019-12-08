@@ -10,8 +10,7 @@ public class CreateWalletMenuOption extends MenuOption{
 
     @Override
     public void execute() {
-//        System.out.println("1");
-//        System.out.println(username);
+
         terminal.println("Where would you like to create this wallet?");
         String directory = scan.nextLine();
         if(db.userExists(username)){

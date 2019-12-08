@@ -80,22 +80,4 @@ public class WalletTest{
         assertTrue(!db.walletExists("Mr DNE"));
         dest.delete();
     }
-
-    @Ignore
-    @Test
-    public void testAddWalletPathDNE(){
-
-    }
-
-    @Ignore
-    @Test
-    public void testPublicKeyIsNonEmptyAndGood(){
-
-    }
-
-
-
-
-
-
 }

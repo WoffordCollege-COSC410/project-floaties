@@ -136,8 +136,6 @@ public class Database {
                 int salt = generateSalt();
                 saltedPasswd = getSaltedPasswd(password, salt);
                 String hash = getHash(saltedPasswd);
-                //url is empty
-                //sql statement addUser
 
                 String testQuery = "INSERT INTO users (id, salt, hash) VALUES (?, ?, ?);";
 
@@ -254,22 +252,6 @@ public class Database {
 
         public boolean createWallet (String id, String filename, String password){
 
-//                try {
-//                    String directoryString = "tmp//" + id + "//";
-//                    File directory = new File(directoryString);
-//                    FileUtils.cleanDirectory(directory);
-//                    directory.delete();
-//                } catch (IOException | IllegalArgumentException e) {
-//                    System.out.println("error");
-//                }
-
-                //move
-//                if (filename.equals("")) {
-//                    String homeDir = System.getProperty("user.home");
-//                    File dir = new File(homeDir);
-//                } else {
-//                    File dir = new File(filename);
-//                }
             String temp = filename + "//" + id + "//";
             File dir = new File(temp);
 
@@ -488,7 +470,6 @@ public class Database {
             return list;
         }
 
-        //write unit tests
 
         /**
          * Determines if the password is correct
@@ -706,105 +687,5 @@ public class Database {
             }
             return builder;
         }
-
-
-//    public String Carrats(String id){
-//        String builder = "";
-//        String carrats;
-//        String wocoin;
-//
-//
-//        if(userExists(id)) {
-//            //String key = getPublicKey(id);
-//
-//            try (Connection conn = DriverManager.getConnection(url);
-//                 Statement stmt = conn.createStatement()) {
-//                ResultSet rs = stmt.executeQuery("select *, count(*) over () total_rows from products order by price, name collate nocase;");
-//
-//
-//                rs.next();
-//                int rows = rs.getInt(6);
-//
-//                for (int i = 1; i <= rows; i++) {
-//
-//                    if (rs.getString(2).equals(turnIdtoPublickey(id))) {
-//                        carrats = ">>>  ";
-//                    } else {
-//                        carrats = "";
-//                    }
-//                    rs.next();
-//                }
-//
-//
-//                return builder;
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            }
-//
-//
-//
-//        /*String builder = "";
-//        String carrats;
-//        String wocoin;
-//
-//
-//        if(userExists(id)){
-//            //String key = getPublicKey(id);
-//
-//            try (Connection conn = DriverManager.getConnection(url);
-//                 Statement stmt = conn.createStatement()) {
-//                ResultSet rs = stmt.executeQuery("select *, count(*) over () total_rows from products order by price, name collate nocase;");
-//
-//
-//                rs.next();
-//                int rows = rs.getInt(6);
-//
-//                for(int i=1; i <= rows; i++){
-//
-//                    if(rs.getString(2).equals(turnIdtoPublickey(id))){
-//                        carrats = ">>>  ";
-//                    }
-//                    else {
-//                        carrats = "";
-//                    }
-//
-//
-//
-//
-//                    if(rs.getInt(3) == 1){
-//                        wocoin = "WoCoin]";
-//
-//                    }
-//                    else{
-//                        wocoin= "WoCoins]";
-//                    }
-//
-//                    builder += i + ": " + carrats + rs.getString(4) + ": " + rs.getString(5) + "  " + "[" + Integer.toString(rs.getInt(3)) + " " + wocoin + "\r\n";
-//                    rs.next();
-//                }
-//
-//
-//                return builder;
-//
-//
-//
-//
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//                return "e";
-//            }
-//
-//
-//            // check if products showing were added by user
-//
-//            // 2D string array of size 4 to capture >>>, name, display, and price
-//            // menu uses string array to print a formatted string using the individual elements
-//
-//        }else{
-//
-//            String result ="No such user.";
-//            return result;
-//        }*/
-//
 }
 

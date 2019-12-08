@@ -217,18 +217,9 @@ public class DatabaseTest {
 
         assertFalse(db.addUser("jsmith", "porter"));
 
-//        try (Connection conn = DriverManager.getConnection(url);
-//             Statement stmt = conn.createStatement()) {
-//            ResultSet rs = stmt.executeQuery("SELECT id FROM users WHERE id = 'jsmith';");
-//
-//        } catch(SQLException e) {
-//            e.printStackTrace();
-//        }
-
         dest.delete();
     }
 
-    //@Ignore
     @Test
     public void testRemoveUser() throws IOException {
         String fileName = "src/test/resources/testdb.db";
@@ -267,7 +258,6 @@ public class DatabaseTest {
         myArray[0] = fileName;
         Feature00Main.main(myArray);
 
-        //Utilities.createTestDatabase(filename);
         assertTrue(file.exists());
         String url = "jdbc:sqlite:" + fileName;
 
@@ -301,7 +291,6 @@ public class DatabaseTest {
 
 
             dest.delete();
-
         }
 
     @Test
@@ -322,8 +311,6 @@ public class DatabaseTest {
 
 
         dest.delete();
-
-        //make sure we dont over write a new db
     }
 
     @Ignore
@@ -375,9 +362,6 @@ public class DatabaseTest {
         }
         file.delete();
 
-        // assertEquals(db, null);
-        //ssertEquals(db2,  )
-
     }
 
     @Test
@@ -409,9 +393,6 @@ public class DatabaseTest {
         Database db = new Database(destName);
 
         assertEquals(db.turnIdtoPublickey("MR DNE"), "");
-
-
-
 
         dest.delete();
     }
@@ -506,57 +487,6 @@ public class DatabaseTest {
 
             dest.delete();
         }
-
-/*
-        @Test
-        public void nonExistentUserTest() throws IOException{
-
-            String fileName = "src/test/resources/testdb.db";
-            String destName = "src/test/resources/testdbcopy.db";
-            File file = new File(fileName);
-            File dest = new File(destName);
-            Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
-
-            Database db = new Database(destName);
-
-            assertEquals(db.displayProduct("MR DNE"), "No such user.");
-
-            dest.delete();
-
-        }
-
-        @Test
-        public void showNoAddedProductsTest() throws IOException{
-            String fileName = "src/test/resources/testdb.db";
-            String destName = "src/test/resources/testdbcopy.db";
-            File file = new File(fileName);
-            File dest = new File(destName);
-            Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
-
-            Database db = new Database(destName);
-
-            assertEquals(db.displayProduct("hjones")," false");
-
-            dest.delete();
-        }
-
-        @Test
-        public void testRemoveProduct() throws IOException{
-            String fileName = "src/test/resources/testdb.db";
-            String destName = "src/test/resources/testdbcopy.db";
-            File file = new File(fileName);
-            File dest = new File(destName);
-            Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
-
-            Database db = new Database(destName);
-
-            assertTrue(db.removeProduct("jsmith", "chalk"));
-
-            dest.delete();
-        }
-
- */
-
 }
 
 

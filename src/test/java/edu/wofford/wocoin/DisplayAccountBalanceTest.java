@@ -42,7 +42,6 @@ public class DisplayAccountBalanceTest{
         dest.delete();
     }
 
-
     @Test
     public void displayCreatedAccountorigBalanceTest() throws IOException, InterruptedException, ExecutionException {
         String fileName = "src/test/resources/testdb.db";
@@ -54,8 +53,6 @@ public class DisplayAccountBalanceTest{
         Database db = new Database(destName);
 
         String path = "temp";
-
-
 
         try{
             assertEquals("User has " + 42061 + " WoCoins.", db.displayAccountBalance("Quavo"));
