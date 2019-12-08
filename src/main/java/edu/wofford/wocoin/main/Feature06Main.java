@@ -23,7 +23,7 @@ public class Feature06Main {
 
         menu.addUserOption(new CreateWalletMenuOption());
         menu.addUserOption(new AddProductMenuOption());
-        menu.addUserOption(new RemoveUserMenuOption());
+        menu.addUserOption(new RemoveProductMenuOption());
         menu.addUserOption(new DisplayProductMenuOption());
 
         menu.display();

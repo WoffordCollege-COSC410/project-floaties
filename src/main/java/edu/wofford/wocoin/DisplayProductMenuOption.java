@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Scanner;
 
 public class DisplayProductMenuOption extends MenuOption {
-    //List<String> list = new ArrayList<String>();
     List<Product> list;
 
 

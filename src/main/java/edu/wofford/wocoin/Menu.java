@@ -32,15 +32,14 @@ public class Menu {
                     break;
                 case "2":
                     displayAdminSubmenu();
-                    menuContinue = false;
+                    menuContinue = true;
                     break;
 
                 case "3":
                     displayUserSubmenu();
-                    menuContinue = false;
+                    menuContinue = true;
                     break;
             }
-
         }
     }
 
@@ -50,7 +49,6 @@ public class Menu {
         opt.setKeyboard(keyboard);
         opt.setTerminal(terminal);
         adminOptions.add(opt);
-        //opt.setTriggerText();
     }
 
     public void addUserOption(MenuOption opt) {
@@ -76,16 +74,25 @@ public class Menu {
                     terminal.println(opt.toString());
                     i++;
                 }
-                String adminMenu = keyboard.nextLine();
-                if (adminMenu.equals("1")) {
+                int adminMenu = keyboard.nextInt();
+//                terminal.println("|" + adminMenu + "|");
+                keyboard.nextLine();
+//                terminal.println("|" + adminMenu + "|");
+                if (adminMenu == 1) {
                     adminMenuContinue = false;
-                } else if (adminMenu.equals("4")){
-                    String directory = adminMenu;
-                    String adminMenu2 = keyboard.nextLine();
-                    adminOptions.get(Integer.parseInt(adminMenu2) - 2).execute();
-                    adminMenuContinue = false;
+//                } else {
+//                    adminMenu -= 2;
+//                    adminOptions.get(adminMenu).execute();
+//                    adminMenuContinue = true;
+//                }
+                } else if (adminMenu == 2) {
+                    adminOptions.get(0).execute();
+                    adminMenuContinue = true;
+                } else if (adminMenu == 3) {
+                    adminOptions.get(1).execute();
+                    adminMenuContinue = true;
                 } else {
-                    adminOptions.get(Integer.parseInt(adminMenu) - 2).execute();
+                    adminOptions.get(2).execute();
                     adminMenuContinue = true;
                 }
 
@@ -117,19 +124,12 @@ public class Menu {
                         terminal.println(opt.toString());
                         i++;
                     }
-                    String userMenu = keyboard.nextLine();
-                    if (userMenu.equals("1")) {
-                        userMenuContinue = false;
-                    } else if(userMenu.equals("2")){
-                        int optInt = Integer.parseInt(userMenu);
-                        if( optInt == 2){
-                            userOptions.get(optInt - 2).execute();
-                        } else{
-                            userOptions.get(0).execute();
-                        }
+                    int userMenu = keyboard.nextInt();
+                    keyboard.nextLine();
+                    if (userMenu == 1) {
                         userMenuContinue = false;
                     } else{
-                        userOptions.get(Integer.parseInt(userMenu) - 2).execute();
+                        userOptions.get(userMenu - 2).execute(); //number format exception :(
                         userMenuContinue = true;
                     }
                 }

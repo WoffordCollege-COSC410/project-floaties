@@ -18,14 +18,13 @@ public class Feature08Main {
 
         Menu menu = new Menu(d, k, t);
 
-
         menu.addAdminOption(new AddUserMenuOption());
         menu.addAdminOption(new RemoveUserMenuOption());
         menu.addAdminOption(new TransferWoCoinsMenuOption());
 
         menu.addUserOption(new CreateWalletMenuOption());
         menu.addUserOption(new AddProductMenuOption());
-        menu.addUserOption(new RemoveUserMenuOption());
+        menu.addUserOption(new RemoveProductMenuOption());
         menu.addUserOption(new DisplayProductMenuOption());
 
         menu.display();
