@@ -24,7 +24,6 @@ public class Feature08Main {
 
         menu.addUserOption(new CreateWalletMenuOption());
         menu.addUserOption(new AddProductMenuOption());
-        menu.addUserOption(new RemoveProductMenuOption());
         menu.addUserOption(new DisplayProductMenuOption());
 
         menu.display();

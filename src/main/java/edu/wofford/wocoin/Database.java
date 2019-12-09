@@ -3,6 +3,7 @@ import java.io.*;
 import java.sql.*;
 import java.security.NoSuchAlgorithmException;
 import java.lang.InterruptedException;
+import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
 import javax.crypto.Cipher;
 
@@ -33,8 +34,6 @@ import org.web3j.protocol.http.HttpService;
 import org.web3j.utils.Convert;
 import org.web3j.utils.Convert.Unit;
 import org.web3j.utils.Numeric;
-
-
 
 
 
@@ -136,6 +135,8 @@ public class Database {
                 int salt = generateSalt();
                 saltedPasswd = getSaltedPasswd(password, salt);
                 String hash = getHash(saltedPasswd);
+                //url is empty
+                //sql statement addUser
 
                 String testQuery = "INSERT INTO users (id, salt, hash) VALUES (?, ?, ?);";
 
@@ -356,9 +357,12 @@ public class Database {
 
             if (walletExists(id)) {
                 if (isValidName(name) && isValidPrice(price) && isValidDescription(description)) {
+
                     String testQuery = "INSERT INTO products (seller, price, name, description) VALUES (?, ?, ?, ?);";
+
                     try (Connection conn = DriverManager.getConnection(url);
                          PreparedStatement stmt = conn.prepareStatement(testQuery)) {
+
                         stmt.setString(1, seller);
                         stmt.setInt(2, price);
                         stmt.setString(3, name);
@@ -421,12 +425,13 @@ public class Database {
     }
 
 
-        /**
-         *
-         * @return
-         */
+    /**
+     * Displays a list of the products for the specified user
+     * @param seller the publicKey for the user
+     * @return a list of the products created under the user
+     */
 
-        public List displayProductF5() {
+    public List displayProductF5(String seller) {
             List<Product> list = new ArrayList<>();
             try(Connection conn = DriverManager.getConnection(url);
                 Statement stmt = conn.createStatement()) {
@@ -446,6 +451,7 @@ public class Database {
             return list;
         }
 
+        //write unit tests
 
         /**
          * Determines if the password is correct
@@ -458,7 +464,12 @@ public class Database {
             return true;
         }
 
-        public BigInteger getNonce() throws Exception {
+    /**
+     * Returns the BigInteger value of the number of times a transaction is sent.
+     * @return nonce value
+     * @throws Exception
+     */
+    public BigInteger getNonce() throws Exception {
             web3 = Web3j.build(new HttpService("https://mainnet.infura.io/v3/338a115fa5324abeadccd992f9c6cbab"));
             senderAddress = "0fce4741f3f54fbffb97837b4ddaa8f769ba0f91";
             String toAddr = "0x" + senderAddress;
@@ -469,7 +480,12 @@ public class Database {
             return nonce;
         }
 
-
+        /**
+         * Sends a transaction of WoCoins to the specified user.
+         * @param id the user's id
+         * @param value the amount of WoCoins sent
+         * @return a boolean indicating if the transaction was sent
+         */
         public boolean sendTransaction (String id,int value){
             String bigValString = Integer.toString(value);
             BigInteger bigValue = new BigInteger(bigValString);
@@ -538,6 +554,17 @@ public class Database {
         }
 
 
+    /**
+     * Creating a raw transaction object in order to send a transaction
+     * @param toAddress wallet that the transaction is being sent to
+     * @param gasPrice amount of ether willing to pay for ever unit of gas
+     * @param gasLimit maximum amount of gasPrice willing to spend
+     * @param amount amount of WoCoins sent
+     * @param nonce number of times a transaction has been sent
+     * @return a string hexValue that is the transaction hash
+     * @throws IOException
+     * @throws CipherException
+     */
     public String createOfflineTx(String toAddress, BigInteger gasPrice, BigInteger gasLimit, BigInteger amount, BigInteger nonce) throws IOException, CipherException {
 
         Credentials credentials = WalletUtils.loadCredentials(
@@ -551,6 +578,11 @@ public class Database {
         return hexValue;
     }
 
+    /**
+     * Sends the transaction
+     * @param hexValue the transaction hash
+     * @return a boolean indicating if the transaction was sent
+     */
     public boolean sendOfflineTx(String hexValue){
        try{
            EthSendTransaction ethSendTransaction = web3.ethSendRawTransaction(hexValue).send();
@@ -567,9 +599,17 @@ public class Database {
     }
 
 
-
-
+    /**
+     * Displays the balance of a user's account.
+     * @param id the user
+     * @return a string containing the balance of the user's account
+     * @throws InterruptedException
+     * @throws ExecutionException
+     * @throws IOException
+     * @throws CipherException
+     */
         public String displayAccountBalance(String id) throws InterruptedException, ExecutionException, IOException, CipherException {
+
             if(!userExists(id)){
                 return "No such user.";
             }

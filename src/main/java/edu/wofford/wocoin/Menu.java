@@ -29,6 +29,7 @@ public class Menu {
             switch (rootMenu) {
                 case "1":
                     menuContinue = false;
+                    System.exit(0);
                     break;
                 case "2":
                     displayAdminSubmenu();
@@ -129,7 +130,7 @@ public class Menu {
                     if (userMenu == 1) {
                         userMenuContinue = false;
                     } else{
-                        userOptions.get(userMenu - 2).execute(); //number format exception :(
+                        userOptions.get(userMenu - 2).execute();
                         userMenuContinue = true;
                     }
                 }
